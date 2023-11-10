@@ -1,3 +1,3 @@
 import { writable } from "svelte/store";
 
-export let headerTitle = writable("");
+export let pageTitle = writable("");

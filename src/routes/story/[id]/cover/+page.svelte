@@ -1,5 +1,12 @@
 <script>
-    export let data;
+	export let data;
 </script>
 
-<img src={data.src} alt="cover" class="mx-auto" style="view-transition-name: testing-{data.id};" />
+<a href="/story/{data.id}"
+	><img
+		src={data.src}
+		alt="cover"
+		class="mx-auto"
+		style="view-transition-name: testing-{data.id};"
+	/></a
+>
