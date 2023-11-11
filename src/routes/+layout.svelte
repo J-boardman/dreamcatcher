@@ -13,11 +13,11 @@
 			// @ts-expect-error
 			document.startViewTransition(() => fulfill());
 		});
-
 	});
 </script>
 
 <Background />
 <Header />
 <slot />
-<MobileNav />  
+<MobileNav />
+

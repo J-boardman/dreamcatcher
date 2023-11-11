@@ -15,7 +15,7 @@
 		const target = e.target as HTMLFormElement;
 		e.preventDefault();
 		target.reset();
-		data.comments = [...data.comments, comment];
+		// data.comments = [...data.comments, comment];
 	}
 
 	let element: HTMLElement;
@@ -58,8 +58,16 @@
 			</SignedIn>
 			<button class="btn btn-sm sm:btn-md">Like</button>
 			<div class="join">
-				<button on:click={() => data.comments = null} class="join-item btn btn-sm sm:btn-md {data.comments == null ? "btn-secondary" : ""}">Story</button>
-				<button on:click={() => data.comments = ["LOL"]} class="join-item btn btn-sm sm:btn-md {data.comments != null ? "btn-secondary" : ""}">Comments</button>
+				<button
+					on:click={() => (data.comments = null)}
+					class="join-item btn btn-sm sm:btn-md {data.comments == null ? 'btn-secondary' : ''}"
+					>Story</button
+				>
+				<button
+					on:click={() => (data.comments = ['LOL'])}
+					class="join-item btn btn-sm sm:btn-md {data.comments != null ? 'btn-secondary' : ''}"
+					>Comments</button
+				>
 			</div>
 		</section>
 		<div class="divider my-0" />
@@ -73,6 +81,10 @@
 				{/each}
 			</article>
 		{:else}
+			<form on:submit={handleComment} class="join flex m-1">
+				<input bind:value={comment} type="text" class="input join-item flex-1" placeholder="Leave a comment..." required />
+				<button class="btn join-item">Comment</button>
+			</form>
 			<div class="flex flex-col h-[calc(100svh-4rem)] md:h-[calc(100svh-11rem)] overflow-scroll">
 				<section bind:this={element} class="flex-1 overflow-scroll">
 					{#each data.comments as comment}
@@ -89,10 +101,6 @@
 						</div>
 					{/each}
 				</section>
-				<form on:submit={handleComment} class="join flex m-1">
-					<input bind:value={comment} type="text" class="input join-item flex-1" required />
-					<button class="btn join-item">Comment</button>
-				</form>
 			</div>
 		{/if}
 	</section>

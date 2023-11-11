@@ -1,12 +1,12 @@
 <script>
 	export let title = '';
-    export let fontSize = '3xl'
+    export let fontSize = 'text-3xl'
 
 	$: titleArray = title.split(' ');
 	$: longestWord = titleArray.reduce((a, b) => (a.length > b.length ? a : b));
 </script>
 
-<h2 class="text-{fontSize}">
+<h2 class="{fontSize}">
 	{#if titleArray.length == 1}
 		{title}
 	{:else}

@@ -16,12 +16,12 @@
 >
 	<section bind:this={element} class="overflow-scroll">
 		{#each $messages as message, i}
-			{#if message.name == "generate-story"}
-				<div class="divider"><span class="opacity-50 uppercase">Your story</span></div>
-			{:else if message.role == 'system'}
-				<div class="divider"><span class="opacity-50 uppercase">{message.name}</span></div>
+			{#if message.role == 'system'}
+				{#if message.name != 'hidden message'}
+					<div class="divider"><span class="opacity-50 uppercase">{message.name}</span></div>
+				{/if}
 			{:else}
-				<article class="chat chat-{message.role == 'user' ? 'end' : 'start'} w-full">
+				<article class="chat {message.role == 'user' ? 'chat-end' : 'chat-start'} w-full">
 					<div class="chat-bubble chat-bubble-{message.role == 'user' ? 'secondary' : ''}">
 						{#each message.content.split('\n') as paragraph}
 							<p class="my-2">{paragraph}</p>

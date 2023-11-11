@@ -9,6 +9,9 @@
 	import { pageTitle } from '$lib/stores';
 
     onMount(() => pageTitle.set("Dreamcatcher"))
+
+    import { clerk } from 'clerk-sveltekit/client';
+    
 </script>
 
 <SignedIn let:user>

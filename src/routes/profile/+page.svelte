@@ -16,7 +16,7 @@ import { pageTitle } from "$lib/stores";
     <section class="flex md:hidden mb-2">
         <Title title={`${user}'s profile`}/>
     </section>
-    <section class="rounded-xl bg-base-200/60 h-min p-4">
+    <section class="rounded-xl bg-base-200/60 flex items-center h-min p-4">
         <nav class="text-xl flex gap-4">
             <a class="{data.filterBy == null ? "text-secondary" : ""}" href="/profile">Stories</a>
             <a class="{data.filterBy == "liked" ? "text-secondary" : ""}" href="/profile?filter=liked">Liked Stories</a>
