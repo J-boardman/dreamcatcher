@@ -1,12 +1,7 @@
 type Filters = "stories" | "dreams" | "likes"
 
-export function load({params, url}){
-    const filterBy= url.searchParams.get("filter")
-    let data;
-
-    return {
-        filterBy
-    }
+export async function load({params, url}){
+    console.log(params)
 }
 
 async function fetchStories(){}

@@ -8,7 +8,7 @@ initializeClerkClient(PUBLIC_CLERK_PUBLISHABLE_KEY, {
 	afterSignUpUrl: '/profile/',
 	signInUrl: '/sign-in',
 	signUpUrl: '/sign-up',
-    appearance: {baseTheme: dark}
+    appearance: {baseTheme: dark, variables: {colorPrimary: "#9048f7"}}
 })
 
 export const handleError: HandleClientError = async ({ error, event }) => {

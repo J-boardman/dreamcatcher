@@ -1,36 +1,51 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/prompts/prompts';
-	import { currentStory } from '$lib/stores';
+	import { conversations, currentStory, state } from '$lib/stores';
 
 	export let isLoading;
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let messages;
-	export let currentState;
+
+    let conversationID = $page.url.searchParams.get("conversation")?.toString()
 
 	function handleStoryGeneration() {
-		if ($currentStory.type == 'fullStory') generateFullStory();
-		else {
-			currentStory.update((prev) => ({ ...prev, chapterIndexStart: $messages.length - 1 }));
-			startChapterStory();
-		}
+		if ($currentStory.type == 'pee') tester();
+		else if ($currentStory.type == 'fullStory') generateFullStory();
+		else startChapterStory();
+
+		currentStory.update((prev) => ({ ...prev, chapterIndexStart: $messages.length - 1 }));
 	}
 
-	function startChapterStory() {
-		currentState = 'GENERATING_CHAPTER_STORY';
+	async function startChapterStory() {
 		const prompt = chapterStoryPrompt($currentStory.mood, $currentStory.setting);
-		console.log(prompt);
-		appendSystemMessage(prompt, 'Choose your own adventure story');
+		await appendSystemMessage(prompt, 'Choose your own adventure story');
+		state.set('GENERATING_CHAPTER_STORY');
 	}
 
 	async function generateFullStory() {
 		const prompt = fullStoryPrompt($currentStory.mood, $currentStory.setting);
 		const response = await appendSystemMessage(prompt, 'Your story');
 
-		if (response) $currentStory.story = response;
-		currentState = 'STORY_GENERATION_FINISHED';
+		if (response) {
+            $currentStory.story = response;
+            const found = $conversations.find(item => item.id == conversationID)
+            if(found){
+                found.story = response;
+                // localStorage.setItem("conversations", JSON.parse())
+            }
+        }
+
+		state.set('STORY_GENERATION_FINISHED');
+	}
+
+	async function tester() {
+		await appendSystemMessage('Respond with 1', 'hidden message');
+        state.set('STORY_GENERATION_FINISHED');
 	}
 </script>
 
+{#if $state == "CONVERSATION_OVER"}
 <div class="divider"><span class="opacity-50 uppercase">Story generator</span></div>
 <section class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 h-min">
 	<input
@@ -76,8 +91,10 @@
 		<option disabled selected>Story Type</option>
 		<option value="fullStory">Full story</option>
 		<option value="chapterStory">Choose your own adventure</option>
+		<option value="pee">1</option>
 	</select>
 	<button disabled={$isLoading} on:click={handleStoryGeneration} class="btn btn-secondary">
 		Start the adventure!
 	</button>
 </section>
+{/if}

@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { currentStory } from '$lib/stores';
+	import { currentStory, state } from '$lib/stores';
 	import type { Message } from 'ai/svelte/dist';
 	import type { Readable } from 'svelte/store';
 
 	export let isLoading;
-    export let currentState;
 	export let messages: Readable<Message[]>;
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 
 	let customInstruction = '';
-    $: console.log($messages)
 
 	async function finaliseChapterStory() {
 		let chapters = $messages.filter(
@@ -23,7 +21,7 @@
 
 		console.table(fullStory);
 		currentStory.update(prev=> ({...prev, story: fullStory}));
-		currentState = 'STORY_GENERATION_FINISHED';
+		 state.set('STORY_GENERATION_FINISHED');
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
@@ -38,6 +36,7 @@
 	}
 </script>
 
+{#if $state == "GENERATING_CHAPTER_STORY"}
 <section class="mt-2 flex flex-col lg:flex-row gap-4">
 	<div class="join flex">
 		<button
@@ -79,3 +78,4 @@
 		<button disabled={$isLoading} class="btn join-item">Send</button>
 	</form>
 </section>
+{/if}

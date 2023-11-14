@@ -21,6 +21,7 @@ export const POST = (async ({ request }) => {
       content: message.content,
       role: message.role,
     })),
+    // max_tokens: 3
   });
  
   // Convert the response into a friendly text-stream

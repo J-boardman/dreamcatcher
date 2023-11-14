@@ -1,12 +1,10 @@
 import { clerk } from "$lib/clerk";
 
-async function getUsers(){
-    try {
-        const users = await clerk.users.getUserList();
-        console.log(users)
-    } catch (error) {
-       console.log(error) 
+export async function load() {
+    const users = await clerk.users.getUserList();
+    const userList = users.map(user => ({ id: user.id, username: user.username, imageUrl: user.imageUrl }))
+
+    return {
+        userList
     }
 }
-
-getUsers()

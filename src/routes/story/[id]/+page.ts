@@ -1,11 +1,11 @@
 export function load({params, url}){
-    const showComments = url.searchParams.get("show") == 'comments'
-    let comments;
+    const showComments = url.searchParams.get("showComments")
+    let comments: string[];
     // Load comments
     if(showComments){
         comments = ["This story was awesome", "Thanks for reading!", "nice work with this one."]
     } else {
-        comments = null;
+        comments = [];
     }
     return {
         id: params?.id,

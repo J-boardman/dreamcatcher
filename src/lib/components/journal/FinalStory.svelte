@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { imagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
-	import { currentStory } from '$lib/stores';
+	import { currentStory, state } from '$lib/stores';
+	import ConversationList from './ConversationList.svelte';
 
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let isLoading;
@@ -22,7 +23,7 @@
 		});
 
 		const img = await data.json();
-        currentStory.update(prev => ({...prev, imageUrl: img?.url}))
+		currentStory.update((prev) => ({ ...prev, imageUrl: img?.url }));
 		generatingImage = false;
 	}
 
@@ -31,7 +32,7 @@
 		let newTitle = $messages.at(-1)?.content;
 
 		if (!newTitle) return;
-        currentStory.update(prev => ({...prev, title: newTitle.replaceAll('"', '')}))
+		currentStory.update((prev) => ({ ...prev, title: newTitle.replaceAll('"', '') }));
 	}
 
 	async function saveStory() {
@@ -39,7 +40,7 @@
 	}
 </script>
 
-<main class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
+{#if $state == 'FINALISING_STORY'}
 	{#if generatingImage}
 		<div
 			class="min-h-[400px] md:sticky top-0 w-9/12 sm:w-7/12 md:w-[96%] md:mt-0 mt-4 mx-auto bg-base-200 grid place-items-center animate-pulse"
@@ -59,6 +60,8 @@
 		</form>
 	{/if}
 	<section class="m-2 flex flex-col gap-2">
+		<ConversationList />
+		<div class="divider my-0" />
 		<div class="w-full join">
 			<input
 				disabled={$isLoading}
@@ -104,4 +107,4 @@
 			{/each}
 		</article>
 	</section>
-</main>
+{/if}

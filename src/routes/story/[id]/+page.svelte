@@ -1,30 +1,23 @@
 <script lang="ts">
-	export let data;
 	import cover from '$lib/assets/nice.png';
 	import Title from '$lib/components/Title.svelte';
 	import { pageTitle } from '$lib/stores';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
+	import { page } from '$app/stores';
+	import CommentSection from '$lib/components/CommentSection.svelte';
+	import { goto } from '$app/navigation';
 
-	onMount(() => {
-		pageTitle.set(data.title);
-	});
+	export let data;
+	let liked = false;
 
-	let comment = '';
-	async function handleComment(e: SubmitEvent) {
-		const target = e.target as HTMLFormElement;
-		e.preventDefault();
-		target.reset();
-		// data.comments = [...data.comments, comment];
+	function preserveScroll(url: string) {
+		goto(url, { noScroll: true });
 	}
 
-	let element: HTMLElement;
+	onMount(() => pageTitle.set(data.title));
 
-	async function scrollToBottom(node: HTMLElement) {
-		node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
-	}
-
-	afterUpdate(() => scrollToBottom(element));
+	$: showComments = $page.url.searchParams.get('showComments');
 </script>
 
 <main class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
@@ -56,24 +49,32 @@
 					</div>
 				</div>
 			</SignedIn>
-			<button class="btn btn-sm sm:btn-md">Like</button>
+			<button class="btn btn-sm sm:btn-md" on:click={() => liked = !liked}>
+				{#if liked}
+					liked
+				{:else}
+                    like
+				{/if}
+			</button>
 			<div class="join">
 				<button
-					on:click={() => (data.comments = null)}
-					class="join-item btn btn-sm sm:btn-md {data.comments == null ? 'btn-secondary' : ''}"
+					on:click={() => preserveScroll(`/story/${data.id}`)}
+					class="join-item btn btn-sm sm:btn-md {!showComments ? 'btn-secondary' : ''}"
 				>
 					Story
 				</button>
 				<button
-					on:click={() => (data.comments = ['LOL'])}
-					class="join-item btn btn-sm sm:btn-md {data.comments != null ? 'btn-secondary' : ''}"
+					on:click={() => preserveScroll(`/story/${data.id}?showComments=true`)}
+					class="join-item btn btn-sm sm:btn-md {showComments != null ? 'btn-secondary' : ''}"
 				>
 					Comments
 				</button>
 			</div>
 		</section>
 		<div class="divider my-0" />
-		{#if data.comments == null}
+		{#if showComments}
+			<CommentSection comments={data.comments} />
+		{:else}
 			<article class="flex flex-col gap-2">
 				{#each data.story.split('\n') as paragraph}
 					<p>{paragraph}</p>
@@ -82,34 +83,6 @@
 					<p>{paragraph}</p>
 				{/each}
 			</article>
-		{:else}
-			<form on:submit={handleComment} class="join flex m-1">
-				<input
-					bind:value={comment}
-					type="text"
-					class="input join-item flex-1"
-					placeholder="Leave a comment..."
-					required
-				/>
-				<button class="btn join-item">Comment</button>
-			</form>
-			<div class="flex flex-col h-[calc(100svh-4rem)] md:h-[calc(100svh-11rem)] overflow-scroll">
-				<section bind:this={element} class="flex-1 overflow-scroll">
-					{#each data.comments as comment}
-						<div class="mt-2 flex">
-							<div class="flex-1">
-								Obi-Wan Kenobi
-								<time class="text-xs opacity-50">2 hours ago</time>
-								<div class="chat-bubble bg-base-300">
-									{#each comment.split('\n') as paragraph}
-										<p class="my-2">{comment}</p>
-									{/each}
-								</div>
-							</div>
-						</div>
-					{/each}
-				</section>
-			</div>
 		{/if}
 	</section>
 </main>

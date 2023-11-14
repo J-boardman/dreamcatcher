@@ -4,15 +4,18 @@
 	import SignedOut from 'clerk-sveltekit/client/SignedOut.svelte';
 	import SignInButton from 'clerk-sveltekit/client/SignInButton.svelte';
 	import SignUpButton from 'clerk-sveltekit/client/SignUpButton.svelte';
-	import Logo from '$lib/assets/logo.png';
 	import Title from './Title.svelte';
-	import { pageTitle } from '$lib/stores';
+	import { pageTitle, headerImage } from '$lib/stores';
 </script>
 
 <header class="hidden md:flex h-16 justify-between items-center px-4 mb-2">
 	<div class="flex gap-2 items-center">
 		<a href="/">
-			<img src={Logo} alt="logo" class="w-12" />
+			<img
+				src={$headerImage.src}
+				alt="logo"
+				class="w-12 {$headerImage.rounded ? 'rounded-full' : ''}"
+			/>
 		</a>
 		<Title title={$pageTitle} />
 	</div>
