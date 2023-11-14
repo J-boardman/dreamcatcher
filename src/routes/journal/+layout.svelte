@@ -1,7 +1,17 @@
 <script>
-	import { state } from '$lib/stores';
-
+	import resetHeaderImage from '$lib/resetHeaderImage';
+	import { currentStory, pageTitle, state } from '$lib/stores';
+	import { afterUpdate, onMount } from 'svelte';
 	state.set('STORY_GENERATION_FINISHED');
+	onMount(() => {
+		resetHeaderImage();
+		pageTitle.set('Dream Journal');
+	});
+
+	afterUpdate(() => {
+		if ($currentStory.title) pageTitle.set($currentStory.title);
+		else pageTitle.set('Dream Journal');
+	});
 </script>
 
 {#if $state == 'FINALISING_STORY'}

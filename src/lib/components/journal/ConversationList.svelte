@@ -1,80 +1,59 @@
 <script lang="ts">
-	import { afterNavigate, goto } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { dreamInterpretatorPrompt } from '$lib/prompts/prompts';
+	import { addConversation, deleteConversation, findConversation, loadConversations } from '$lib/conversations';
 	import { conversations, type Conversation } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 
-	$: conversationID = $page.url.searchParams.get('conversation')?.toString();
-	let showBanner = false;
-	onMount(() => {
-		conversations.set(JSON.parse(localStorage.getItem('conversations') || '[]'));
+	let conversationID = $page.url.searchParams.get('conversaton') || '';
 
+	onMount(() => {
+		conversations.set(loadConversations());
 		if (!$conversations.length) {
-			showBanner = true;
 			const newConversation = addConversation('My First Dream Journal');
-			goto(`/journal?conversation=${newConversation.id}`);
-			localStorage.setItem('conversations', JSON.stringify([...$conversations]));
-			conversations.set(JSON.parse(localStorage.getItem('conversations') || '[]'));
+			changeConversation(newConversation.id);
+			conversations.set(loadConversations());
 		} else if (!conversationID) {
-			goto(`/journal?conversation=${$conversations[0].id}`);
+			changeConversation($conversations[0].id);
 		}
 	});
 
 	let selectElement: HTMLSelectElement;
 
 	afterUpdate(() => {
-		const found = $conversations.find((item) => item.id == conversationID);
-		if (found && selectElement) {
-			selectElement.value = found.id;
-		}
+		const conversation = findConversation(conversationID);
+		if (!conversation || !selectElement) return;
+  
+		selectElement.value = conversation.id;
 	});
 
-	function addConversation(name?: string) {
-		const newConversation: Conversation = {
-			id: Math.random().toString(36).substring(2, 9),
-			lastState: 'INTERPRETING',
-			lastUpdated: new Date(),
-			messageList: [
-				{
-					role: 'assistant',
-					id: Math.random().toString(36).substring(2, 9),
-					content: dreamInterpretatorPrompt
-				}
-			],
-			name: name
-		};
-		conversations.update((prev) => [...prev, newConversation]);
-		localStorage.setItem('conversations', JSON.stringify($conversations));
-		return newConversation;
-	}
 	function handleNewConversation() {
 		const newConversation = addConversation(newDreamName);
-		goto(`/journal?conversation=${newConversation.id}`);
+		changeConversation(newConversation.id);
 	}
 
 	function handleConversationChange(e: Event) {
 		const target = e.target as HTMLSelectElement;
-		goto(`/journal?conversation=${target.value}`);
+		changeConversation(target.value);
 	}
 
-	function deleteConversation() {
-		conversations.update((prev) => prev.filter((item) => item.id != conversationID));
+	function handleConversationDelete() {
+		deleteConversation(conversationID);
 		if ($conversations.length) {
-			goto(`/journal?conversation=${$conversations[0].id}`);
+			 changeConversation($conversations[0].id);
 		} else {
 			goto('/journal', { replaceState: true });
 		}
-		localStorage.setItem('conversations', JSON.stringify($conversations));
 	}
+
+    function changeConversation(id: string){
+        goto(`/journal?=conversation=${id}`)
+    }
 
 	let newDreamName = '';
 </script>
 
-<form
-	on:submit={handleNewConversation}
-	class="join flex gap-2 h-min justify-center mb-auto w-full pb-1"
->
+<section class="join flex gap-2 h-min justify-center mb-auto w-full pb-1">
 	<select
 		on:change={handleConversationChange}
 		class="select select-sm flex-1 md:flex-none md:ml-auto"
@@ -87,8 +66,10 @@
 			</option>
 		{/each}
 	</select>
-	<button disabled={$conversations.length == 1} on:click={deleteConversation} class="btn btn-sm"
-		>Delete</button
+	<button
+		disabled={$conversations.length == 1}
+		on:click={handleConversationDelete}
+		class="btn btn-sm">Delete</button
 	>
 	<input
 		type="text"
@@ -96,5 +77,5 @@
 		class="input join-item input-sm"
 		placeholder="Conversation Name"
 	/>
-	<button type="submit" class="btn btn-sm join-item">New</button>
-</form>
+	<button type="submit" class="btn btn-sm join-item" on:click={handleNewConversation}>New</button>
+</section>

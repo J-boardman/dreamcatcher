@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { currentStory, state } from '$lib/stores';
+	import { page } from '$app/stores';
+	import { conversations, currentStory, state } from '$lib/stores';
 	import type { Message } from 'ai/svelte/dist';
 	import type { Readable } from 'svelte/store';
 
@@ -8,6 +9,7 @@
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 
 	let customInstruction = '';
+    let conversationID = $page.url.searchParams.get("conversation")?.toString()
 
 	async function finaliseChapterStory() {
 		let chapters = $messages.filter(
@@ -21,7 +23,11 @@
 
 		console.table(fullStory);
 		currentStory.update(prev=> ({...prev, story: fullStory}));
-		 state.set('STORY_GENERATION_FINISHED');
+        const found = $conversations.find(item => item.id == conversationID)
+        if(found){
+            found.story = fullStory;
+        }
+        state.set('STORY_GENERATION_FINISHED');
 	}
 
 	async function handleOptionClick(e: MouseEvent) {

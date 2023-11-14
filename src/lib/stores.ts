@@ -22,8 +22,6 @@ export let currentStory = writable({
     // story: ""
 })
 
-
-
 export type Conversation = {
     id: string;
     name?: string;
@@ -32,7 +30,9 @@ export type Conversation = {
     messageList: Message[];
     story?: string
     imageUrl?: string
+    title?: string
 };
+
 
 export const conversations: Writable<Conversation[]> = writable([])
 

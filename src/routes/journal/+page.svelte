@@ -1,74 +1,59 @@
 <script lang="ts">
-	import { useChat } from 'ai/svelte';
+    import { useChat } from 'ai/svelte';
 	import { afterUpdate, onMount } from 'svelte';
-
+    
 	import Chatbox from '$lib/components/ChatBox.svelte';
 	import StoryGenerator from '$lib/components/journal/StoryGenerator.svelte';
 	import ChapterStoryGenerator from '$lib/components/journal/ChapterStoryGenerator.svelte';
 	import FinalStory from '$lib/components/journal/FinalStory.svelte';
 	import DreamInterpreter from '$lib/components/journal/DreamInterpreter.svelte';
-
-	import { currentStory, pageTitle, state, conversations } from '$lib/stores';
-	import resetHeaderImage from '$lib/resetHeaderImage';
-	import { page } from '$app/stores';
-	import { afterNavigate, goto } from '$app/navigation';
-
-	let conversationID = $page.url.searchParams.get('conversation')?.toString();
     
-
+	import { state, conversations, type Conversation } from '$lib/stores';
+	import { page } from '$app/stores';
+	import { afterNavigate } from '$app/navigation';
+	import { findConversation, loadConversations, saveConversations, updateConversation } from '$lib/conversations';
+    
+	let conversationID = $page.url.searchParams.get('conversation')?.toString() || "";
+    
 	onMount(() => {
-        resetHeaderImage();
-		pageTitle.set('Dream Journal');
-		updateMessages();
+        updateMessages();
+        
+        messages.subscribe((val) => {
+            const currentConversation = findConversation(conversationID);
+            if (!currentConversation || val.length < currentConversation.messageList.length) return;
+            currentConversation.messageList = val;
+            saveConversations();
+        });
+        
+        state.subscribe((val) => {
+            if (!conversationID) return;
+            updateConversation(conversationID, { lastState: val });
+            saveConversations();
+        });
+	});
+    
+	afterUpdate(() => {
+        updateMessages();
+		conversationID = $page.url.searchParams.get('conversation')?.toString() || "";
 	});
 
-	afterUpdate(() => {
-		if ($currentStory.title) pageTitle.set($currentStory.title);
-        else pageTitle.set("Dream Journal")
-		updateMessages();
-		conversationID = $page.url.searchParams.get('conversation')?.toString();
-	});
+    afterNavigate(() => {
+        conversations.set(loadConversations());
+        updateMessages();
+    });
 
 	function updateMessages() {
-		if (conversationID) {
-			const found = $conversations?.find((item) => item.id == conversationID);
-			if (found) {
-				$messages = found.messageList;
-				state.set(found.lastState);
-			}
-		}
+        const foundConversation = findConversation(conversationID);
+		if (!foundConversation) return;
+		$messages = foundConversation.messageList;
+		state.set(foundConversation.lastState);
 	}
 
-	afterNavigate(() => {
-		conversations.set(JSON.parse(localStorage.getItem('conversations') || '[]'));
-		updateMessages();
-	});
 
 	const { input, handleSubmit, messages, isLoading, append } = useChat({
 		initialMessages: $conversations.find((item) => item.id == conversationID)?.messageList
 	});
 
-	messages.subscribe((val) => {
-		const found = $conversations?.find((item) => item.id == conversationID);
-		if (found) {
-			if (val.length >= found.messageList.length) {
-				found.messageList = val;
-				localStorage.setItem('conversations', JSON.stringify($conversations));
-			}
-		}
-	});
-
-	state.subscribe((val) => {
-		const found = $conversations.find((item) => item.id == conversationID);
-		if (found) {
-			found.lastState = val;
-			localStorage.setItem('conversations', JSON.stringify($conversations));
-		}
-	});
-
-    currentStory.subscribe(val => {
-        localStorage.setItem("currentStory", JSON.stringify($currentStory))
-    })
 
 	async function appendSystemMessage(content: string, name: string) {
 		await append({
@@ -81,27 +66,25 @@
 	}
 
 	function finaliseStory() {
-		const found = $conversations?.find((item) => item.id == conversationID);
-		if (found) {
-            found.lastState = 'FINALISING_STORY';
-            console.log($conversations)
-			localStorage.setItem('conversations', JSON.stringify($conversations));
-            state.set("FINALISING_STORY")
-		}
+		if (!conversationID) return;
+		updateConversation(conversationID, { lastState: 'FINALISING_STORY' });
+		saveConversations();
+		state.set('FINALISING_STORY');
 	}
-	$: console.log($state);
 </script>
 
 <FinalStory {appendSystemMessage} {isLoading} {messages} />
-<div class="flex flex-col h-[calc(100svh-1rem)] md:h-[calc(100svh-6rem)]">
-	<Chatbox {messages} />
-	<DreamInterpreter {input} {isLoading} {messages} {appendSystemMessage} {handleSubmit} />
-	<StoryGenerator {isLoading} {appendSystemMessage} {messages} />
-	<ChapterStoryGenerator {isLoading} {appendSystemMessage} {messages} />
-	{#if $state == 'STORY_GENERATION_FINISHED'}
-		<div class="divider">
-			<span class="opacity-50 uppercase">Take your time reading</span>
-		</div>
-		<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
-	{/if}
-</div>
+{#if $state != 'FINALISING_STORY'}
+	<div class="flex flex-col h-[calc(100svh-1rem)] md:h-[calc(100svh-6rem)]">
+		<Chatbox {messages} />
+		<DreamInterpreter {input} {isLoading} {messages} {appendSystemMessage} {handleSubmit} />
+		<StoryGenerator {isLoading} {appendSystemMessage} {messages} />
+		<ChapterStoryGenerator {isLoading} {appendSystemMessage} {messages} />
+		{#if $state == 'STORY_GENERATION_FINISHED'}
+			<div class="divider">
+				<span class="opacity-50 uppercase">Take your time reading</span>
+			</div>
+			<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
+		{/if}
+	</div>
+{/if}
