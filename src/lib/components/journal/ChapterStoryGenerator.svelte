@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { conversations, currentStory, state } from '$lib/stores';
+	import { dreamJournals, currentStory, state } from '$lib/stores';
 	import type { Message } from 'ai/svelte/dist';
 	import type { Readable } from 'svelte/store';
 
@@ -23,7 +23,7 @@
 
 		console.table(fullStory);
 		currentStory.update(prev=> ({...prev, story: fullStory}));
-        const found = $conversations.find(item => item.id == conversationID)
+        const found = $dreamJournals.find(item => item.id == conversationID)
         if(found){
             found.story = fullStory;
         }

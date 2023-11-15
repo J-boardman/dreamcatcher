@@ -1,59 +1,58 @@
 <script lang="ts">
-    import { useChat } from 'ai/svelte';
+	import { useChat } from 'ai/svelte';
 	import { afterUpdate, onMount } from 'svelte';
-    
+
 	import Chatbox from '$lib/components/ChatBox.svelte';
 	import StoryGenerator from '$lib/components/journal/StoryGenerator.svelte';
 	import ChapterStoryGenerator from '$lib/components/journal/ChapterStoryGenerator.svelte';
 	import FinalStory from '$lib/components/journal/FinalStory.svelte';
 	import DreamInterpreter from '$lib/components/journal/DreamInterpreter.svelte';
-    
-	import { state, conversations, type Conversation } from '$lib/stores';
-	import { page } from '$app/stores';
+
+	import { state, dreamJournals, currentJournalID } from '$lib/stores';
 	import { afterNavigate } from '$app/navigation';
-	import { findConversation, loadConversations, saveConversations, updateConversation } from '$lib/conversations';
-    
-	let conversationID = $page.url.searchParams.get('conversation')?.toString() || "";
-    
+	import { journal } from '$lib/journals';
+
 	onMount(() => {
-        updateMessages();
-        
-        messages.subscribe((val) => {
-            const currentConversation = findConversation(conversationID);
-            if (!currentConversation || val.length < currentConversation.messageList.length) return;
-            currentConversation.messageList = val;
-            saveConversations();
-        });
-        
-        state.subscribe((val) => {
-            if (!conversationID) return;
-            updateConversation(conversationID, { lastState: val });
-            saveConversations();
-        });
-	});
-    
-	afterUpdate(() => {
-        updateMessages();
-		conversationID = $page.url.searchParams.get('conversation')?.toString() || "";
+		messages.subscribe((val) => {
+			const currentConversation = journal.getByID($currentJournalID)
+			if (!currentConversation || val.length < currentConversation.messageList.length) return;
+			currentConversation.messageList = val;
+			journal.save();
+		});
+
+		state.subscribe((val) => {
+            console.log(val)
+			if (!$currentJournalID) return;
+			journal.updateByID($currentJournalID, { lastState: val });
+		});
+
+        dreamJournals.subscribe(val => {
+          const currentConversation = journal.getByID($currentJournalID);
+          if(!currentConversation) $messages = []
+        })
+
+		updateMessages();
 	});
 
-    afterNavigate(() => {
-        conversations.set(loadConversations());
-        updateMessages();
-    });
+	afterUpdate(() => {
+		updateMessages();
+	});
+
+	afterNavigate(() => {
+		journal.refreshID();
+		dreamJournals.set(journal.load());
+		updateMessages();
+	});
 
 	function updateMessages() {
-        const foundConversation = findConversation(conversationID);
+		const foundConversation = journal.getByID($currentJournalID);
 		if (!foundConversation) return;
 		$messages = foundConversation.messageList;
-		state.set(foundConversation.lastState);
 	}
 
-
 	const { input, handleSubmit, messages, isLoading, append } = useChat({
-		initialMessages: $conversations.find((item) => item.id == conversationID)?.messageList
+		initialMessages: $dreamJournals.find((item) => item.id == $currentJournalID)?.messageList
 	});
-
 
 	async function appendSystemMessage(content: string, name: string) {
 		await append({
@@ -66,11 +65,11 @@
 	}
 
 	function finaliseStory() {
-		if (!conversationID) return;
-		updateConversation(conversationID, { lastState: 'FINALISING_STORY' });
-		saveConversations();
+		if (!$currentJournalID) return;
+		journal.updateByID($currentJournalID, { lastState: 'FINALISING_STORY' });
 		state.set('FINALISING_STORY');
 	}
+    
 </script>
 
 <FinalStory {appendSystemMessage} {isLoading} {messages} />

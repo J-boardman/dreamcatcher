@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { imagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
 	import { currentStory, state } from '$lib/stores';
-	import ConversationList from './ConversationList.svelte';
+	import JournalList from './JournalList.svelte';
 
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let isLoading;
@@ -60,7 +60,7 @@
 		</form>
 	{/if}
 	<section class="m-2 flex flex-col gap-2">
-		<ConversationList />
+		<JournalList />
 		<div class="divider my-0" />
 		<div class="w-full join">
 			<input

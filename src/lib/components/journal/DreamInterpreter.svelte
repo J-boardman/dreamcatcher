@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { ChatRequestOptions } from 'ai';
 	import { finaliseInterpretationPrompt } from '$lib/prompts/prompts';
-	import { currentStory, state } from '$lib/stores';
+	import { currentJournalID, currentStory, state } from '$lib/stores';
+	import { journal } from '$lib/journals';
 
 	export let input;
 	export let isLoading;

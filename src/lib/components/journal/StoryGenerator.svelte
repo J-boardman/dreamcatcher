@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/prompts/prompts';
-	import { conversations, currentStory, state } from '$lib/stores';
+	import { dreamJournals, currentStory, state } from '$lib/stores';
 
 	export let isLoading;
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
@@ -29,7 +29,7 @@
 
 		if (response) {
             $currentStory.story = response;
-            const found = $conversations.find(item => item.id == conversationID)
+            const found = $dreamJournals.find(item => item.id == conversationID)
             if(found){
                 found.story = response;
                 // localStorage.setItem("conversations", JSON.parse())

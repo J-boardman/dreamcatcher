@@ -1,17 +1,25 @@
 <script>
+	import { onNavigate } from '$app/navigation';
+	import { journal } from '$lib/journals';
 	import resetHeaderImage from '$lib/resetHeaderImage';
 	import { currentStory, pageTitle, state } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
-	state.set('STORY_GENERATION_FINISHED');
-	onMount(() => {
+	
+    onMount(() => {
 		resetHeaderImage();
 		pageTitle.set('Dream Journal');
+        journal.matchState();
+        if(!$state) $state = "INTERPRETING"
 	});
 
 	afterUpdate(() => {
 		if ($currentStory.title) pageTitle.set($currentStory.title);
 		else pageTitle.set('Dream Journal');
 	});
+
+    onNavigate(() => {
+        journal.matchState()
+    })
 </script>
 
 {#if $state == 'FINALISING_STORY'}

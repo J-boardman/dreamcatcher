@@ -3,6 +3,7 @@ import { storyTemplate } from "./prompts/prompts";
 import cover from "$lib/assets/cover.jpg"
 import logo from "$lib/assets/logo.png"
 import type { Message } from "ai";
+import type { DreamJournal } from "./journals";
 
 export let pageTitle = writable("");
 export let headerImage = writable({ src: logo, rounded: false })
@@ -22,19 +23,9 @@ export let currentStory = writable({
     // story: ""
 })
 
-export type Conversation = {
-    id: string;
-    name?: string;
-    lastUpdated: Date;
-    lastState: State;
-    messageList: Message[];
-    story?: string
-    imageUrl?: string
-    title?: string
-};
+export const currentJournalID = writable("");
 
-
-export const conversations: Writable<Conversation[]> = writable([])
+export const dreamJournals: Writable<DreamJournal[]> = writable([])
 
 export type State =
     | 'INTERPRETING'
