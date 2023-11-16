@@ -1,9 +1,9 @@
-export const fullStoryPrompt = (mood: string, setting: string) => (
+export const fullStoryPrompt = (mood?: string, setting?: string) => (
     `Please create a long, ${mood}, fantastical bedtime story set in a ${setting} setting based on your previous dream interpretation. ` +
     "Do not include a title as this will be generated later."
 )
 
-export const chapterStoryPrompt = (mood: string, setting: string) => (
+export const chapterStoryPrompt = (mood?: string, setting?: string) => (
     `Please write the first chapter of a "choose your own adventure" style, ${mood}, fantastical bedtime story set in a ${setting} setting.` +
     "The story should be based on your previous dream interpretation. Do not include a title as this will be generated later. " +
     "Make the chapters short and descriptive. After writing your chapter, provide the user with three options to continue the story " +
@@ -12,7 +12,7 @@ export const chapterStoryPrompt = (mood: string, setting: string) => (
     'just start the story now.'
 )
 
-export const imagePrompt = (mood: string, setting: string) => (
+export const imagePrompt = (mood?: string, setting?: string) => (
     `A tall full length portrait oriented image 1792px high by 1024px wide. 4k, detailed, trending in artstation, mood: ${mood}, setting: ${setting}, studio ghibli, fantastical.`
 )
 

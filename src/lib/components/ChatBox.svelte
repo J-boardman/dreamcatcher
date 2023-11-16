@@ -3,7 +3,7 @@
 	import type { Message } from 'ai';
 	import { afterUpdate } from 'svelte';
 	import type { Readable } from 'svelte/store';
-	import JournalList from './journal/JournalList.svelte';
+	import JournalList from '$lib/components/journal/JournalList.svelte';
 
 	export let messages: Readable<Message[]>;
 	let element: HTMLElement;
@@ -20,7 +20,7 @@
 	<section
 		class="overflow-scroll border-2 rounded-xl border-base-100 flex min-h-[220px] flex-col justify-end p-2 text-sm md:text-base flex-1 duration-150"
 	>
-        <JournalList />
+            <JournalList bottomMargin/>
 		<section bind:this={element} class="overflow-scroll">
 			{#each $messages as message, i}
 				{#if message.role == 'system'}

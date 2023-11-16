@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { dreamJournals, currentStory, state } from '$lib/stores';
+	import { Journal, currentJournal } from '$lib/Journals';
+	import { state } from '$lib/stores';
 	import type { Message } from 'ai/svelte/dist';
 	import type { Readable } from 'svelte/store';
 
@@ -9,25 +9,22 @@
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 
 	let customInstruction = '';
-    let conversationID = $page.url.searchParams.get("conversation")?.toString()
+	$: story = $currentJournal?.story;
 
 	async function finaliseChapterStory() {
 		let chapters = $messages.filter(
-			(message, i) => message.role == 'assistant' && i > $currentStory.chapterIndexStart
+			(message, i) => message.role == 'assistant' && i > story.chapterIndexStart
 		);
+
 		const choicesRemoved = chapters.map((chapter) => {
 			return chapter.content.split('Choose your path:')[0];
 		});
 
 		const fullStory = choicesRemoved.join('\n').replaceAll('\n\n', '\n');
 
-		console.table(fullStory);
-		currentStory.update(prev=> ({...prev, story: fullStory}));
-        const found = $dreamJournals.find(item => item.id == conversationID)
-        if(found){
-            found.story = fullStory;
-        }
-        state.set('STORY_GENERATION_FINISHED');
+		Journal.updateStory({ story: fullStory }, true);
+
+		state.set('STORY_GENERATION_FINISHED');
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
@@ -42,46 +39,46 @@
 	}
 </script>
 
-{#if $state == "GENERATING_CHAPTER_STORY"}
-<section class="mt-2 flex flex-col lg:flex-row gap-4">
-	<div class="join flex">
-		<button
-			on:click={handleOptionClick}
-			value="option 1"
-			disabled={$isLoading}
-			class="btn join-item flex-1"
-		>
-			Option 1
+{#if $state == 'GENERATING_CHAPTER_STORY'}
+	<section class="mt-2 flex flex-col lg:flex-row gap-4">
+		<div class="join flex">
+			<button
+				on:click={handleOptionClick}
+				value="option 1"
+				disabled={$isLoading}
+				class="btn join-item flex-1"
+			>
+				Option 1
+			</button>
+			<button
+				on:click={handleOptionClick}
+				value="option 2"
+				disabled={$isLoading}
+				class="btn join-item flex-1"
+			>
+				Option 2
+			</button>
+			<button
+				on:click={handleOptionClick}
+				value="option 3"
+				disabled={$isLoading}
+				class="btn join-item flex-1"
+			>
+				Option 3
+			</button>
+		</div>
+		<button on:click={handleOptionClick} value="Wrap it up" disabled={$isLoading} class="btn">
+			Wrap it up!
 		</button>
-		<button
-			on:click={handleOptionClick}
-			value="option 2"
-			disabled={$isLoading}
-			class="btn join-item flex-1"
-		>
-			Option 2
-		</button>
-		<button
-			on:click={handleOptionClick}
-			value="option 3"
-			disabled={$isLoading}
-			class="btn join-item flex-1"
-		>
-			Option 3
-		</button>
-	</div>
-	<button on:click={handleOptionClick} value="Wrap it up" disabled={$isLoading} class="btn">
-		Wrap it up!
-	</button>
-	<form on:submit={handleCustomInstruction} class="join flex flex-1">
-		<input
-			bind:value={customInstruction}
-			type="text"
-			class="input join-item flex-1"
-			placeholder="Custom instruction"
-			disabled={$isLoading}
-		/>
-		<button disabled={$isLoading} class="btn join-item">Send</button>
-	</form>
-</section>
+		<form on:submit={handleCustomInstruction} class="join flex flex-1">
+			<input
+				bind:value={customInstruction}
+				type="text"
+				class="input join-item flex-1"
+				placeholder="Custom instruction"
+				disabled={$isLoading}
+			/>
+			<button disabled={$isLoading} class="btn join-item">Send</button>
+		</form>
+	</section>
 {/if}
