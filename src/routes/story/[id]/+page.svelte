@@ -25,7 +25,7 @@
 		<img
 			src={cover}
 			alt="cover"
-			class="h-min md:sticky top-0 w-9/12 sm:w-7/12 md:w-[96%] md:mt-0 mt-4 mx-auto"
+            class="md:sticky top-0 grid place-items-center rounded-xl mx-auto"
 			style="view-transition-name: testing-{data.id};"
 		/>
 	</a>

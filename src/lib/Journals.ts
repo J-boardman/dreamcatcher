@@ -1,5 +1,5 @@
 import { get, writable, type Writable } from "svelte/store";
-import type { State } from "./stores";
+import { state, type State } from "./stores";
 import { page } from "$app/stores";
 import type { Message } from "ai";
 import { goto } from "$app/navigation";
@@ -25,107 +25,90 @@ export type DreamJournal = {
 
 
 type JournalFactoryFunction = {
-    all: Writable<DreamJournal[]>;
-    current: Writable<DreamJournal>
-    create: (name?: string) => DreamJournal;
+    create: (id: string, name?: string) => DreamJournal;
     update: (updatedItem: Partial<DreamJournal>, saving?: boolean) => void;
     updateStory: (updatedItem: Partial<Story>, saving?: boolean) => void;
-    remove: () => void;
+    updateState: (newState: State, saving?: boolean) => void;
+    remove: (id?: string) => void;
     save: () => void;
     load: () => any;
-    loadMostRecentConversation: () => void;
-    refresh: () => void;
-    init: () => void;
+    loadMostRecentConversation: () => string;
 }
 
 
-export const allJournals: Writable<DreamJournal[]> = writable([])
-export const currentJournal: Writable<DreamJournal> = writable();
+export const journal: Writable<DreamJournal> = writable();
 
 function JournalFactory(): JournalFactoryFunction {
 
-    function create(name?: string) {
+    function create(id: string, name?: string) {
         const newConversation: DreamJournal = {
-            id: Math.random().toString(36).substring(2, 9),
+            id: id,
             lastState: 'INTERPRETING',
             lastUpdated: new Date(),
-            messageList: [{ role: "system", name: "message", id: "00", content: "" }],
-            name,
+            messageList: [{ role: "system", name: "hidden message", id: "00", content: "" }],
+            name: name || "Dream Journal " + Math.random().toString(36).substring(0, 3),
             story: { title: "", story: "", mood: "", setting: "", imageUrl: "", type: "", chapterIndexStart: 0 }
         };
-        allJournals.update((prev) => [...prev, newConversation]);
+        saveNewConversation(newConversation)
         return newConversation;
     }
 
     function update(updatedItem: Partial<DreamJournal>, saving?: boolean) {
-        allJournals.update((prev) =>
-            prev.map((item) => (item.id == get(currentJournal).id
-                ? { ...item, ...updatedItem }
-                : item
-            ))
-        );
+        journal.update(prev => ({ ...prev, ...updatedItem }))
         if (saving) save()
     }
 
     function updateStory(updatedItem: Partial<Story>, saving?: boolean) {
-        allJournals.update((prev) =>
-            prev.map(item => item.id == get(currentJournal).id
-                ? { ...item, story: { ...item.story, ...updatedItem } }
-                : item
-            ))
+        journal.update(prev => ({ ...prev, story: { ...prev.story, ...updatedItem }}))
         if (saving) save();
     }
 
+    function updateState(newState: State, saving?: boolean) {
+        journal.update(prev => ({...prev, lastState: newState}))
+        if (saving) save();
+        state.set(newState)
+    }
 
-    function remove() {
-        allJournals.update(prev => prev.filter(item => item.id != get(currentJournal).id));
+    function remove(id?: string) {
+        let removingID = id || get(journal).id
+        const journalList = load();
+        if (!localStorage || !journalList?.length || !removingID) return;
+        const newJournalList = journalList.filter(item => item.id != removingID)
+        localStorage.setItem('journals', JSON.stringify(newJournalList))
     }
 
     function save() {
-        const journalList = get(allJournals)
-        if (!localStorage || !journalList.length) return;
-        localStorage.setItem('journals', JSON.stringify(journalList));
+        const journalList = load()
+        if (!localStorage || !journalList) return;
+        const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? get(journal) : item)
+        localStorage.setItem('journals', JSON.stringify(updatedJournalList));
     }
 
-    function load() {
+    function saveNewConversation(conversation: DreamJournal) {
+        const journalList = load()
+        if(!localStorage) return;
+        const newJournalList = journalList?.length ? [...journalList, conversation] : [conversation]
+        localStorage.setItem("journals", JSON.stringify(newJournalList))
+    }
+
+    function load(): DreamJournal[] | undefined {
         if (!localStorage) return;
-        allJournals.set(JSON.parse(localStorage.getItem("journals") || "[]"))
-    }
-
-
-    function refresh(): void {
-        const currentID = get(page).url.searchParams.get("conversation") || ""
-        const refreshedJournal = get(allJournals).find(item => item.id == currentID)
-        if (refreshedJournal) {
-            currentJournal.set(refreshedJournal)
-            saveMostRecentConversation(refreshedJournal.id)
-            console.log("saved")
-        }
-        else {
-            const id = loadMostRecentConversation()
-            goto(`/journal?conversation=${id}`)
-        }
-
-    }
-
-    function saveMostRecentConversation(id: string) {
-        localStorage.setItem("latestConversation", id)
+        return JSON.parse(localStorage.getItem("journals") || "[]")
     }
 
     function loadMostRecentConversation() {
-        const id = localStorage.getItem("latestConversation") || get(allJournals)[0].id
-        return id
-
-    }
-
-
-    function init() {
-        load()
-        refresh()
+        return localStorage.getItem("latestConversation")
     }
 
     return {
-        all: allJournals, current: currentJournal, create, update, updateStory, remove, load, loadMostRecentConversation, save, refresh, init
+        create,
+        update,
+        updateStory,
+        updateState,
+        remove,
+        load,
+        save,
+        loadMostRecentConversation,
     }
 
 }

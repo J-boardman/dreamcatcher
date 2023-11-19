@@ -12,31 +12,35 @@
 		node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
 	}
 	afterUpdate(() => {
-        if(element) scrollToBottom(element)
-    });
+		if (element) scrollToBottom(element);
+	});
+
+    console.log($messages)
 </script>
 
 {#if $state != "FINALISING_STORY"}
-	<section
-		class="overflow-scroll border-2 rounded-xl border-base-100 flex min-h-[220px] flex-col justify-end p-2 text-sm md:text-base flex-1 duration-150"
-	>
-            <JournalList bottomMargin/>
-		<section bind:this={element} class="overflow-scroll">
-			{#each $messages as message, i}
-				{#if message.role == 'system'}
-					{#if message.name != 'hidden message'}
-						<div class="divider"><span class="opacity-50 uppercase">{message.name}</span></div>
-					{/if}
-				{:else}
-					<article class="chat {message.role == 'user' ? 'chat-end' : 'chat-start'} w-full">
-						<div class="chat-bubble chat-bubble-{message.role == 'user' ? 'secondary' : ''}">
-							{#each message.content.split('\n') as paragraph}
-								<p class="my-2">{paragraph}</p>
-							{/each}
-						</div>
-					</article>
+<section
+	class="overflow-scroll border-2 rounded-xl border-base-100 flex min-h-[220px] flex-col justify-end p-2 text-sm md:text-base flex-1"
+>
+	<div class="mb-auto">
+		<JournalList />
+	</div>
+	<section bind:this={element} class="overflow-scroll">
+		{#each $messages as message, i}
+			{#if message.role == 'system'}
+				{#if message.name != 'hidden message'}
+					<div class="divider"><span class="opacity-50 uppercase">{message.name}</span></div>
 				{/if}
-			{/each}
-		</section>
+			{:else}
+				<article class="chat {message.role == 'user' ? 'chat-end' : 'chat-start'} w-full">
+					<div class="chat-bubble chat-bubble-{message.role == 'user' ? 'secondary' : ''}">
+						{#each message.content.split('\n') as paragraph}
+							<p class="my-2">{paragraph}</p>
+						{/each}
+					</div>
+				</article>
+			{/if}
+		{/each}
 	</section>
+</section>
 {/if}

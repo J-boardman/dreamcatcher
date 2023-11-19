@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Journal, currentJournal } from '$lib/Journals';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { Journal, journal } from '$lib/Journals';
 	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/prompts/prompts';
 	import { state } from '$lib/stores';
 
@@ -7,18 +9,18 @@
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let messages;
 
-    $: story = $currentJournal?.story
+    $: story = $journal?.story
 
 	function handleStoryGeneration() {
-		if ($currentJournal?.story?.type == 'fullStory') generateFullStory();
+		if ($journal?.story?.type == 'fullStory') generateFullStory();
 		else startChapterStory();
-        Journal.updateStory({ chapterIndexStart: $messages.length - 1})
+        Journal.updateStory({ chapterIndexStart: $messages.length - 1}, true)
 	}
 
 	async function startChapterStory() {
-		const prompt = chapterStoryPrompt($currentJournal?.story?.mood, $currentJournal?.story?.setting);
-		await appendSystemMessage(prompt, 'Choose your own adventure story');
-		state.set('GENERATING_CHAPTER_STORY');
+		const prompt = chapterStoryPrompt($journal?.story?.mood, $journal?.story?.setting);
+		await appendSystemMessage(prompt, 'choose your own adventure story');
+        Journal.updateState("GENERATING_CHAPTER_STORY", true)
 	}
 
 	async function generateFullStory() {
@@ -27,10 +29,8 @@
 
 		if(!response) return;
         
-        Journal.updateStory({ story: response})
-      
-
-		state.set('STORY_GENERATION_FINISHED');
+        Journal.updateStory({ story: response}, true)
+        Journal.updateState("STORY_GENERATION_FINISHED", true)
 	}
 </script>
 

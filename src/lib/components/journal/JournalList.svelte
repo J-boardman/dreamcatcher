@@ -1,40 +1,73 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { Journal, allJournals, currentJournal } from '$lib/Journals';
-	import { afterUpdate } from 'svelte';
+	import { afterNavigate, goto } from '$app/navigation';
+	import { Journal, journal, type DreamJournal } from '$lib/Journals';
+	import type { State } from '$lib/stores';
+	import { afterUpdate, onDestroy, onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	let selectElement: HTMLSelectElement;
-    export let bottomMargin = false;
+	let element: HTMLElement;
+	let dropdownInFocus = false;
+    let allJournals: DreamJournal[] = []
+    
+    onMount(() => {
+        allJournals = JSON.parse(localStorage?.getItem("journals") || "[]")
+    })
 
 	afterUpdate(() => {
-		if (!$currentJournal || !selectElement) return;
-		selectElement.value = $currentJournal?.id;
+        if (!$journal || !selectElement) return;
+		selectElement.value = $journal?.id;
 	});
 
-	const changeConversation = (id: string) => goto(`/journal?conversation=${id}`);
+    afterNavigate(() => {
+        allJournals = JSON.parse(localStorage?.getItem("journals") || "[]");
+    })
+
+	const changeConversation = (id: string, state?: State) => {
+		if (!state) {
+			if (!journal || !$journal.lastState) return;
+			goto(`/journal/${id}`);
+		} else {
+			goto(`/journal/${id}`);
+		}
+	};
 
 	function handleNewConversation() {
-		const newConversation = Journal.create(newDreamName);
-        Journal.save()
-		changeConversation(newConversation.id);
+		const newConversation = Journal.create(Math.random().toString(36).substring(2,9), newDreamName);
+		changeConversation(newConversation.id, 'INTERPRETING');
 		newDreamName = '';
 	}
 
-	function handleDelete() {
-		Journal.remove();
-        Journal.save()
-		if ($allJournals.length) changeConversation($allJournals[0].id);
+	function handleDelete(id: string) {
+		Journal.remove(id);
+        allJournals = allJournals.filter(item => item.id != id)
+		if (allJournals.length) changeConversation(allJournals[0].id);
 		else handleNewConversation();
 	}
 
 	let newDreamName = '';
 </script>
 
-<section class="grid sm:flex gap-2 h-min justify-center md:justify-end w-full pb-1 {bottomMargin ? "mb-auto" : ""}">
-	<article class="join w-full">
+<div class="dropdown">
+	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+	<!-- svelte-ignore a11y-label-has-associated-control -->
+	<label tabindex="0" class="btn m-1">Conversations</label>
+	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+	<div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-fit">
+  <div class="grid grid-cols-[4fr,_1fr] gap-2">
+    {#each allJournals as conversation}
+        <button on:click={() => changeConversation(conversation.id, conversation.lastState)} class="link link-secondary ">{conversation.name}</button>
+        <button on:click={() => handleDelete(conversation.id)} class="btn">x</button>
+    {/each}
+    <input bind:value={newDreamName} type="text" class="input join-item rounded-r-none" />
+    <button on:click={handleNewConversation} class="btn join-item rounded-l-none">Add</button>
+</div>
+	</div>
+</div>
+<!-- <article class="join">
 		<select
 			on:change={(e) => changeConversation(e.currentTarget.value)}
-			class="select select-sm flex-1 md:flex-none join-item"
+			class="select select-sm flex-1 md:flex-none  join-item"
 			bind:this={selectElement}
 		>
 			<option disabled selected>Journals</option>
@@ -50,11 +83,10 @@
 		<input
 			type="text"
 			bind:value={newDreamName}
-			class="input join-item input-sm"
-			placeholder="Conversation Name"
+			class="input join-item input-sm sm:w-fit"
+			placeholder="Journal Name"
 		/>
 		<button type="submit" class="btn btn-sm join-item" on:click={handleNewConversation}>New</button>
-	</section>
-</section>
+	</section> -->
 
 <!-- disabled={$dreamJournals.length == 1} -->

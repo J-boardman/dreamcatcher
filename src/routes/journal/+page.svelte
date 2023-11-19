@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { useChat } from 'ai/svelte';
 	import { afterUpdate, onMount } from 'svelte';
 
@@ -18,13 +18,14 @@
 
 	afterNavigate(() => {
 		if (Journal) {
-			// Journal?.refresh();
+			Journal?.refresh();
 		}
 		setMessages($currentJournal?.messageList);
 	});
 
 	const { setMessages, input, handleSubmit, messages, isLoading, append } = useChat({
 		onFinish() {
+			Journal.refresh();
 			Journal.update({ messageList: $messages }, true);
 		}
 	});
@@ -40,13 +41,13 @@
 	}
 
 	function finaliseStory() {
-		state.set('FINALISING_STORY');
+        Journal.update({ lastState: "FINALISING_STORY"})
+        Journal.save()
 	}
 </script>
 
-<FinalStory {appendSystemMessage} {isLoading} {messages} />
 {#if $state != 'FINALISING_STORY'}
-	<div class="flex flex-col h-[calc(100svh-1rem)] md:h-[calc(100svh-6rem)]">
+	<div class="flex flex-col h-[calc(100svh-1rem)] md:h-[calc(100svh-6rem)] col-span-2 m-2">
 		<Chatbox {messages} />
 		<DreamInterpreter {input} {isLoading} {messages} {appendSystemMessage} {handleSubmit} />
 		<StoryGenerator {isLoading} {appendSystemMessage} {messages} />
@@ -58,4 +59,6 @@
 			<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
 		{/if}
 	</div>
-{/if}
+{:else}
+	<FinalStory {appendSystemMessage} {isLoading} {messages} />
+{/if} -->

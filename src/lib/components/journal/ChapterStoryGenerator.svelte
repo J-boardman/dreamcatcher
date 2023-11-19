@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Journal, currentJournal } from '$lib/Journals';
+	import { Journal, journal } from '$lib/Journals';
 	import { state } from '$lib/stores';
 	import type { Message } from 'ai/svelte/dist';
 	import type { Readable } from 'svelte/store';
@@ -9,7 +9,7 @@
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 
 	let customInstruction = '';
-	$: story = $currentJournal?.story;
+	$: story = $journal?.story;
 
 	async function finaliseChapterStory() {
 		let chapters = $messages.filter(
