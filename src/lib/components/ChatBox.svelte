@@ -15,7 +15,6 @@
 		if (element) scrollToBottom(element);
 	});
 
-    console.log($messages)
 </script>
 
 {#if $state != "FINALISING_STORY"}

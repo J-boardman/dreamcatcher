@@ -31,12 +31,10 @@
 	});
 
 	afterNavigate(() => {
-		console.log('navigated');
 		const newJournal: DreamJournal[] = JSON.parse(localStorage.getItem('journals') || '[]');
 		journal.set(
 			newJournal.find((item) => item.id == data.id) || Journal.create(data.id, 'Dream Journal')
 		);
-		console.log($journal?.messageList);
 		setMessages($journal?.messageList);
 		state.set($journal.lastState);
 	});
