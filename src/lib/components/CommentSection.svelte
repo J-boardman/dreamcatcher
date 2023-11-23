@@ -32,7 +32,7 @@
 	/>
 	<button class="btn join-item">Comment</button>
 </form>
-<div class="flex flex-col h-[calc(100svh-4rem)] md:h-[calc(100svh-11rem)] overflow-scroll">
+<div class="flex flex-col h-[calc(100lvh-4rem)] md:h-[calc(100lvh-11rem)] overflow-scroll">
 	<section bind:this={element} class="flex-1 overflow-scroll">
 		{#each comments as comment}
 			<div class="mt-2 flex">

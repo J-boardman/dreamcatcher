@@ -3,6 +3,7 @@
 	import { imagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
 	import { pageTitle, state } from '$lib/stores';
 	import JournalList from './JournalList.svelte';
+    import ImagePlaceholder from "$lib/components/ImagePlaceholder.svelte"
 
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let isLoading;
@@ -46,22 +47,28 @@
 
 {#if $state == 'FINALISING_STORY'}
 	<section class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
-		<figure class="md:sticky top-0">
+		<figure class="md:sticky top-0 duration-300">
 			{#if generatingImage}
-				<div class="w-full h-full skeleton" />
+                <ImagePlaceholder message="Generating image..." loading/>
 			{:else if $journal.story.imageUrl}
-				<img src={$journal.story.imageUrl} alt="cover" class="w-full md:sticky top-0" />
+				<img
+					src={$journal.story.imageUrl}
+					alt="cover"
+					class="w-full md:sticky top-0"
+					on:error={() => ($journal.story.imageUrl = '')}
+				/>
 			{:else}
-				<!-- <div class="bg-base-200 w-full h-full grid place-items-center rounded-xl">No image yet</div> -->
+				<div class="bg-base-300 w-full h-full p-4 flex flex-col justify-center items-center rounded-xl">
+					<ImagePlaceholder message="No image yet"/>
+				</div>
 			{/if}
 		</figure>
 		<section class="m-2 gap-2 flex-1">
-			<JournalList />
-			<div class="divider my-0" />
 			<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-[3fr,_1fr,_1fr,_1fr]">
 				<input
 					disabled={$isLoading}
 					bind:value={$journal.story.title}
+                    on:change={(e) => Journal.updateStory({title: e.currentTarget.value}, true)}
 					type="text"
 					class="input col-span-2"
 				/>

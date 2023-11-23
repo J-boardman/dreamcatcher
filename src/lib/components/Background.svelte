@@ -13,8 +13,8 @@
 
 	.background {
 		position: fixed;
-		width: 100vw;
-		height: 100vh;
+		width: 100dvw;
+		height: 100lvh;
 		top: 0;
 		left: 0;
 		background: #000000;

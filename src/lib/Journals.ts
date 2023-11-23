@@ -32,7 +32,7 @@ type JournalFactoryFunction = {
     remove: (id?: string) => void;
     save: () => void;
     load: () => any;
-    loadMostRecentConversation: () => string;
+    loadMostRecentConversation: () => void;
 }
 
 

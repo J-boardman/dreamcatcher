@@ -9,6 +9,6 @@
     })
 </script>
 
-<main class="m-2 min-h-[calc(100svh-80px)] flex flex-col">
+<main class="m-2 min-h-[calc(100lvh-80px)] flex flex-col">
     <slot />
 </main>

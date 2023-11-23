@@ -19,11 +19,8 @@
 
 {#if $state != "FINALISING_STORY"}
 <section
-	class="overflow-scroll border-2 rounded-xl border-base-100 flex min-h-[220px] flex-col justify-end p-2 text-sm md:text-base flex-1"
+	class="border-2 rounded-xl border-base-100 flex min-h-[220px] flex-col justify-end p-2 text-sm md:text-base flex-1"
 >
-	<div class="mb-auto">
-		<JournalList />
-	</div>
 	<section bind:this={element} class="overflow-scroll">
 		{#each $messages as message, i}
 			{#if message.role == 'system'}

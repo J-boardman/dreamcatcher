@@ -27,15 +27,15 @@
 		<div class="w-full flex join">
 			<textarea
 				bind:value={$input}
-				class="textarea textarea-sm flex-1 join-item resize-none"
+				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none"
 				placeholder={$messages.length < 2 ? 'Enter details about your dream to get started.' : ''}
 			/>
-			<button class="btn btn-secondary join-item h-full" disabled={$isLoading}>Send</button>
+			<button class="btn btn-secondary join-item h-20" disabled={$isLoading}>Send</button>
 		</div>
 		{#if $messages.length >= 3}
 			<button
 				disabled={$isLoading || credits == 0}
-				class="btn md:h-full w-fit"
+				class="btn w-fit md:h-20"
 				on:click={finaliseInterpretation}
 			>
 				Start story (1 credit)

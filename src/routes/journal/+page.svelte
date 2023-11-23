@@ -1,64 +1,110 @@
-<!-- <script lang="ts">
-	import { useChat } from 'ai/svelte';
-	import { afterUpdate, onMount } from 'svelte';
+<script lang="ts">
+	import { afterNavigate, goto } from '$app/navigation';
+	import { Journal, type DreamJournal, journal } from '$lib/Journals';
+	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
+	import Title from '$lib/components/Title.svelte';
+	import type { State } from '$lib/stores';
+	import { onMount } from 'svelte';
+	import DeleteIcon from 'virtual:icons/line-md/close-circle';
 
-	import Chatbox from '$lib/components/ChatBox.svelte';
-	import StoryGenerator from '$lib/components/journal/StoryGenerator.svelte';
-	import ChapterStoryGenerator from '../../lib/components/journal/ChapterStoryGenerator.svelte';
-	import FinalStory from '$lib/components/journal/FinalStory.svelte';
-	import DreamInterpreter from '$lib/components/journal/DreamInterpreter.svelte';
+	let allJournals: DreamJournal[] = [];
 
-	import { afterNavigate } from '$app/navigation';
-	import { state } from '$lib/stores';
-	import { Journal, currentJournal } from '$lib/Journals';
-
-	afterUpdate(() => {
-		if (!$messages.length && $currentJournal) setMessages($currentJournal.messageList);
+	onMount(() => {
+		allJournals = JSON.parse(localStorage?.getItem('journals') || '[]');
 	});
 
 	afterNavigate(() => {
-		if (Journal) {
-			Journal?.refresh();
-		}
-		setMessages($currentJournal?.messageList);
+		allJournals = JSON.parse(localStorage?.getItem('journals') || '[]');
 	});
 
-	const { setMessages, input, handleSubmit, messages, isLoading, append } = useChat({
-		onFinish() {
-			Journal.refresh();
-			Journal.update({ messageList: $messages }, true);
+	const changeConversation = (id: string, state?: State) => {
+		if (!state) {
+			if (!journal || !$journal.lastState) return;
+			goto(`/journal/${id}`);
+		} else {
+			goto(`/journal/${id}`);
 		}
-	});
+	};
 
-	async function appendSystemMessage(content: string, name: string) {
-		await append({
-			role: 'system',
-			id: Math.random().toString(36).substring(2, 9),
-			content,
-			name
-		});
-		return $messages.at(-1)?.content;
+	function handleNewConversation() {
+		const newConversation = Journal.create(
+			Math.random().toString(36).substring(2, 9),
+			newDreamName
+		);
+		changeConversation(newConversation.id, 'INTERPRETING');
+		newDreamName = '';
 	}
 
-	function finaliseStory() {
-        Journal.update({ lastState: "FINALISING_STORY"})
-        Journal.save()
+	function handleDelete(id: string) {
+		Journal.remove(id);
+		allJournals = allJournals.filter((item) => item.id != id);
 	}
+
+	let newDreamName = '';
 </script>
 
-{#if $state != 'FINALISING_STORY'}
-	<div class="flex flex-col h-[calc(100svh-1rem)] md:h-[calc(100svh-6rem)] col-span-2 m-2">
-		<Chatbox {messages} />
-		<DreamInterpreter {input} {isLoading} {messages} {appendSystemMessage} {handleSubmit} />
-		<StoryGenerator {isLoading} {appendSystemMessage} {messages} />
-		<ChapterStoryGenerator {isLoading} {appendSystemMessage} {messages} />
-		{#if $state == 'STORY_GENERATION_FINISHED'}
-			<div class="divider">
-				<span class="opacity-50 uppercase">Take your time reading</span>
+<section class="m-2">
+	<input type="text" class="input" bind:value={newDreamName}/>
+	<button on:click={handleNewConversation} class="btn">Add</button>
+	<div class="divider" />
+	{#each allJournals as journal, i}
+		<div class="collapse collapse-plus bg-base-300 my-2">
+			<input type="radio" name="my-accordion-3" />
+			<div class="collapse-title text-xl font-medium flex gap-4 items-center">
+				{journal.name}
+				<div class="hidden gap-2 md:flex">
+					<div class="badge badge-secondary badge-outline">{journal.lastState}</div>
+					<div class="badge badge-primary badge-outline">
+						{Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
+							new Date(journal.lastUpdated)
+						)}
+					</div>
+				</div>
 			</div>
-			<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
-		{/if}
-	</div>
-{:else}
-	<FinalStory {appendSystemMessage} {isLoading} {messages} />
-{/if} -->
+			<div class="collapse-content flex flex-col gap-4">
+				<div class="flex gap-2 md:hidden">
+					<div class="badge badge-secondary badge-outline">{journal.lastState}</div>
+					<div class="badge badge-primary badge-outline">
+						{Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
+							new Date(journal.lastUpdated)
+						)}
+					</div>
+				</div>
+				{#if journal.lastState == 'FINALISING_STORY'}
+					<article class="grid md:grid-cols-[1fr,_5fr] gap-4">
+						{#if journal.story.imageUrl}
+							<img
+								src={journal.story.imageUrl}
+								alt="cover"
+								class="rounded-xl"
+								on:error={() => (journal.story.imageUrl = '')}
+							/>
+						{:else}
+							<ImagePlaceholder />
+						{/if}
+						<article class="flex flex-col justify-between">
+							<Title title={journal.story.title} />
+							<div class="divider my-0" />
+							{#each journal.story.story.substring(0, 2000).concat('...').split('\n') as paragraph}
+								<p class="hidden md:block my-1">{paragraph}</p>
+							{/each}
+							<article class="flex gap-2 mt-4 md:mt-auto">
+								<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
+								<button on:click={() => handleDelete(journal.id)} class="btn btn-sm btn-ghost"
+									>Delete</button
+								>
+							</article>
+						</article>
+					</article>
+				{:else}
+					<article class="flex gap-2 mt-auto">
+						<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
+						<button on:click={() => handleDelete(journal.id)} class="btn btn-sm btn-ghost"
+							>Delete</button
+						>
+					</article>
+				{/if}
+			</div>
+		</div>
+	{/each}
+</section>

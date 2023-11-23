@@ -14,6 +14,7 @@
 			document.startViewTransition(() => fulfill());
 		});
 	});
+    
 </script>
 
 <Background />

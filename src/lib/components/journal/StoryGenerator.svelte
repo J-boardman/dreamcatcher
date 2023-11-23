@@ -21,6 +21,7 @@
 		const prompt = chapterStoryPrompt($journal?.story?.mood, $journal?.story?.setting);
 		await appendSystemMessage(prompt, 'choose your own adventure story');
         Journal.updateState("GENERATING_CHAPTER_STORY", true)
+        state.set("GENERATING_CHAPTER_STORY")
 	}
 
 	async function generateFullStory() {

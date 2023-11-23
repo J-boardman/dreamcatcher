@@ -49,7 +49,7 @@
 	</main>
 </SignedIn>
 <SignedOut>
-	<div class="hero h-[calc(100svh-16rem)]">
+	<div class="hero h-[calc(100lvh-16rem)]">
 		<div class="hero-content text-center max-w-3xl">
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">

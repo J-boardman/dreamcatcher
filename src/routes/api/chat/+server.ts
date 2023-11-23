@@ -29,7 +29,7 @@ export const POST = (async ({ request }) => {
             },
             ...messageList
         ],
-        max_tokens: 3
+        // max_tokens: 3
     });
 
     // Convert the response into a friendly text-stream

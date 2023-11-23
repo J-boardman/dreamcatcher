@@ -7,9 +7,12 @@
 	import { page } from '$app/stores';
 	import CommentSection from '$lib/components/CommentSection.svelte';
 	import { goto } from '$app/navigation';
+    import HeartIconOutline from "virtual:icons/line-md/heart"
+    import HeartIconFilled from "virtual:icons/line-md/heart-filled"
 
 	export let data;
 	let liked = false;
+    let likes = 99;
 
 	function preserveScroll(url: string) {
 		goto(url, { noScroll: true });
@@ -18,6 +21,12 @@
 	onMount(() => pageTitle.set(data.title));
 
 	$: showComments = $page.url.searchParams.get('showComments');
+
+    function handleLike(){
+        if(liked) likes--;
+        else likes++;
+        liked = !liked;
+    }
 </script>
 
 <main class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
@@ -49,11 +58,12 @@
 					</div>
 				</div>
 			</SignedIn>
-			<button class="btn btn-sm sm:btn-md" on:click={() => liked = !liked}>
+			<button class="btn btn-sm sm:btn-md btn-ghost hover:bg-transparent {liked ? "text-primary" : "text-white"}" on:click={handleLike}>
+                {likes}
 				{#if liked}
-					liked
+				<HeartIconFilled class="text-2xl text-primary" />	
 				{:else}
-                    like
+                    <HeartIconOutline class="text-2xl hover:text-primary" />
 				{/if}
 			</button>
 			<div class="join">
