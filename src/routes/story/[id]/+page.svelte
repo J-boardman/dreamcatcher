@@ -3,30 +3,24 @@
 	import Title from '$lib/components/Title.svelte';
 	import { pageTitle } from '$lib/stores';
 	import { onMount } from 'svelte';
-	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
-	import { page } from '$app/stores';
 	import CommentSection from '$lib/components/CommentSection.svelte';
-	import { goto } from '$app/navigation';
-    import HeartIconOutline from "virtual:icons/line-md/heart"
-    import HeartIconFilled from "virtual:icons/line-md/heart-filled"
+
+	import HeartIconOutline from 'virtual:icons/line-md/heart';
+	import HeartIconFilled from 'virtual:icons/line-md/heart-filled';
+	import UserCard from '$lib/components/UserCard.svelte';
 
 	export let data;
 	let liked = false;
-    let likes = 99;
-
-	function preserveScroll(url: string) {
-		goto(url, { noScroll: true });
-	}
+	let likes = 99;
 
 	onMount(() => pageTitle.set(data.title));
 
-	$: showComments = $page.url.searchParams.get('showComments');
-
-    function handleLike(){
-        if(liked) likes--;
-        else likes++;
-        liked = !liked;
-    }
+	let showingComments = false;
+	function handleLike() {
+		if (liked) likes--;
+		else likes++;
+		liked = !liked;
+	}
 </script>
 
 <main class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
@@ -34,7 +28,7 @@
 		<img
 			src={cover}
 			alt="cover"
-            class="md:sticky top-0 grid place-items-center rounded-xl mx-auto"
+			class="md:sticky top-0 grid place-items-center rounded-xl mx-auto"
 			style="view-transition-name: testing-{data.id};"
 		/>
 	</a>
@@ -43,47 +37,49 @@
 			<Title title={data.title} />
 		</div>
 		<div class="md:hidden divider my-0" />
-		<section class="flex gap-4 mx-2 items-center">
-			<SignedIn let:user>
-				<div class="flex flex-1 items-center space-x-3">
-					<div class="avatar">
-						<div class="mask mask-squircle w-12 h-12">
-							<img src={user?.imageUrl} alt="profile" />
-							<img src="/" alt="Avatar Tailwind CSS Component" />
-						</div>
-					</div>
-					<div class="hidden sm:flex flex-col">
-						<div class="font-bold">{user?.firstName} {user?.lastName}</div>
-						<div class="text-sm opacity-50">@{user?.username}</div>
-					</div>
-				</div>
-			</SignedIn>
-			<button class="btn btn-sm sm:btn-md btn-ghost hover:bg-transparent {liked ? "text-primary" : "text-white"}" on:click={handleLike}>
-                {likes}
+		<section
+			class="grid grid-cols-[1fr,_max-content] md:grid-cols-[1fr,_max-content,_max-content] gap-4 mx-2 items-center"
+		>
+			{#await data.streamed.author}
+				<UserCard />
+			{:then author}
+				<UserCard user={author} />
+			{/await}
+			<button
+				class="btn btn-ghost hover:bg-transparent {liked ? 'text-primary' : 'text-white'}"
+				on:click={handleLike}
+			>
+				{likes}
 				{#if liked}
-				<HeartIconFilled class="text-2xl text-primary" />	
+					<HeartIconFilled class="text-2xl text-primary" />
 				{:else}
-                    <HeartIconOutline class="text-2xl hover:text-primary" />
+					<HeartIconOutline class="text-2xl hover:text-primary" />
 				{/if}
 			</button>
-			<div class="join">
+			<div class="join flex col-span-2 md:col-span-1">
 				<button
-					on:click={() => preserveScroll(`/story/${data.id}`)}
-					class="join-item btn btn-sm sm:btn-md {!showComments ? 'btn-secondary' : ''}"
+					on:click={() => (showingComments = false)}
+					class=" flex-1 md:col-span-1 join-item btn {!showingComments ? 'btn-secondary' : ''}"
 				>
 					Story
 				</button>
-				<button
-					on:click={() => preserveScroll(`/story/${data.id}?showComments=true`)}
-					class="join-item btn btn-sm sm:btn-md {showComments != null ? 'btn-secondary' : ''}"
-				>
-					Comments
-				</button>
+				{#await data.streamed.comments}
+					<button class=" flex-1 md:col-span-1 join-item btn w-max" disabled> Comments </button>
+				{:then}
+					<button
+						on:click={() => (showingComments = true)}
+						class=" flex-1 md:col-span-1 join-item btn {showingComments ? 'btn-secondary' : ''}"
+					>
+						Comments
+					</button>
+				{/await}
 			</div>
 		</section>
 		<div class="divider my-0" />
-		{#if showComments}
-			<CommentSection comments={data.comments} />
+		{#if showingComments}
+			{#await data.streamed.comments then comments}
+				<CommentSection {comments} />
+			{/await}
 		{:else}
 			<article class="flex flex-col gap-2">
 				{#each data.story.split('\n') as paragraph}

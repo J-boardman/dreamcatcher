@@ -82,7 +82,7 @@
 		<option value="fullStory">Full story</option>
 		<option value="chapterStory">Choose your own adventure</option>
 	</select>
-	<button disabled={$isLoading || !story.type} on:click={handleStoryGeneration} class="btn btn-secondary">
+	<button disabled={$isLoading || !story.type} on:click={handleStoryGeneration} class="btn btn-secondary animate-none">
 		Start the adventure!
 	</button>
 </section>

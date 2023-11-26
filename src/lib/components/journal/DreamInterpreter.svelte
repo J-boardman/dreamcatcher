@@ -30,12 +30,12 @@
 				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none"
 				placeholder={$messages.length < 2 ? 'Enter details about your dream to get started.' : ''}
 			/>
-			<button class="btn btn-secondary join-item h-20" disabled={$isLoading}>Send</button>
+			<button class="btn btn-secondary join-item h-20 animate-none" disabled={$isLoading}>Send</button>
 		</div>
 		{#if $messages.length >= 3}
 			<button
 				disabled={$isLoading || credits == 0}
-				class="btn w-fit md:h-20"
+				class="btn w-fit md:h-20 animate-none"
 				on:click={finaliseInterpretation}
 			>
 				Start story (1 credit)

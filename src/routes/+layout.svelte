@@ -4,6 +4,7 @@
 	import { onNavigate } from '$app/navigation';
 	import Background from '$lib/components/Background.svelte';
 	import MobileNav from '$lib/components/MobileNav.svelte';
+	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
 
 	onNavigate(() => {
 		// @ts-expect-error
@@ -14,11 +15,11 @@
 			document.startViewTransition(() => fulfill());
 		});
 	});
-    
 </script>
 
 <Background />
 <Header />
 <slot />
-<MobileNav />
-
+<SignedIn>
+	<MobileNav />
+</SignedIn>

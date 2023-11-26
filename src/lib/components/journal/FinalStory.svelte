@@ -3,7 +3,7 @@
 	import { imagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
 	import { pageTitle, state } from '$lib/stores';
 	import JournalList from './JournalList.svelte';
-    import ImagePlaceholder from "$lib/components/ImagePlaceholder.svelte"
+	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
 
 	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
 	export let isLoading;
@@ -49,7 +49,7 @@
 	<section class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
 		<figure class="md:sticky top-0 duration-300">
 			{#if generatingImage}
-                <ImagePlaceholder message="Generating image..." loading/>
+				<ImagePlaceholder message="Generating image..." loading />
 			{:else if $journal.story.imageUrl}
 				<img
 					src={$journal.story.imageUrl}
@@ -58,36 +58,32 @@
 					on:error={() => ($journal.story.imageUrl = '')}
 				/>
 			{:else}
-				<div class="bg-base-300 w-full h-full p-4 flex flex-col justify-center items-center rounded-xl">
-					<ImagePlaceholder message="No image yet"/>
+				<div
+					class="bg-base-300 w-full h-full p-4 flex flex-col justify-center items-center rounded-xl"
+				>
+					<ImagePlaceholder message="No image yet" />
 				</div>
 			{/if}
 		</figure>
 		<section class="m-2 gap-2 flex-1">
-			<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-[3fr,_1fr,_1fr,_1fr]">
+			<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-[1fr,_1fr,_1fr,_1fr]">
 				<input
 					disabled={$isLoading}
 					bind:value={$journal.story.title}
-                    on:change={(e) => Journal.updateStory({title: e.currentTarget.value}, true)}
+					on:change={(e) => Journal.updateStory({ title: e.currentTarget.value }, true)}
 					type="text"
-					class="input col-span-2"
+					class="input col-span-3"
 				/>
-				<button on:click={generateTitle} disabled={$isLoading} class="btn"> Generate Title </button>
-				<button disabled={generatingImage} on:click={handleImageGeneration} class="btn">
-					Generate image (1 credit)
-				</button>
-				<label
-					class="cursor-pointer label flex justify-center md:justify-start md:col-span-2 gap-2"
-				>
-					<span class="label-text">Make story public</span>
-					<input type="checkbox" class="toggle toggle-secondary" />
-				</label>
 				<button
 					on:click={saveStory}
 					disabled={$isLoading || generatingImage || $journal.story.title?.length == 0}
-					class="btn btn-secondary md:col-span-2"
+					class="btn btn-secondary"
 				>
 					Save story
+				</button>
+				<button on:click={generateTitle} disabled={$isLoading} class="btn"> Generate Title </button>
+				<button disabled={generatingImage} on:click={handleImageGeneration} class="btn">
+					Generate image (1 credit)
 				</button>
 			</div>
 			<!-- <Title {title} /> -->

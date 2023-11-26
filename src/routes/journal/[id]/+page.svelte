@@ -25,7 +25,7 @@
 		}
 
 		messages.subscribe((val) => {
-			if (val.length > $journal.messageList.length) {
+			if (val.length >= $journal.messageList.length) {
 				Journal.update({ messageList: val }, true);
 			}
 		});
@@ -62,18 +62,18 @@
 </script>
 
 {#if $state != 'FINALISING_STORY'}
-	<div class="flex flex-col h-[calc(100svh-4rem)] md:h-[calc(100svh-5rem)] overflow-scroll">
+	<div class="flex flex-col h-[calc(100svh-4rem)] md:h-[calc(100svh-5rem)] overflow-scroll pl-2">
 		<ChatBox {messages} />
-		<DreamInterpreter {input} {isLoading} {messages} {handleSubmit} {appendSystemMessage} />
-		<StoryGenerator {isLoading} {messages} {appendSystemMessage} />
-		<ChapterStoryGenerator {isLoading} {messages} {appendSystemMessage} />
-        {#if $state == 'STORY_GENERATION_FINISHED'}
-		<div class="divider">
-            <span class="opacity-50 uppercase">Take your time reading</span>
-		</div>
-		<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
-        {/if}
-    </div>
+			<DreamInterpreter {input} {isLoading} {messages} {handleSubmit} {appendSystemMessage} />
+			<StoryGenerator {isLoading} {messages} {appendSystemMessage} />
+			<ChapterStoryGenerator {isLoading} {messages} {appendSystemMessage} />
+		{#if $state == 'STORY_GENERATION_FINISHED'}
+			<div class="divider">
+				<span class="opacity-50 uppercase">Take your time reading</span>
+			</div>
+			<button on:click={finaliseStory} class="btn mx-auto"> Confirm story </button>
+		{/if}
+	</div>
 {:else}
 	<FinalStory {isLoading} {messages} {appendSystemMessage} />
 {/if}

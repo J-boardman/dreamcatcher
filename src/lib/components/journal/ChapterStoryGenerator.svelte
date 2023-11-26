@@ -25,6 +25,7 @@
 		Journal.updateStory({ story: fullStory }, true);
 
 		state.set('STORY_GENERATION_FINISHED');
+        Journal.updateState("STORY_GENERATION_FINISHED", true)
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
@@ -36,6 +37,7 @@
 
 	async function handleCustomInstruction(e: SubmitEvent) {
 		await appendSystemMessage(customInstruction, 'hidden message');
+        customInstruction = ""
 	}
 </script>
 
@@ -46,7 +48,7 @@
 				on:click={handleOptionClick}
 				value="option 1"
 				disabled={$isLoading}
-				class="btn join-item flex-1"
+				class="btn join-item flex-1 animate-none"
 			>
 				Option 1
 			</button>
@@ -54,7 +56,7 @@
 				on:click={handleOptionClick}
 				value="option 2"
 				disabled={$isLoading}
-				class="btn join-item flex-1"
+				class="btn join-item flex-1 animate-none"
 			>
 				Option 2
 			</button>
@@ -62,12 +64,12 @@
 				on:click={handleOptionClick}
 				value="option 3"
 				disabled={$isLoading}
-				class="btn join-item flex-1"
+				class="btn join-item flex-1 animate-none"
 			>
 				Option 3
 			</button>
 		</div>
-		<button on:click={handleOptionClick} value="Wrap it up" disabled={$isLoading} class="btn">
+		<button on:click={handleOptionClick} value="Wrap it up" disabled={$isLoading} class="btn animate-none">
 			Wrap it up!
 		</button>
 		<form on:submit={handleCustomInstruction} class="join flex flex-1">
@@ -78,7 +80,7 @@
 				placeholder="Custom instruction"
 				disabled={$isLoading}
 			/>
-			<button disabled={$isLoading} class="btn join-item">Send</button>
+			<button disabled={$isLoading} class="btn join-item animate-none">Send</button>
 		</form>
 	</section>
 {/if}

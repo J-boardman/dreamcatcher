@@ -40,12 +40,30 @@
 		allJournals = allJournals.filter((item) => item.id != id);
 	}
 
+	function sortJournals(e: Event) {
+		const target = e.target as HTMLSelectElement;
+		switch (target.value) {
+			case 'newest':
+				allJournals = allJournals.sort((a, b) => {
+					return new Date(b.lastUpdated).getDate() - new Date(a.lastUpdated).getDate();
+				});
+				break;
+			case 'oldest':
+				allJournals = allJournals.sort((a, b) => {
+					return new Date(a.lastUpdated).getDate() - new Date(b.lastUpdated).getDate();
+				});
+				break;
+		}
+	}
+
 	let newDreamName = '';
 </script>
 
-<section class="m-2">
-	<input type="text" class="input" bind:value={newDreamName}/>
-	<button on:click={handleNewConversation} class="btn">Add</button>
+<section class="m-2 mx-4">
+	<article class="join flex">
+		<input type="text" class="input join-item flex-1" bind:value={newDreamName} />
+		<button on:click={handleNewConversation} class="btn join-item">Add</button>
+	</article>
 	<div class="divider" />
 	{#each allJournals as journal, i}
 		<div class="collapse collapse-plus bg-base-300 my-2">
