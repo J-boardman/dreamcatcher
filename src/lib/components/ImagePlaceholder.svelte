@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="bg-base-300 w-full h-full p-4 flex flex-col justify-center items-center rounded-xl {loading ? "skeleton": ""}"
+	class="w-full h-full p-4 flex flex-col justify-center items-center rounded-xl {loading ? "skeleton": ""}"
 >
 	<ImageIcon class="text-5xl" />
 	<p>{message}</p>

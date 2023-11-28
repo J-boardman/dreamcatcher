@@ -1,19 +1,15 @@
 <script lang="ts">
-	import { Journal, journal } from '$lib/Journals';
-	import { state } from '$lib/stores';
-	import type { Message } from 'ai/svelte/dist';
-	import type { Readable } from 'svelte/store';
+	import { Journal, getChatContext } from '$lib';
+	import { systemMessage } from '$lib/helpers/appendSystemMessage';
+	import { journal, state } from '$lib/stores';
 
-	export let isLoading;
-	export let messages: Readable<Message[]>;
-	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
+	const { isLoading, messages, append } = getChatContext();
 
 	let customInstruction = '';
-	$: story = $journal?.story;
 
 	async function finaliseChapterStory() {
 		let chapters = $messages.filter(
-			(message, i) => message.role == 'assistant' && i > story.chapterIndexStart
+			(message, i) => message.role == 'assistant' && i > $journal.story.chapterIndexStart
 		);
 
 		const choicesRemoved = chapters.map((chapter) => {
@@ -23,53 +19,43 @@
 		const fullStory = choicesRemoved.join('\n').replaceAll('\n\n', '\n');
 
 		Journal.updateStory({ story: fullStory }, true);
-
+		Journal.update({ lastState: 'STORY_GENERATION_FINISHED' }, true);
 		state.set('STORY_GENERATION_FINISHED');
-        Journal.updateState("STORY_GENERATION_FINISHED", true)
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
 		const target = e.target as HTMLButtonElement;
-		await appendSystemMessage(target.value, 'hidden message');
+		await append(systemMessage(target.value, 'hidden message'));
 
 		if (target.value == 'Wrap it up') finaliseChapterStory();
 	}
 
 	async function handleCustomInstruction(e: SubmitEvent) {
-		await appendSystemMessage(customInstruction, 'hidden message');
-        customInstruction = ""
+		await append(systemMessage(customInstruction, 'hidden message'));
+		customInstruction = '';
 	}
 </script>
 
 {#if $state == 'GENERATING_CHAPTER_STORY'}
 	<section class="mt-2 flex flex-col lg:flex-row gap-4">
 		<div class="join flex">
-			<button
-				on:click={handleOptionClick}
-				value="option 1"
-				disabled={$isLoading}
-				class="btn join-item flex-1 animate-none"
-			>
-				Option 1
-			</button>
-			<button
-				on:click={handleOptionClick}
-				value="option 2"
-				disabled={$isLoading}
-				class="btn join-item flex-1 animate-none"
-			>
-				Option 2
-			</button>
-			<button
-				on:click={handleOptionClick}
-				value="option 3"
-				disabled={$isLoading}
-				class="btn join-item flex-1 animate-none"
-			>
-				Option 3
-			</button>
+			{#each Array(3) as _, i}
+				<button
+                    on:click={handleOptionClick}
+                    value="option {i + 1}"
+                    disabled={$isLoading}
+                    class="btn join-item flex-1 animate-none"
+                >        
+					Option {i + 1}
+				</button>
+			{/each}
 		</div>
-		<button on:click={handleOptionClick} value="Wrap it up" disabled={$isLoading} class="btn animate-none">
+		<button
+			on:click={handleOptionClick}
+			value="Wrap it up"
+			disabled={$isLoading}
+			class="btn animate-none"
+		>
 			Wrap it up!
 		</button>
 		<form on:submit={handleCustomInstruction} class="join flex flex-1">

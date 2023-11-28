@@ -5,14 +5,16 @@ import { env } from '$env/dynamic/private';
 // for dead-code elimination and build-time type-checking:
 // import { OPENAI_API_KEY } from '$env/static/private'
 
-import type { RequestHandler } from './$types';
-import { openai } from '$lib/openai';
+import { openai } from '$lib/helpers/openai';
 import { dreamInterpretatorPrompt } from '$lib/prompts/prompts';
+import type { Stream } from 'openai/streaming';
+import type { ChatCompletionChunk } from 'openai/resources';
+import type { RequestHandler } from '@sveltejs/kit';
 
 
-export const POST = (async ({ request }) => {
+export const POST = (async ({ request }: { request: Request}) => {
     // Extract the `prompt` from the body of the request
-    const { messages } = await request.json();
+    const { messages, streaming = true } = await request.json();
 
     const messageList = messages.map((message: any) => ({
         content: message.content,
@@ -21,7 +23,7 @@ export const POST = (async ({ request }) => {
     // Ask OpenAI for a streaming chat completion given the prompt
     const response = await openai.chat.completions.create({
         model: 'gpt-4',
-        stream: true,
+        stream: streaming,
         messages: [
             {
                 role: 'assistant',
@@ -29,10 +31,14 @@ export const POST = (async ({ request }) => {
             },
             ...messageList
         ],
-        // max_tokens: 3
+        max_tokens: 50
     });
 
+    if(!streaming) return Response.json(response);
+
     // Convert the response into a friendly text-stream
+
+    //@ts-ignore
     const stream = OpenAIStream(response);
     // Respond with the stream
     return new StreamingTextResponse(stream);

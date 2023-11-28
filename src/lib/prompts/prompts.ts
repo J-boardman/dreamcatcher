@@ -23,7 +23,7 @@ export const dreamInterpretatorPrompt =
     + "\n Tell me about your dream to get started!"
 
 export const finaliseInterpretationPrompt = 'Please create one final dream interpretation based on the dream with the added context of the conversation so far.'
-export const imagePromptMessage = 'Create a short 30 word prompt for AI image generation based on the story, vividly describing the protagonist and plot: '
+export const imagePromptMessage = 'Create a short 50 word prompt for AI image generation based on the story, vividly describing the protagonist and plot: '
 
 export const storyTemplate =
     `It was a summer like no other, but that was only because of the snow. In 2053, a summer snowstorm descended on the small town where Yonah and her family lived. Unbeknownst to everyone, Yonah had a sickness that was affecting her internally, draining her of energy and preventing her from doing the simple things that kids her age would do. It had left her lethargic and spread worries among her family. Knowing that, Yonah's family were especially frightened when the snowstorm rolled into town and they had to take shelter in a nearby, run-down grocery store.

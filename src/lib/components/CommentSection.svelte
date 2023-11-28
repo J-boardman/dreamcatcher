@@ -22,18 +22,18 @@
 	});
 </script>
 
-<form on:submit={handleComment} class="join flex m-1">
-	<input
-		bind:value={comment}
-		type="text"
-		class="input join-item flex-1"
-		placeholder="Leave a comment..."
-		required
-	/>
-	<button class="btn join-item">Comment</button>
-</form>
-<div class="flex flex-col h-[calc(100lvh-4rem)] md:h-[calc(100lvh-11rem)] overflow-scroll">
-	<section bind:this={element} class="flex-1 overflow-scroll">
+<div class="flex flex-col overflow-scroll">
+    <form on:submit={handleComment} class="join flex justify-center">
+        <input
+            bind:value={comment}
+            type="text"
+            class="input join-item flex-1 w-64 md:w-max"
+            placeholder="Leave a comment..."
+            required
+        />
+        <button class="btn join-item no-animation">Comment</button>
+    </form>
+	<section bind:this={element}>
 		{#each comments as comment}
 			<div class="mt-2 flex">
 				<div class="flex-1">

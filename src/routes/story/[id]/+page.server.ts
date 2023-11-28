@@ -1,19 +1,8 @@
-import { clerk } from '$lib/clerk.js';
-import { wait } from '$lib/wait.js';
+import { clerk } from '$lib/helpers/clerk.js';
+import { wait } from '$lib/helpers/wait.js';
 import type { User } from '@clerk/backend';
 
-type LoadFunction = {
-    id: string | undefined,
-    cover: string;
-    title: string;
-    story: string;
-    streamed: {
-        author: Partial<User> | undefined
-        comments: Promise<string[]>
-    }
-}
-
-export async function load({ params, url }): Promise<LoadFunction> {
+export async function load({ params, url }) {
 
     async function getComments(): Promise<string[]> {
         return ["This story was awesome", "Thanks for reading!", "nice work with this one."]
@@ -22,7 +11,7 @@ export async function load({ params, url }): Promise<LoadFunction> {
     async function getAuthor(): Promise<Partial<User> | undefined> {
         const authorList = await clerk.users.getUserList()
         if (!authorList) return undefined;
-        const { firstName, lastName, username, imageUrl, id } = authorList[Math.floor(Math.random() * (authorList.length - 0 + 1) + 0)]
+        const { firstName, lastName, username, imageUrl, id } = authorList[0]
         return { id, firstName, lastName, username, imageUrl }
     }
 
@@ -36,9 +25,7 @@ export async function load({ params, url }): Promise<LoadFunction> {
                 fulfil(getAuthor())
             }) as Partial<User>,
             comments: new Promise((fulfil) => {
-                setTimeout(() => {
-                    fulfil(getComments())
-                }, 3000)
+                fulfil(getComments())
             }) as Promise<string[]>
         }
     }

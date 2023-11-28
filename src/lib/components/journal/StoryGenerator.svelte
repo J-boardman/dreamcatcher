@@ -1,15 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { Journal, journal } from '$lib/Journals';
+	import { Journal } from '$lib';
+	import { systemMessage } from '$lib/helpers/appendSystemMessage';
+	import { getChatContext } from '$lib/helpers/getChatContext';
 	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/prompts/prompts';
-	import { state } from '$lib/stores';
+	import { journal, state } from '$lib/stores';
 
-	export let isLoading;
-	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
-	export let messages;
-
-    $: story = $journal?.story
+    const { append, messages, isLoading } = getChatContext()
 
 	function handleStoryGeneration() {
 		if ($journal?.story?.type == 'fullStory') generateFullStory();
@@ -19,32 +15,34 @@
 
 	async function startChapterStory() {
 		const prompt = chapterStoryPrompt($journal?.story?.mood, $journal?.story?.setting);
-		await appendSystemMessage(prompt, 'choose your own adventure story');
-        Journal.updateState("GENERATING_CHAPTER_STORY", true)
+		await append(systemMessage(prompt, 'choose your own adventure story'));
+        Journal.update({ lastState: "GENERATING_CHAPTER_STORY"}, true)
         state.set("GENERATING_CHAPTER_STORY")
 	}
 
 	async function generateFullStory() {
-		const prompt = fullStoryPrompt(story?.mood, story?.setting);
-		const response = await appendSystemMessage(prompt, 'Your story');
+		const prompt = fullStoryPrompt($journal.story?.mood, $journal.story?.setting);
+		await append(systemMessage(prompt, 'Your story'));
+        const response = $messages.at(-1);
 
 		if(!response) return;
         
-        Journal.updateStory({ story: response}, true)
-        Journal.updateState("STORY_GENERATION_FINISHED", true)
+        Journal.updateStory({ story: response.content}, true)
+        Journal.update({ lastState: "STORY_GENERATION_FINISHED"}, true)
+        state.set("STORY_GENERATION_FINISHED")
 	}
 </script>
 
 {#if $state == "CONVERSATION_OVER"}
-<div class="divider"><span class="opacity-50 uppercase">Story generator</span></div>
-<section class="grid grid-cols-2 md:grid-cols-4 gap-4 h-min">
+<section class="grid grid-cols-4 gap-4 py-4 md:pb-1 h-min">
 	<input
 		type="text"
-		placeholder="Story Mood"
+		placeholder="Mood"
 		list="moods"
-		class="input"
+		class="input col-span-2 md:col-span-1"
 		name="mood"
-		bind:value={story.mood}
+		bind:value={$journal.story.mood}
+        disabled={$isLoading}
 	/>
 	<datalist id="moods">
 		<option>Wholesome</option>
@@ -58,11 +56,12 @@
 	</datalist>
 	<input
 		type="text"
-		placeholder="Story Setting"
+		placeholder="Setting"
 		list="settings"
-		class="input"
+		class="input col-span-2 md:col-span-1"
 		name="setting"
-		bind:value={story.setting}
+		bind:value={$journal.story.setting}
+        disabled={$isLoading}
 	/>
 	<datalist id="settings">
 		<option>Medieval</option>
@@ -77,13 +76,13 @@
 		<option>Vast desert</option>
 		<option>Dense Jungle</option>
 	</datalist>
-	<select bind:value={story.type} class="select" name="type">
+	<select bind:value={$journal.story.type} class="select col-span-2 md:col-span-1" name="type" placeholder="Story Type" disabled={$isLoading}>
 		<option disabled selected>Story Type</option>
 		<option value="fullStory">Full story</option>
 		<option value="chapterStory">Choose your own adventure</option>
 	</select>
-	<button disabled={$isLoading || !story.type} on:click={handleStoryGeneration} class="btn btn-secondary animate-none">
-		Start the adventure!
+	<button disabled={$isLoading || !$journal.story.type} on:click={handleStoryGeneration} class="btn btn-secondary animate-none">
+		Start!
 	</button>
 </section>
 {/if}

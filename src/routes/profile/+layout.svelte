@@ -13,6 +13,9 @@
 <SignedIn let:user>
 	<main class="grid md:grid-cols-[3fr,_max-content,_1fr] m-2 mx-4">
 		<section class="flex md:hidden mb-2 gap-4 items-center">
+			<div class="mask mask-squircle w-12 h-12">
+				<img src={user?.imageUrl} alt="Avatar Tailwind CSS Component" />
+			</div>
 			<Title title={`${$profileTitle}'s profile`} />
 		</section>
 		<section class="rounded-xl bg-base-200/60 flex items-center h-min p-4">

@@ -14,12 +14,12 @@
 	.background {
 		position: fixed;
 		width: 100dvw;
-		height: 100lvh;
+		height: 120lvh;
 		top: 0;
 		left: 0;
 		background: #000000;
 		overflow: hidden;
-		z-index: -1;
+		z-index: -20;
 	}
 
 	.background span {

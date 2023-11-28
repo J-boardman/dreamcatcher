@@ -1,10 +1,20 @@
-import { clerk } from "$lib/clerk";
+import { wait } from "$lib";
+import { clerk } from "$lib/helpers/clerk";
+import type { User } from "@clerk/backend";
 
 export async function load() {
-    const users = await clerk.users.getUserList();
-    const userList = users.map(user => ({ id: user.id, username: user.username, imageUrl: user.imageUrl }))
 
     return {
-        userList
+        streamed: {
+            userList: new Promise(async (resolve, reject) => {
+                resolve(getUserList())
+            }) as Promise<Partial<User>[]>
+
+        }
     }
+}
+
+async function getUserList(): Promise<Partial<User>[]> {
+    const users = await clerk.users.getUserList();
+    return users?.map(user => ({ id: user.id, username: user.username, imageUrl: user.imageUrl }))
 }

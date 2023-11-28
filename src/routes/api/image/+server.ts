@@ -1,4 +1,4 @@
-import { openai } from '$lib/openai.js';
+import { openai } from '$lib/helpers/openai.js';
 
 export const POST = async ({ request }) => {
 
@@ -6,13 +6,13 @@ export const POST = async ({ request }) => {
 
     const image = await openai.images.generate({
         model: "dall-e-3",
+        quality: "hd",
         prompt: prompt,
-        size: "1024x1792"
+        size: "1024x1792",
     })
 
-    console.log(image.data[0].url)
-
     return Response.json({
-        url: image.data[0].url
+        url: image.data[0].url,
+        created: new Date()
     })
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { Journal, type DreamJournal, journal } from '$lib/Journals';
+	import { Journal, randomID } from '$lib';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
 	import Title from '$lib/components/Title.svelte';
-	import type { State } from '$lib/stores';
-	import { onMount } from 'svelte';
-	import DeleteIcon from 'virtual:icons/line-md/close-circle';
+	import type { DreamJournal } from '$lib/types';
+	import { journal } from '$lib/stores';
 
 	let allJournals: DreamJournal[] = [];
 
@@ -17,21 +17,9 @@
 		allJournals = JSON.parse(localStorage?.getItem('journals') || '[]');
 	});
 
-	const changeConversation = (id: string, state?: State) => {
-		if (!state) {
-			if (!journal || !$journal.lastState) return;
-			goto(`/journal/${id}`);
-		} else {
-			goto(`/journal/${id}`);
-		}
-	};
-
 	function handleNewConversation() {
-		const newConversation = Journal.create(
-			Math.random().toString(36).substring(2, 9),
-			newDreamName
-		);
-		changeConversation(newConversation.id, 'INTERPRETING');
+		const newConversation = Journal.create(newDreamName);
+		goto(`/journal/${newConversation.id}`);
 		newDreamName = '';
 	}
 
@@ -40,89 +28,84 @@
 		allJournals = allJournals.filter((item) => item.id != id);
 	}
 
-	function sortJournals(e: Event) {
-		const target = e.target as HTMLSelectElement;
-		switch (target.value) {
-			case 'newest':
-				allJournals = allJournals.sort((a, b) => {
-					return new Date(b.lastUpdated).getDate() - new Date(a.lastUpdated).getDate();
-				});
-				break;
-			case 'oldest':
-				allJournals = allJournals.sort((a, b) => {
-					return new Date(a.lastUpdated).getDate() - new Date(b.lastUpdated).getDate();
-				});
-				break;
-		}
-	}
-
 	let newDreamName = '';
 </script>
 
 <section class="m-2 mx-4">
 	<article class="join flex">
-		<input type="text" class="input join-item flex-1" bind:value={newDreamName} />
+		<input type="text" class="input join-item" bind:value={newDreamName} />
 		<button on:click={handleNewConversation} class="btn join-item">Add</button>
 	</article>
 	<div class="divider" />
-	{#each allJournals as journal, i}
-		<div class="collapse collapse-plus bg-base-300 my-2">
-			<input type="radio" name="my-accordion-3" />
-			<div class="collapse-title text-xl font-medium flex gap-4 items-center">
-				{journal.name}
-				<div class="hidden gap-2 md:flex">
-					<div class="badge badge-secondary badge-outline">{journal.lastState}</div>
-					<div class="badge badge-primary badge-outline">
-						{Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
+
+	<section class="grid auto-rows-max lg:grid-cols-3 xl:grid-cols-5 gap-4">
+		{#each [...allJournals] as journal, i}
+			<!-- <section class="collapse collapse-plus bg-base-300 my-2 h-min">
+				<input type="radio" name="my-accordion-3" />
+				<article class="collapse-title text-xl font-medium flex gap-4 items-center">
+					{journal.name}
+				</article>
+				<article class="grid grid-cols-2 md:flex items-center gap-2 m-4">
+					<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
+					<button
+						on:click={() => handleDelete(journal.id)}
+						class="btn btn-sm btn-outline btn-error"
+					>
+						Delete
+					</button>
+					<div class="badge badge-lg badge-secondary badge-outline col-span-2 w-full md:w-fit">
+						Updated:
+						{Intl.DateTimeFormat('en-au', { dateStyle: 'medium' }).format(
 							new Date(journal.lastUpdated)
 						)}
 					</div>
+				</article>
+				<div class="collapse-content gap-4">
+					<Title title={journal.story.title} />
+					{#if journal.imageUrl}
+						<div class="divider divider-horizontal" />
+						<img
+							src={journal.imageUrl}
+							alt="cover"
+							class="rounded-xl my-2"
+							on:error={() => (journal.imageUrl = '')}
+						/>
+					{/if}
 				</div>
-			</div>
-			<div class="collapse-content flex flex-col gap-4">
-				<div class="flex gap-2 md:hidden">
-					<div class="badge badge-secondary badge-outline">{journal.lastState}</div>
-					<div class="badge badge-primary badge-outline">
-						{Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
+			</section> -->
+			<div class="card card-compact bg-base-300 justify-between shadow-xl">
+				<figure class="flex-1">
+					{#if journal.imageUrl}
+						<img
+							src={journal.imageUrl}
+							alt="cover"
+							on:error={() => (journal.imageUrl = '')}
+                            class="h-full"
+						/>
+					{:else}
+						<ImagePlaceholder />
+					{/if}
+				</figure>
+				<div class="card-body flex-grow-0">
+					<h2 class="card-title">
+						<Title title={journal.story.title || journal.name + ' Journal'} />
+					</h2>
+					<p class="">
+						Last Updated: {Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
 							new Date(journal.lastUpdated)
 						)}
-					</div>
-				</div>
-				{#if journal.lastState == 'FINALISING_STORY'}
-					<article class="grid md:grid-cols-[1fr,_5fr] gap-4">
-						{#if journal.story.imageUrl}
-							<img
-								src={journal.story.imageUrl}
-								alt="cover"
-								class="rounded-xl"
-								on:error={() => (journal.story.imageUrl = '')}
-							/>
-						{:else}
-							<ImagePlaceholder />
-						{/if}
-						<article class="flex flex-col justify-between">
-							<Title title={journal.story.title} />
-							<div class="divider my-0" />
-							{#each journal.story.story.substring(0, 2000).concat('...').split('\n') as paragraph}
-								<p class="hidden md:block my-1">{paragraph}</p>
-							{/each}
-							<article class="flex gap-2 mt-4 md:mt-auto">
-								<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
-								<button on:click={() => handleDelete(journal.id)} class="btn btn-sm btn-ghost"
-									>Delete</button
-								>
-							</article>
-						</article>
-					</article>
-				{:else}
-					<article class="flex gap-2 mt-auto">
+					</p>
+					<div class="card-actions justify-end">
 						<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
-						<button on:click={() => handleDelete(journal.id)} class="btn btn-sm btn-ghost"
-							>Delete</button
+						<button
+							on:click={() => handleDelete(journal.id)}
+							class="btn btn-sm btn-outline btn-error"
 						>
-					</article>
-				{/if}
+							Delete
+						</button>
+					</div>
+				</div>
 			</div>
-		</div>
-	{/each}
+		{/each}
+	</section>
 </section>

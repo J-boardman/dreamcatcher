@@ -1,5 +1,4 @@
 <script lang="ts">
-	import cover from '$lib/assets/nice.png';
 	import Title from '$lib/components/Title.svelte';
 	import { pageTitle } from '$lib/stores';
 	import { onMount } from 'svelte';
@@ -8,12 +7,25 @@
 	import HeartIconOutline from 'virtual:icons/line-md/heart';
 	import HeartIconFilled from 'virtual:icons/line-md/heart-filled';
 	import UserCard from '$lib/components/UserCard.svelte';
+	import type { DreamJournal, Story } from '$lib/types.js';
+	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
+	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
+	import { clerk } from 'clerk-sveltekit/client';
+	import type { UserResource } from '@clerk/types';
 
 	export let data;
 	let liked = false;
 	let likes = 99;
+	let story: Story;
+	let coverImage = '';
+	let currentUser = $clerk?.user as UserResource;
 
-	onMount(() => pageTitle.set(data.title));
+	onMount(() => {
+		const journals: DreamJournal[] = JSON.parse(localStorage.getItem('journals') || '[]');
+		const journal = journals.find((item) => item.id == data.id) as DreamJournal;
+		story = journal.story;
+		coverImage = journal.imageUrl;
+	});
 
 	let showingComments = false;
 	function handleLike() {
@@ -23,28 +35,36 @@
 	}
 </script>
 
-<main class="grid md:grid-cols-[1fr,_2.25fr] gap-2">
-	<a href="/story/{data.id}/cover">
-		<img
-			src={cover}
-			alt="cover"
-			class="md:sticky top-0 grid place-items-center rounded-xl mx-auto"
-			style="view-transition-name: testing-{data.id};"
-		/>
-	</a>
+<main class="grid md:grid-cols-[1fr,_1fr] lg:grid-cols-[1fr,_80ch] xl:grid-cols-[1fr,2.65fr] gap-2">
+	<figure class="grid place-items-center rounded-xl mx-auto">
+		{#if coverImage}
+			<a href="/story/{data.id}/cover" class="hidden md:flex">
+				<img
+					src={coverImage}
+					alt="cover"
+					style="view-transition-name: testing-{data.id};"
+					class="sticky top-0"
+					on:error={() => (coverImage = '')}
+				/>
+			</a>
+			<img
+				src={coverImage}
+				alt="cover"
+				style="view-transition-name: testing-{data.id};"
+				class="sticky top-0 md:hidden"
+				on:error={() => (coverImage = '')}
+			/>
+		{:else}
+			<ImagePlaceholder />
+		{/if}
+	</figure>
 	<section class="m-2 flex flex-col gap-2">
-		<div class="md:hidden text-center">
-			<Title title={data.title} />
-		</div>
-		<div class="md:hidden divider my-0" />
+		<Title title={story?.title} />
+		<div class="divider my-0" />
 		<section
 			class="grid grid-cols-[1fr,_max-content] md:grid-cols-[1fr,_max-content,_max-content] gap-4 mx-2 items-center"
 		>
-			{#await data.streamed.author}
-				<UserCard />
-			{:then author}
-				<UserCard user={author} />
-			{/await}
+			<UserCard user={currentUser} />
 			<button
 				class="btn btn-ghost hover:bg-transparent {liked ? 'text-primary' : 'text-white'}"
 				on:click={handleLike}
@@ -82,10 +102,7 @@
 			{/await}
 		{:else}
 			<article class="flex flex-col gap-2">
-				{#each data.story.split('\n') as paragraph}
-					<p>{paragraph}</p>
-				{/each}
-				{#each data.story.split('\n') as paragraph}
+				{#each story?.story.split('\n') || [] as paragraph}
 					<p>{paragraph}</p>
 				{/each}
 			</article>

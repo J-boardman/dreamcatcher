@@ -1,6 +1,7 @@
 <script>
 	export let title = '';
     export let fontSize = 'text-3xl'
+    export let fontColor = "text-secondary"
 
 	$: titleArray = title.split(' ');
 	$: longestWord = titleArray.reduce((a, b) => (a.length > b.length ? a : b));
@@ -12,7 +13,7 @@
 	{:else}
 		{#each titleArray as word}
 			{#if word == longestWord}
-				<strong class="text-secondary font-normal">{word} </strong>
+				<strong class="{fontColor} font-normal">{word} </strong>
 			{:else}
 				<strong class="font-normal">{word} </strong>
 			{/if}

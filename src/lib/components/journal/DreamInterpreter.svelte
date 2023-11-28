@@ -1,45 +1,53 @@
 <script lang="ts">
-	import type { ChatRequestOptions } from 'ai';
 	import { finaliseInterpretationPrompt } from '$lib/prompts/prompts';
-	import { state } from '$lib/stores';
-	import { Journal, journal} from '$lib/Journals';
-	import { goto } from '$app/navigation';
+	import { journal, state } from '$lib/stores';
+	import { Journal, getChatContext } from '$lib';
+	import { systemMessage } from '$lib/helpers/appendSystemMessage';
 
-	export let input;
-	export let isLoading;
-	export let messages;
-
-	export let handleSubmit: (e: any, chatRequestOptions?: ChatRequestOptions | undefined) => void;
-	export let appendSystemMessage: (content: string, name: string) => Promise<string | undefined>;
+	const { handleSubmit, messages, isLoading, input, append } = getChatContext();
 
 	async function finaliseInterpretation() {
 		if ($journal.messageList.length > 3) {
-			await appendSystemMessage(finaliseInterpretationPrompt, 'Final Interpretation');
+			await append(systemMessage(finaliseInterpretationPrompt, 'Final Interpretation'));
 		}
-		Journal.updateState('CONVERSATION_OVER', true);
+		Journal.update({ lastState: 'CONVERSATION_OVER' }, true);
+		state.set('CONVERSATION_OVER');
 	}
 
 	let credits = 5;
+
+	let textInput: HTMLTextAreaElement;
+
+	function handleInput() {
+		textInput.style.height = '';
+		if (!(document.activeElement === textInput)) return;
+		textInput.style.height = textInput.scrollHeight + 3 + 'px';
+	}
 </script>
 
+<!-- on:input={handleInput} -->
 {#if $state == 'INTERPRETING'}
 	<form on:submit={handleSubmit} class="form-control md:flex-row gap-2 m-2 w-full mx-auto">
 		<div class="w-full flex join">
 			<textarea
+				on:focus={handleInput}
+				on:focusout={handleInput}
+				on:input={handleInput}
+				bind:this={textInput}
 				bind:value={$input}
-				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none"
+				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none leading-6 focus:h-max"
 				placeholder={$messages.length < 2 ? 'Enter details about your dream to get started.' : ''}
 			/>
-			<button class="btn btn-secondary join-item h-20 animate-none" disabled={$isLoading}>Send</button>
-		</div>
-		{#if $messages.length >= 3}
-			<button
-				disabled={$isLoading || credits == 0}
-				class="btn w-fit md:h-20 animate-none"
-				on:click={finaliseInterpretation}
+			<button class="btn btn-secondary join-item h-full animate-none" disabled={$isLoading}
+				>Send</button
 			>
-				Start story (1 credit)
-			</button>
-		{/if}
+		</div>
+		<button
+			disabled={$isLoading || credits == 0}
+			class="btn w-fit md:h-20 animate-none {$messages.length < 3 ? 'hidden' : 'visible'}"
+			on:click={finaliseInterpretation}
+		>
+			Start story (1 credit)
+		</button>
 	</form>
 {/if}

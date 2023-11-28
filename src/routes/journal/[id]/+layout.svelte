@@ -1,7 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import { useChat } from 'ai/svelte';
+	import { onMount, setContext } from 'svelte';
 	let headerHeight = 0;
+
+    const { setMessages, input, handleSubmit, messages, isLoading, append } = useChat();
+
+    setContext('chat', {
+        setMessages,
+        input,
+        handleSubmit,
+        messages,
+        isLoading,
+        append
+    })
 
 	onMount(() => {
 		headerHeight = document.querySelector('header')?.offsetHeight || 0;

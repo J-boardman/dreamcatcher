@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { pageTitle } from '$lib/stores';
 	import SignIn from 'clerk-sveltekit/client/SignIn.svelte';

@@ -1,8 +1,6 @@
-import src from "../../../../lib/assets/nice.png"
 
-export function load({params}){
+export function load({params, url}){
     return {
-        id: params.id,
-        src
+        id: params.id
     }
 }

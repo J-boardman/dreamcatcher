@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { User } from '@clerk/backend';
-	export let user: Partial<User> | undefined = undefined;
+    import type { UserResource} from "@clerk/types"
+
+	export let user: Partial<User> | UserResource | undefined | null = undefined;
 </script>
 
 <div class="flex flex-1 items-center space-x-3">
 	<div class="avatar">
 		{#if user}
 			<div class="mask mask-squircle w-12 h-12">
-				<img src={user?.imageUrl} alt="profile" />
+				<img src={user?.imageUrl + "?enhanced"} alt="profile" />
 				<img src="/" alt="Avatar Tailwind CSS Component" />
 			</div>
 		{:else}
