@@ -11,7 +11,7 @@
 </script>
 
 <SignedIn let:user>
-	<main class="grid md:grid-cols-[3fr,_max-content,_1fr] m-2 mx-4">
+	<main class="grid md:grid-cols-[2fr,_max-content,_1fr] m-2 mx-4">
 		<section class="flex md:hidden mb-2 gap-4 items-center">
 			<div class="mask mask-squircle w-12 h-12">
 				<img src={user?.imageUrl} alt="Avatar Tailwind CSS Component" />
@@ -31,7 +31,7 @@
 				{/if}
 			</nav>
 		</section>
-		<div class="divider md:divider-horizontal" />
+        <div class="divider md:divider-horizontal" />
 		<section class="grid gap-4">
 			<h2 class="text-2xl">About</h2>
 			<article>

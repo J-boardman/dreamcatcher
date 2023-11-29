@@ -38,8 +38,41 @@
 	</article>
 	<div class="divider" />
 
-	<section class="grid auto-rows-max lg:grid-cols-3 xl:grid-cols-5 gap-4">
+	<section class="grid auto-rows-max md:grid-cols-2 xl:grid-cols-3 gap-4">
 		{#each [...allJournals] as journal, i}
+			<div class="card card-compact md:card-side bg-secondary-content shadow-xl">
+				<figure class="md:w-48 h-full">
+					{#if journal?.imageUrl}
+						<img
+							class="h-full"
+							src={journal?.imageUrl}
+							alt="Movie"
+							on:error={() => (journal.imageUrl = '')}
+						/>
+					{:else}
+						<ImagePlaceholder />
+					{/if}
+				</figure>
+				<div class="card-body">
+					{#if journal.story.title}
+						<Title title={journal.story.title} fontSize="text-2xl" />
+					{:else}
+						<h2 class="text-2xl">No Title Yet</h2>
+					{/if}
+					<p>
+						Last Updated: {Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
+							new Date(journal.lastUpdated)
+						)}
+					</p>
+					<div class="divider my-1" />
+					<div class="card-actions justify-end">
+						<a href="/journal/{journal.id}" class="btn btn-secondary">Continue</a>
+						<button on:click={() => handleDelete(journal.id)} class="btn btn-error btn-outline">
+							Delete
+						</button>
+					</div>
+				</div>
+			</div>
 			<!-- <section class="collapse collapse-plus bg-base-300 my-2 h-min">
 				<input type="radio" name="my-accordion-3" />
 				<article class="collapse-title text-xl font-medium flex gap-4 items-center">
@@ -73,14 +106,14 @@
 					{/if}
 				</div>
 			</section> -->
-			<div class="card card-compact bg-base-300 justify-between shadow-xl">
+			<!-- <div class="card card-compact bg-base-300 justify-between shadow-xl">
 				<figure class="flex-1">
 					{#if journal.imageUrl}
 						<img
 							src={journal.imageUrl}
 							alt="cover"
 							on:error={() => (journal.imageUrl = '')}
-                            class="h-full"
+							class="h-full"
 						/>
 					{:else}
 						<ImagePlaceholder />
@@ -105,7 +138,7 @@
 						</button>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		{/each}
 	</section>
 </section>

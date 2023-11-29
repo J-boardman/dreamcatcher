@@ -1,23 +1,33 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { Journal } from '$lib';
+	import { state } from '$lib/stores';
 	import { useChat } from 'ai/svelte';
 	import { onMount, setContext } from 'svelte';
 	let headerHeight = 0;
 
-    const { setMessages, input, handleSubmit, messages, isLoading, append } = useChat();
+	const { setMessages, input, handleSubmit, messages, isLoading, append } = useChat();
 
-    setContext('chat', {
-        setMessages,
-        input,
-        handleSubmit,
-        messages,
-        isLoading,
-        append
-    })
+	setContext('chat', {
+		setMessages,
+		input,
+		handleSubmit,
+		messages,
+		isLoading,
+		append
+	});
 
 	onMount(() => {
 		headerHeight = document.querySelector('header')?.offsetHeight || 0;
 		localStorage.setItem('latestConversation', $page.url.pathname);
+	});
+
+	afterNavigate(() => {
+		if ($page.url.searchParams.get('newStory')) {
+			Journal.update({ lastState: 'CONVERSATION_OVER' }, true);
+			state.set('CONVERSATION_OVER');
+		}
 	});
 </script>
 
