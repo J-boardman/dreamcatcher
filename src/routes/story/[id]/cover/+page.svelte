@@ -11,7 +11,7 @@
 	onMount(() => {
 		const journals = JSON.parse(localStorage.getItem('journals') || '[]') as DreamJournal[];
 		const journal = journals.find((item) => item.id == data.id);
-		src = journal?.imageUrl as string;
+		src = journal?.finalImageUrl as string;
 	});
 
 	afterNavigate(() => {

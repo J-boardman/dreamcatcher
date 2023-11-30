@@ -4,7 +4,8 @@ export type State =
     | 'INTERPRETING'
     | 'CONVERSATION_OVER'
     | 'GENERATING_CHAPTER_STORY'
-    | 'STORY_GENERATION_FINISHED'
+    | 'FINALISING_STORY'
+    | 'STORY_PUBLISHED'
 
 export type Story = {
     title: string;
@@ -15,6 +16,11 @@ export type Story = {
     chapterIndexStart: number;
 }
 
+export type JournalImage = {
+    url: string,
+    created: string,
+}
+
 export type DreamJournal = {
     id: string;
     name?: string;
@@ -22,6 +28,7 @@ export type DreamJournal = {
     lastState: State;
     messageList: Message[];
     story: Story;
-    imageUrl: string
+    image: JournalImage
     shared?: boolean
+    finalImageUrl: string;
 };

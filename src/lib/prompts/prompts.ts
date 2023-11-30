@@ -12,7 +12,7 @@ export const chapterStoryPrompt = (mood?: string, setting?: string) => (
     'just start the story now.'
 )
 
-export const imagePrompt = (mood?: string, setting?: string) => (
+export const generateImagePrompt = (mood?: string, setting?: string) => (
     `A tall full length portrait oriented image 1792px high by 1024px wide. 4k, detailed, trending in artstation, mood: ${mood}, setting: ${setting}, studio ghibli, fantastical.`
 )
 

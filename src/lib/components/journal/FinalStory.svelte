@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { Journal, getChatContext, randomID } from '$lib';
-	import { imagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
+	import { Journal, getChatContext, handleChatRequest, handleFetch } from '$lib';
+	import { generateImagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
 	import { journal, state } from '$lib/stores';
-	import type { ChatCompletion } from 'openai/resources';
 	import Modal from '../Modal.svelte';
 
 	import RefreshLogo from 'virtual:icons/charm/refresh';
@@ -18,81 +17,78 @@
 	$: isLoading = generatingTitle || generatingImage;
 
 	async function handleImageGeneration() {
-		// const initialImagePrompt = appendSystemMessage(imagePromptMessage, 'hidden message');
 		generatingImage = true;
-		const prompt = await fetch('/api/chat', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				messages: [...$messages, { content: imagePromptMessage, role: 'user', id: '001' }],
-				streaming: false
-			})
-		});
-		const data2: ChatCompletion = await prompt.json();
-		const response = data2.choices[0].message.content;
-		// return;
 
-		const data = await fetch('/api/image', {
+		const { mood, setting } = $journal.story;
+		const imageSpecifications = generateImagePrompt(mood, setting);
+		const promptData = await handleChatRequest(imagePromptMessage, $messages);
+
+		const [imageData, imageGenerationError] = await handleFetch('/api/image', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				prompt: `${imagePrompt($journal.story.mood, $journal.story.setting) + response}`
-			})
+			body: { prompt: imageSpecifications + promptData }
 		});
 
-		const img = await data.json();
 		generatingImage = false;
 
-		if (!img.url) return;
+		if (imageGenerationError) {
+			console.error(imageGenerationError);
+			console.log('error triggered !!!!!!!!!!!!');
+			return;
+		}
 
 		setMessages([
 			...$messages,
 			{
-				id: randomID(),
-				content: img.url,
+				id: imageData.created,
+				content: imageData.url,
 				name: 'image',
 				role: 'system'
 			}
 		]);
-
-		Journal.update({ imageUrl: img.url }, true);
+		Journal.update({ image: { url: imageData.url, created: imageData.created } });
 	}
 
 	async function handleTitleGeneration() {
 		generatingTitle = true;
-		const response = await fetch(`/api/chat`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				messages: [
-					...$messages,
-					{ role: 'user', content: 'Generate a short 3 - 5 word title for the story.' }
-				],
-				streaming: false
-			})
-		});
-
-		const data: ChatCompletion = await response.json();
+		const title = await handleChatRequest(
+			'Generate a short 3-5 word title for the story.',
+			$messages
+		);
+		Journal.updateStory({ title: await title.replaceAll('"', '') });
 		generatingTitle = false;
-		const title = data.choices[0].message.content?.replaceAll('"', '');
-
-		Journal.updateStory({ title: title as string }, true);
 	}
 
 	function handleTitleChange(e: Event) {
 		const target = e.target as HTMLInputElement;
-
-		Journal.updateStory({ title: target.value }, true);
+		Journal.updateStory({ title: target.value });
 	}
 
 	$: sharing = $journal?.shared;
+	let saving = false;
 
-	function finaliseStory() {
-		Journal.update({ shared: sharing }, true);
+	async function finaliseStory() {
+		saving = true;
+		Journal.update({ shared: sharing });
+		if (!$journal.image.url) return;
+		const [uploadedImage, error] = await handleFetch('/api/image/upload', {
+			method: 'POST',
+			body: { url: $journal.image.url }
+		});
+
+		if (error) {
+			console.log(error);
+			return;
+		}
+		//@ts-ignore
+		console.log(uploadedImage.url);
+		// @ts-ignore
+		Journal.update({ finalImageUrl: uploadedImage.url, lastState: "STORY_PUBLISHED" });
+		console.log('done!');
+		saving = false;
 	}
 </script>
 
-{#if $state == 'STORY_GENERATION_FINISHED'}
+{#if $state == 'FINALISING_STORY'}
 	<section class="grid md:grid-cols-5 gap-2 pt-4 sm:pb-1">
 		<article class="join flex col-span-3">
 			<input
@@ -123,11 +119,11 @@
 				<div class="flex items-center gap-3">
 					<div class="avatar">
 						<div class="mask mask-squircle w-24 h-24">
-							{#if $journal.imageUrl}
+							{#if $journal?.image?.url}
 								<img
-									src={$journal.imageUrl}
+									src={$journal?.image?.url}
 									alt="cover"
-									on:error={() => Journal.update({ imageUrl: '' }, true)}
+									on:error={() => Journal.updateImage({ url: '' })}
 								/>
 							{:else}
 								<ImagePlaceholder message="" />
@@ -158,12 +154,12 @@
 							class="toggle toggle-success"
 							checked={sharing}
 							on:click={() => (sharing = !sharing)}
-							disabled={!$journal.story.title || !$journal.imageUrl}
+							disabled={!$journal.story.title || !$journal?.image?.url}
 						/>
 						Share story
 					</label>
 					<form method="dialog">
-						<button on:click={finaliseStory} class="btn btn-success">Save</button>
+						<button disabled={saving} on:click={finaliseStory} class="btn btn-success">Save</button>
 					</form>
 				</div>
 			</section>

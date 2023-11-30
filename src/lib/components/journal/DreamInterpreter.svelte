@@ -10,7 +10,7 @@
 		if ($journal.messageList.length > 3) {
 			await append(systemMessage(finaliseInterpretationPrompt, 'Final Interpretation'));
 		}
-		Journal.update({ lastState: 'CONVERSATION_OVER' }, true);
+		Journal.update({ lastState: 'CONVERSATION_OVER' });
 		state.set('CONVERSATION_OVER');
 	}
 
@@ -23,10 +23,17 @@
 		if (!(document.activeElement === textInput)) return;
 		textInput.style.height = textInput.scrollHeight + 3 + 'px';
 	}
+
+	$: placeholderText =
+		$messages.length < 2
+			? 'Enter details about your dream to get started'
+			: $state == 'STORY_PUBLISHED'
+			? 'Continue to discuss your dream'
+			: '';
 </script>
 
 <!-- on:input={handleInput} -->
-{#if $state == 'INTERPRETING'}
+{#if $state == 'INTERPRETING' || $state == 'STORY_PUBLISHED'}
 	<form on:submit={handleSubmit} class="form-control md:flex-row gap-2 m-2 w-full mx-auto">
 		<div class="w-full flex join">
 			<textarea
@@ -36,18 +43,20 @@
 				bind:this={textInput}
 				bind:value={$input}
 				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none leading-6 focus:h-max"
-				placeholder={$messages.length < 2 ? 'Enter details about your dream to get started.' : ''}
+				placeholder={placeholderText}
 			/>
 			<button class="btn btn-secondary join-item h-full animate-none" disabled={$isLoading}
 				>Send</button
 			>
 		</div>
-		<button
-			disabled={$isLoading || credits == 0}
-			class="btn w-fit md:h-20 animate-none {$messages.length < 3 ? 'hidden' : 'visible'}"
-			on:click={finaliseInterpretation}
-		>
-			Start story (1 credit)
-		</button>
+		{#if $state != 'STORY_PUBLISHED'}
+			<button
+				disabled={$isLoading || credits == 0}
+				class="btn w-fit md:h-20 animate-none {$messages.length < 2 ? 'hidden' : 'visible'}"
+				on:click={finaliseInterpretation}
+			>
+				Start story (1 credit)
+			</button>
+		{/if}
 	</form>
 {/if}

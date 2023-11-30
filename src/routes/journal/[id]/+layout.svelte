@@ -20,12 +20,11 @@
 
 	onMount(() => {
 		headerHeight = document.querySelector('header')?.offsetHeight || 0;
-		localStorage.setItem('latestConversation', $page.url.pathname);
 	});
 
 	afterNavigate(() => {
 		if ($page.url.searchParams.get('newStory')) {
-			Journal.update({ lastState: 'CONVERSATION_OVER' }, true);
+			Journal.update({ lastState: 'CONVERSATION_OVER' });
 			state.set('CONVERSATION_OVER');
 		}
 	});

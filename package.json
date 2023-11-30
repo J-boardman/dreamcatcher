@@ -36,6 +36,8 @@
     "@unpic/svelte": "^0.0.41",
     "ai": "^2.2.21",
     "clerk-sveltekit": "^0.2.0",
-    "openai": "^4.16.1"
+    "cloudinary": "^1.41.0",
+    "openai": "^4.16.1",
+    "svelte-cloudinary": "^1.1.1"
   }
 }

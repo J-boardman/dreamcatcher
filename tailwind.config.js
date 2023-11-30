@@ -2,7 +2,12 @@
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
-		extend: {}
+		extend: {
+            aspectRatio: {
+                '4/7': '4/7'
+            }
+        }
+
 	},
 	plugins: [require('daisyui')],
     daisyui: {

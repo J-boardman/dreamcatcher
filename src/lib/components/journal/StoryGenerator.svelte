@@ -10,13 +10,13 @@
 	function handleStoryGeneration() {
 		if ($journal?.story?.type == 'fullStory') generateFullStory();
 		else startChapterStory();
-        Journal.updateStory({ chapterIndexStart: $messages.length - 1}, true)
+        Journal.updateStory({ chapterIndexStart: $messages.length - 1})
 	}
 
 	async function startChapterStory() {
 		const prompt = chapterStoryPrompt($journal?.story?.mood, $journal?.story?.setting);
 		await append(systemMessage(prompt, 'choose your own adventure story'));
-        Journal.update({ lastState: "GENERATING_CHAPTER_STORY"}, true)
+        Journal.update({ lastState: "GENERATING_CHAPTER_STORY"})
         state.set("GENERATING_CHAPTER_STORY")
 	}
 
@@ -27,9 +27,9 @@
 
 		if(!response) return;
         
-        Journal.updateStory({ story: response.content}, true)
-        Journal.update({ lastState: "STORY_GENERATION_FINISHED"}, true)
-        state.set("STORY_GENERATION_FINISHED")
+        Journal.updateStory({ story: response.content})
+        Journal.update({ lastState: "FINALISING_STORY"})
+        state.set("FINALISING_STORY")
 	}
 </script>
 

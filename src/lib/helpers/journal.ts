@@ -1,7 +1,8 @@
 import { get } from "svelte/store";
-import { journal, state } from "../stores";
-import type { DreamJournal, State, Story } from "../types";
+import { journal } from "../stores";
+import type { DreamJournal, Story } from "../types";
 import { randomID } from "$lib";
+import { page } from "$app/stores";
 
 export function create(name?: string, id?: string) {
     const newConversation: DreamJournal = {
@@ -11,20 +12,31 @@ export function create(name?: string, id?: string) {
         messageList: [{ role: "system", name: "hidden message", id: "00", content: "" }],
         name: name || "Dream Journal " + randomID(),
         story: { title: "", story: "", mood: "", setting: "", type: "", chapterIndexStart: 0 },
-        imageUrl: ""
+        image: { url: "", created: "" },
+        finalImageUrl: ""
+
     };
     saveNewConversation(newConversation)
     return newConversation;
 }
 
-export function update(updatedItem: Partial<DreamJournal>, saving?: boolean) {
-    journal.update(prev => ({ ...prev, ...updatedItem }))
-    if (saving) save()
+export function getCurrentJournal() {
+    const id = get(page).data?.id;
+    const journals = load();
+    return journals?.find(item => item.id == id);
 }
 
-export function updateStory(updatedItem: Partial<Story>, saving?: boolean) {
-    journal.update(prev => ({ ...prev, story: { ...prev.story, ...updatedItem } }))
-    if (saving) save();
+export function update(updatedItem: Partial<DreamJournal>,) {
+    journal.update(prev => ({ ...prev, ...updatedItem }))
+    save()
+}
+
+export function updateStory(updatedItem: Partial<Story>) {
+    update({ story: { ...get(journal).story, ...updatedItem }})
+}
+
+export function updateImage(updatedItem: { url?: string, created?: string }) {
+    update({ image: { ...get(journal).image, ...updatedItem } })
 }
 
 export function remove(id?: string) {

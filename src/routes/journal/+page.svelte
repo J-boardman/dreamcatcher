@@ -6,6 +6,7 @@
 	import Title from '$lib/components/Title.svelte';
 	import type { DreamJournal } from '$lib/types';
 	import { journal } from '$lib/stores';
+	import { CldImage } from 'svelte-cloudinary';
 
 	let allJournals: DreamJournal[] = [];
 
@@ -38,32 +39,34 @@
 	</article>
 	<div class="divider" />
 
-	<section class="grid auto-rows-max md:grid-cols-2 xl:grid-cols-3 gap-4">
+	<section class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 		{#each [...allJournals] as journal, i}
-			<div class="card card-compact md:card-side bg-secondary-content shadow-xl">
-				<figure class="md:w-48 h-full">
-					{#if journal?.imageUrl}
-						<img
-							class="h-full"
-							src={journal?.imageUrl}
-							alt="Movie"
-							on:error={() => (journal.imageUrl = '')}
-						/>
-					{:else}
-						<ImagePlaceholder />
-					{/if}
-				</figure>
+			<div class="card card-compact card-side bg-secondary-content shadow-xl">
 				<div class="card-body">
-					{#if journal.story.title}
-						<Title title={journal.story.title} fontSize="text-2xl" />
-					{:else}
-						<h2 class="text-2xl">No Title Yet</h2>
-					{/if}
-					<p>
-						Last Updated: {Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
-							new Date(journal.lastUpdated)
-						)}
-					</p>
+					<div class="flex items-center gap-3">
+						<div class="avatar">
+							<div class="mask mask-squircle w-24 h-24">
+                                {#if journal.finalImageUrl}
+                                    <CldImage src={journal.finalImageUrl} width={400} height={600}/>
+								{:else if journal?.image?.url}
+									<img
+										src={journal?.image?.url}
+										alt="cover"
+										on:error={() => {
+											Journal.updateImage({ url: '' });
+											journal.image.url = '';
+										}}
+									/>
+								{:else}
+									<ImagePlaceholder message="No image" />
+								{/if}
+							</div>
+						</div>
+						<div>
+                            <Title title={journal.story.title} fontSize="text-xl md:text-2xl" />
+							<div class="md:text-lg opacity-50">Last updated: {Intl.DateTimeFormat("en-au", { dateStyle: "long"}).format(new Date(journal?.lastUpdated))}</div>
+						</div>
+					</div>
 					<div class="divider my-1" />
 					<div class="card-actions justify-end">
 						<a href="/journal/{journal.id}" class="btn btn-secondary">Continue</a>

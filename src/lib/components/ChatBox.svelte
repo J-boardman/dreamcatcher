@@ -1,21 +1,32 @@
 <script lang="ts">
 	import { Journal, getChatContext, randomID } from '$lib';
 	import { journal } from '$lib/stores';
-	import { afterUpdate } from 'svelte';
-	import ImagePlaceholder from './ImagePlaceholder.svelte';
+	import { afterUpdate, onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
+	import ChatImage from '$lib/components/ChatImage.svelte';
 
 	let element: HTMLElement;
+	let messageListLength = 0;
+	const { messages } = getChatContext();
 
-    const { messages } = getChatContext()
-    
+	const scrollToBottom = () => element?.scroll({ top: element.scrollHeight, behavior: 'smooth' });
+
 	afterUpdate(() => {
-        if (!element) return;
-        element.scroll({ top: element.scrollHeight, behavior: 'smooth' });
+		if ((messageListLength = 0)) scrollToBottom();
+		if ($journal?.messageList?.length <= messageListLength) return;
+		scrollToBottom();
+		messageListLength = $journal?.messageList?.length;
+	});
+
+	afterNavigate(() => {
+		Journal.update({
+			messageList: $journal.messageList.filter((item) => item.name != 'Cover Image updated')
+		});
 	});
 </script>
 
 <section
-	class="border-2 rounded-lg border-base-100 flex min-h-[220px] flex-col justify-end text-sm md:text-base flex-1"
+	class="border-2 rounded-lg border-base-100 flex min-h-[220px] flex-col justify-end text-sm md:text-base flex-1 join-item"
 >
 	<section bind:this={element} class="overflow-scroll">
 		{#each $messages as message, i}
@@ -28,35 +39,7 @@
 					</div>
 				</article>
 			{:else if message.name == 'image'}
-				<div class="divider"><span class="opacity-50 uppercase">Cover Image</span></div>
-				<article class="chat chat-start">
-					{#if message.content}
-						<button
-							on:click={() => {
-								if (message.content == $journal.imageUrl) return;
-								Journal.update({ imageUrl: message.content }, true);
-								$messages = [
-									...$messages,
-									{ role: 'system', id: randomID(), name: 'Cover Image updated', content: '' }
-								];
-							}}
-							class="chat-bubble py-4 {message.content == $journal.imageUrl
-								? 'bg-secondary'
-								: 'bg-base-300'}"
-						>
-							<img
-								src={message.content}
-								alt="cover"
-								on:error={() => (message.content = '')}
-								class="w-96 rounded-xl"
-							/>
-						</button>
-					{:else}
-						<div class="w-64 md:w-96 chat-bubble bg-base-300">
-							<ImagePlaceholder message="image expired." />
-						</div>
-					{/if}
-				</article>
+				<ChatImage {message} />
 			{:else if message.name != 'hidden message'}
 				<div class="divider"><span class="opacity-50 uppercase">{message.name}</span></div>
 			{/if}

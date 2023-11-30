@@ -18,16 +18,15 @@
 
 		const fullStory = choicesRemoved.join('\n').replaceAll('\n\n', '\n');
 
-		Journal.updateStory({ story: fullStory }, true);
-		Journal.update({ lastState: 'STORY_GENERATION_FINISHED' }, true);
-		state.set('STORY_GENERATION_FINISHED');
+		Journal.updateStory({ story: fullStory });
+		Journal.update({ lastState: 'FINALISING_STORY' });
+		state.set('FINALISING_STORY');
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
-		const target = e.target as HTMLButtonElement;
-		await append(systemMessage(target.value, 'hidden message'));
-
-		if (target.value == 'Wrap it up') finaliseChapterStory();
+		const { value } = e.target as HTMLButtonElement;
+		await append(systemMessage(value, 'hidden message'));
+		if (value == 'Wrap it up') finaliseChapterStory();        
 	}
 
 	async function handleCustomInstruction(e: SubmitEvent) {
