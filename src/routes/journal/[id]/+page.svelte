@@ -5,6 +5,9 @@
 	import { afterNavigate } from '$app/navigation';
 	import type { DreamJournal } from '$lib/types.js';
 	import { Journal, getChatContext } from '$lib';
+	import DreamInterpreter from '$lib/components/journal/DreamInterpreter.svelte';
+	import StoryGenerator from '$lib/components/journal/StoryGenerator.svelte';
+	import FinalStory from '$lib/components/journal/FinalStory.svelte';
 
 	export let data;
 	const { messages, setMessages } = getChatContext();
@@ -29,29 +32,6 @@
 			Journal.save();
 		}
 	}
-
-	let component: ConstructorOfATypedSvelteComponent;
-
-	afterUpdate(async () => {
-		switch ($state) {
-			case 'INTERPRETING':
-            case "STORY_PUBLISHED":
-				component = (await import('$lib/components/journal/DreamInterpreter.svelte')).default
-				break;
-			case 'CONVERSATION_OVER':
-				component = (await import('$lib/components/journal/StoryGenerator.svelte')).default
-				break;
-            case 'GENERATING_CHAPTER_STORY':
-                component = (await import("$lib/components/journal/ChapterStoryGenerator.svelte")).default
-                break;
-            case 'FINALISING_STORY':
-                component = (await import("$lib/components/journal/FinalStory.svelte")).default
-                break;
-            default:
-                component = (await import("$lib/components/journal/DreamInterpreter.svelte")).default
-                break;
-		}
-	});
 
 	onMount(() => {
 		setJournal();
@@ -80,5 +60,7 @@
 
 <div class="flex flex-col h-[calc(100dvh-2rem)] md:h-[calc(100dvh-5rem)] overflow-scroll md:pl-2">
     <ChatBox />
-    <svelte:component this={component} />
+    <DreamInterpreter />
+    <StoryGenerator />
+    <FinalStory />
 </div>
