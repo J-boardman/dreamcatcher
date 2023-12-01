@@ -1,5 +1,9 @@
 import { openai } from '$lib/helpers/openai.js';
 
+export const config = {
+    runtime: "edge"
+}
+
 export const POST = async ({ request }) => {
 
     const { prompt } = await request.json();
