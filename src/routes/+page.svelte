@@ -5,13 +5,12 @@
 	import SignInButton from 'clerk-sveltekit/client/SignInButton.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { onMount } from 'svelte';
-	import { journal, pageTitle } from '$lib/stores';
-	import { Journal, resetHeaderImage } from '$lib';
+	import { pageTitle } from '$lib/stores';
 	import type { DreamJournal } from '$lib/types.js';
 	import { afterNavigate, goto } from '$app/navigation';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
-	import NewStoryIcon from 'virtual:icons/pajamas/doc-new';
 	import { CldImage } from 'svelte-cloudinary';
+	import { createJournal, resetHeaderImage } from '$lib';
 
 	let allJournals: DreamJournal[] = [];
 	onMount(() => {
@@ -26,7 +25,7 @@
 	});
 
 	function handleNewStory() {
-		const newStory = Journal.create('New Story');
+		const newStory = createJournal('New Story');
 		goto(`/journal/${newStory.id}?newStory=true`);
 	}
 </script>
@@ -34,10 +33,10 @@
 <SignedIn let:user>
 	<section class="rounded-xl flex items-center h-min p-4 mx-2 text-lg sm:text-xl justify-between">
 		<nav class="flex gap-4 items-center">
-            <a href="/">Global</a>
-            <a href="/?feed=following">Following</a>
+			<a href="/">Global</a>
+			<a href="/?feed=following">Following</a>
 		</nav>
-        <button on:click={handleNewStory} class="btn btn-secondary btn-sm md:btn-md">New Story</button>
+		<button on:click={handleNewStory} class="btn btn-secondary btn-sm md:btn-md">New Story</button>
 	</section>
 	<section class="m-2 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-max">
 		{#each allJournals.filter((item) => item.shared) as story, i}
@@ -85,7 +84,6 @@
 			</a>
 		{/each}
 	</section>
-	<div class="divider md:divider-horizontal" />
 </SignedIn>
 <SignedOut>
 	<div class="hero h-[calc(100lvh-16rem)]">

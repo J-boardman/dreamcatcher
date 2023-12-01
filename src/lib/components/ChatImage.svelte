@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Journal, getChatContext, randomID, systemMessage } from '$lib';
 	import { journal } from '$lib/stores';
 
 	import type { Message } from 'ai';
@@ -8,12 +7,13 @@
 	export let message: Message;
 	import Modal from './Modal.svelte';
 	import InfoIcon from 'virtual:icons/material-symbols/info';
+	import { getChatContext, systemMessage, updateJournal } from '$lib';
 
 	const { setMessages, messages } = getChatContext();
 
 	function handleImageClick() {
 		if (message.content == $journal?.image?.url) return;
-		Journal.updateImage({ url: message.content });
+		updateJournal({ image: { ...$journal.image, url: message.content } });
 		setMessages([...$messages, systemMessage('_', 'Cover Image updated')]);
 	}
 
@@ -51,14 +51,14 @@
 					alt="cover"
 					class="w-96 rounded-t-xl"
 					on:error={() => {
-                        Journal.update({ image: { url: '', created: '' } })
-                        message.content = ""
-                    }}
-                    
+						updateJournal({ image: { url: '', created: '' } });
+						message.content = '';
+					}}
 				/>
 			</button>
 			<div class="flex items-center justify-between p-2 bg-secondary-content rounded-b-xl -mt-2">
 				<p>{timeRemaining} until your image expires.</p>
+
 				<Modal buttonText="" classes="btn-ghost btn-sm btn-circle">
 					<svelte:fragment slot="logo">
 						<InfoIcon class="text-2xl text-primary" />

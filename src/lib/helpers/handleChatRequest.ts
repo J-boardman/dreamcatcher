@@ -1,18 +1,23 @@
 import type { Message } from "ai";
-import { handleFetch } from "./handleFetch";
 import { systemMessage } from "./appendSystemMessage";
+import type { ChatCompletion } from "openai/resources";
 
-export async function handleChatRequest(newMessage: string, messages: Message[]) {
-    const [data, error] = await handleFetch("/api/chat", {
-        method: "POST",
-        body: { messages: [...messages, systemMessage(newMessage)] },
-        extras: { streaming: false }
-    })
+type ChatRequest = Promise<[ChatCompletion | null, Error | null]>
 
-    if (error) {
-        console.error(error)
-        return error
+export async function handleChatRequest(newMessage: string, messages: Message[]): ChatRequest {
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messages: [...messages, systemMessage(newMessage)],
+                streaming: false
+            }),
+        })
+        return [await response.json(), null]
+    } catch (error) {
+        return [null, error as Error]
     }
-
-    return data;
 }

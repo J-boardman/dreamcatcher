@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { finaliseInterpretationPrompt } from '$lib/prompts/prompts';
 	import { journal, state } from '$lib/stores';
-	import { Journal, getChatContext } from '$lib';
-	import { systemMessage } from '$lib/helpers/appendSystemMessage';
+	import { getChatContext, systemMessage, updateJournal } from '$lib';
+    
 
 	const { handleSubmit, messages, isLoading, input, append } = getChatContext();
 
@@ -10,7 +10,7 @@
 		if ($journal.messageList.length > 3) {
 			await append(systemMessage(finaliseInterpretationPrompt, 'Final Interpretation'));
 		}
-		Journal.update({ lastState: 'CONVERSATION_OVER' });
+		updateJournal({ lastState: 'CONVERSATION_OVER' });
 		state.set('CONVERSATION_OVER');
 	}
 
@@ -52,7 +52,7 @@
 		{#if $state != 'STORY_PUBLISHED'}
 			<button
 				disabled={$isLoading || credits == 0}
-				class="btn w-fit md:h-20 animate-none {$messages.length < 2 ? 'hidden' : 'visible'}"
+				class="btn w-fit md:h-20 animate-none {$messages.length < 2 ? 'invisible' : 'visible'}"
 				on:click={finaliseInterpretation}
 			>
 				Start story (1 credit)

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Journal, getChatContext, randomID } from '$lib';
 	import { journal } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import ChatImage from '$lib/components/ChatImage.svelte';
+	import { getChatContext, updateJournal } from '$lib';
 
 	let element: HTMLElement;
 	let messageListLength = 0;
@@ -19,7 +19,7 @@
 	});
 
 	afterNavigate(() => {
-		Journal.update({
+		updateJournal({
 			messageList: $journal.messageList.filter((item) => item.name != 'Cover Image updated')
 		});
 	});

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { Journal, randomID } from '$lib';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import type { DreamJournal } from '$lib/types';
-	import { journal } from '$lib/stores';
 	import { CldImage } from 'svelte-cloudinary';
+	import { createJournal, removeJournal, updateJournal } from '$lib';
 
 	let allJournals: DreamJournal[] = [];
 
@@ -19,13 +18,13 @@
 	});
 
 	function handleNewConversation() {
-		const newConversation = Journal.create(newDreamName);
+		const newConversation = createJournal(newDreamName);
 		goto(`/journal/${newConversation.id}`);
 		newDreamName = '';
 	}
 
 	function handleDelete(id: string) {
-		Journal.remove(id);
+		removeJournal(id);
 		allJournals = allJournals.filter((item) => item.id != id);
 	}
 
@@ -42,8 +41,9 @@
 	<section class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 		{#each [...allJournals] as journal, i}
 			<div class="card card-compact card-side bg-secondary-content shadow-xl">
-				<div class="card-body">
-					<div class="flex items-center gap-3">
+                <div class="h-full card-body flex flex-col">
+                    <Title title={journal.story.title || journal.name || "No Title Yet"} fontSize="text-xl md:text-2xl" />
+					<div class="flex items-center gap-3 mt-auto">
 						<div class="avatar">
 							<div class="mask mask-squircle w-24 h-24">
                                 {#if journal.finalImageUrl}
@@ -53,7 +53,7 @@
 										src={journal?.image?.url}
 										alt="cover"
 										on:error={() => {
-											Journal.updateImage({ url: '' });
+                                            updateJournal({ image: {...journal.image, url: ""}})
 											journal.image.url = '';
 										}}
 									/>
@@ -62,17 +62,17 @@
 								{/if}
 							</div>
 						</div>
-						<div>
-                            <Title title={journal.story.title} fontSize="text-xl md:text-2xl" />
+						<div class="grid gap-3">
 							<div class="md:text-lg opacity-50">Last updated: {Intl.DateTimeFormat("en-au", { dateStyle: "long"}).format(new Date(journal?.lastUpdated))}</div>
+                            <div class="flex gap-3">
+                                <a href="/journal/{journal.id}" class="btn btn-secondary btn-sm">Continue</a>
+                                <button on:click={() => handleDelete(journal.id)} class="btn btn-error btn-outline btn-sm">
+                                    Delete
+                                </button>
+                            </div>
 						</div>
 					</div>
-					<div class="divider my-1" />
 					<div class="card-actions justify-end">
-						<a href="/journal/{journal.id}" class="btn btn-secondary">Continue</a>
-						<button on:click={() => handleDelete(journal.id)} class="btn btn-error btn-outline">
-							Delete
-						</button>
 					</div>
 				</div>
 			</div>

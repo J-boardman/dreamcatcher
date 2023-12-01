@@ -15,8 +15,8 @@
 	import type { UserResource } from '@clerk/types';
 
 	// Helpers
-	import { Journal } from '$lib';
 	import { CldImage } from 'svelte-cloudinary';
+	import { getCurrentJournal } from '$lib';
 
 	// Props
 	export let data;
@@ -32,7 +32,7 @@
 
 	// Hooks
 	onMount(() => {
-		const foundJournal = Journal.getCurrentJournal() as DreamJournal;
+		const foundJournal = getCurrentJournal() as DreamJournal;
 		story = foundJournal.story;
 		coverImage = foundJournal?.image?.url;
         journal = foundJournal

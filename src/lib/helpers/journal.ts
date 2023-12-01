@@ -1,10 +1,10 @@
 import { get } from "svelte/store";
 import { journal } from "../stores";
 import type { DreamJournal, Story } from "../types";
-import { randomID } from "$lib";
 import { page } from "$app/stores";
+import { randomID } from "./randomID";
 
-export function create(name?: string, id?: string) {
+export function createJournal(name?: string, id?: string) {
     const newConversation: DreamJournal = {
         id: id || randomID(),
         lastState: 'INTERPRETING',
@@ -16,52 +16,67 @@ export function create(name?: string, id?: string) {
         finalImageUrl: ""
 
     };
-    saveNewConversation(newConversation)
+    saveNewJournal(newConversation)
     return newConversation;
 }
 
 export function getCurrentJournal() {
     const id = get(page).data?.id;
-    const journals = load();
+    const journals = loadJournal();
     return journals?.find(item => item.id == id);
 }
 
-export function update(updatedItem: Partial<DreamJournal>,) {
+
+export function setJournal() {
+    const foundConversation = getCurrentJournal();
+    if (foundConversation) {
+        journal.set(foundConversation);
+        removeRedundantMessages();
+    }
+    else {
+        const newConversation = createJournal("My dream Journal", get(page).data?.id)
+        journal.set(newConversation);
+        saveJournal()
+    }
+}
+
+export function updateJournal(updatedItem: Partial<DreamJournal>,) {
     journal.update(prev => ({ ...prev, ...updatedItem }))
-    save()
+    saveJournal()
 }
 
-export function updateStory(updatedItem: Partial<Story>) {
-    update({ story: { ...get(journal).story, ...updatedItem }})
-}
-
-export function updateImage(updatedItem: { url?: string, created?: string }) {
-    update({ image: { ...get(journal).image, ...updatedItem } })
-}
-
-export function remove(id?: string) {
+export function removeJournal(id?: string) {
     let removingID = id || get(journal).id
-    const journalList = load();
+    const journalList = loadJournal();
     if (!localStorage || !journalList?.length || !removingID) return;
     const newJournalList = journalList.filter(item => item.id != removingID)
     localStorage.setItem('journals', JSON.stringify(newJournalList))
 }
 
-export function save() {
-    const journalList = load()
+export function saveJournal() {
+    const journalList = loadJournal()
     if (!localStorage || !journalList) return;
     const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? get(journal) : item)
     localStorage.setItem('journals', JSON.stringify(updatedJournalList));
 }
 
-export function saveNewConversation(conversation: DreamJournal) {
-    const journalList = load()
+export function saveNewJournal(conversation: DreamJournal) {
+    const journalList = loadJournal()
     if (!localStorage) return;
     const newJournalList = journalList?.length ? [...journalList, conversation] : [conversation]
     localStorage.setItem("journals", JSON.stringify(newJournalList))
 }
 
-export function load(): DreamJournal[] | undefined {
+export function loadJournal(): DreamJournal[] | undefined {
     if (!localStorage) return;
     return JSON.parse(localStorage.getItem("journals") || "[]")
+}
+
+
+function removeRedundantMessages() {
+    const filteredMessages = get(journal).messageList.filter((item) => {
+        if (item.name == 'Cover Image update' || !item.content) return false;
+        return true;
+    });
+    updateJournal({ messageList: filteredMessages })
 }

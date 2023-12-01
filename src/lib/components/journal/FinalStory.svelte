@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Journal, getChatContext, handleChatRequest, handleFetch } from '$lib';
-	import { generateImagePrompt, imagePromptMessage } from '$lib/prompts/prompts';
+	import { imageSpecifications, imagePromptMessage } from '$lib/prompts/prompts';
 	import { journal, state } from '$lib/stores';
 	import Modal from '../Modal.svelte';
 
@@ -9,6 +8,7 @@
 	import SaveLogo from 'virtual:icons/bi/save';
 	import Title from '../Title.svelte';
 	import ImagePlaceholder from '../ImagePlaceholder.svelte';
+	import { generateImagePrompt, getChatContext, handleChatRequest, handleFetch, updateJournal } from '$lib';
 
 	const { messages, setMessages } = getChatContext();
 
@@ -17,21 +17,24 @@
 	$: isLoading = generatingTitle || generatingImage;
 
 	async function handleImageGeneration() {
-		generatingImage = true;
+        const { mood, setting } = $journal.story
+        generatingImage = true;
+        const prompt = await generateImagePrompt($messages, mood, setting);
+        
+        if(!prompt) {
+            console.warn(prompt);
+            return;
+        }
 
-		const { mood, setting } = $journal.story;
-		const imageSpecifications = generateImagePrompt(mood, setting);
-		const promptData = await handleChatRequest(imagePromptMessage, $messages);
-
-		const [imageData, imageGenerationError] = await handleFetch('/api/image', {
+		const [data, error] = await handleFetch('/api/image', {
 			method: 'POST',
-			body: { prompt: imageSpecifications + promptData }
+			body: { prompt: imageSpecifications + " " + prompt }
 		});
 
 		generatingImage = false;
 
-		if (imageGenerationError) {
-			console.error(imageGenerationError);
+		if (error || !data.url) {
+			console.warn(error);
 			console.log('error triggered !!!!!!!!!!!!');
 			return;
 		}
@@ -39,28 +42,36 @@
 		setMessages([
 			...$messages,
 			{
-				id: imageData.created,
-				content: imageData.url,
+				id: data.created,
+				content: data.url,
 				name: 'image',
 				role: 'system'
 			}
 		]);
-		Journal.update({ image: { url: imageData.url, created: imageData.created } });
+		updateJournal({ image: { url: data.url, created: data.created } });
 	}
 
 	async function handleTitleGeneration() {
 		generatingTitle = true;
-		const title = await handleChatRequest(
+		const [data, error] = await handleChatRequest(
 			'Generate a short 3-5 word title for the story.',
 			$messages
 		);
-		Journal.updateStory({ title: await title.replaceAll('"', '') });
+
+		if (error) {
+			console.warn(error);
+			return;
+		}
+
+		const title = data?.choices[0].message.content?.replaceAll('"', '');
+
+		updateJournal({ story: { ...$journal.story, title: title as string } });
 		generatingTitle = false;
 	}
 
 	function handleTitleChange(e: Event) {
 		const target = e.target as HTMLInputElement;
-		Journal.updateStory({ title: target.value });
+		updateJournal({ story: { ...$journal.story, title: target.value } });
 	}
 
 	$: sharing = $journal?.shared;
@@ -68,7 +79,7 @@
 
 	async function finaliseStory() {
 		saving = true;
-		Journal.update({ shared: sharing });
+		updateJournal({ shared: sharing });
 		if (!$journal.image.url) return;
 		const [uploadedImage, error] = await handleFetch('/api/image/upload', {
 			method: 'POST',
@@ -82,7 +93,7 @@
 		//@ts-ignore
 		console.log(uploadedImage.url);
 		// @ts-ignore
-		Journal.update({ finalImageUrl: uploadedImage.url, lastState: "STORY_PUBLISHED" });
+		updateJournal({ finalImageUrl: uploadedImage.url, lastState: 'STORY_PUBLISHED' });
 		console.log('done!');
 		saving = false;
 	}
@@ -123,7 +134,7 @@
 								<img
 									src={$journal?.image?.url}
 									alt="cover"
-									on:error={() => Journal.updateImage({ url: '' })}
+									on:error={() => updateJournal({ image: { ...$journal.image, url: '' } })}
 								/>
 							{:else}
 								<ImagePlaceholder message="" />

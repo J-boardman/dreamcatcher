@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Journal } from '$lib';
+	import { updateJournal } from '$lib';
 	import { state } from '$lib/stores';
 	import { useChat } from 'ai/svelte';
 	import { onMount, setContext } from 'svelte';
@@ -24,12 +24,14 @@
 
 	afterNavigate(() => {
 		if ($page.url.searchParams.get('newStory')) {
-			Journal.update({ lastState: 'CONVERSATION_OVER' });
+			updateJournal({ lastState: 'CONVERSATION_OVER' });
 			state.set('CONVERSATION_OVER');
 		}
 	});
 </script>
 
 <main class="m-2 mb-0 min-h-[calc(100lvh-80px)] flex flex-col">
-	<slot />
+	<div class="flex flex-col h-[calc(100dvh-2rem)] md:h-[calc(100dvh-5rem)] overflow-scroll md:pl-2">
+		<slot />
+	</div>
 </main>

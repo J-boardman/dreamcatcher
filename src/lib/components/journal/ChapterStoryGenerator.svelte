@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Journal, getChatContext } from '$lib';
-	import { systemMessage } from '$lib/helpers/appendSystemMessage';
+	import { getChatContext, systemMessage, updateJournal } from '$lib'
 	import { journal, state } from '$lib/stores';
 
 	const { isLoading, messages, append } = getChatContext();
@@ -18,15 +17,17 @@
 
 		const fullStory = choicesRemoved.join('\n').replaceAll('\n\n', '\n');
 
-		Journal.updateStory({ story: fullStory });
-		Journal.update({ lastState: 'FINALISING_STORY' });
+		updateJournal({
+			story: { ...$journal.story, story: fullStory },
+			lastState: 'FINALISING_STORY'
+		});
 		state.set('FINALISING_STORY');
 	}
 
 	async function handleOptionClick(e: MouseEvent) {
 		const { value } = e.target as HTMLButtonElement;
 		await append(systemMessage(value, 'hidden message'));
-		if (value == 'Wrap it up') finaliseChapterStory();        
+		if (value == 'Wrap it up') finaliseChapterStory();
 	}
 
 	async function handleCustomInstruction(e: SubmitEvent) {
@@ -40,11 +41,11 @@
 		<div class="join flex">
 			{#each Array(3) as _, i}
 				<button
-                    on:click={handleOptionClick}
-                    value="option {i + 1}"
-                    disabled={$isLoading}
-                    class="btn join-item flex-1 animate-none"
-                >        
+					on:click={handleOptionClick}
+					value="option {i + 1}"
+					disabled={$isLoading}
+					class="btn join-item flex-1 animate-none"
+				>
 					Option {i + 1}
 				</button>
 			{/each}
