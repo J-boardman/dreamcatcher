@@ -1,4 +1,6 @@
 # [Dreamcatcher](https://dreamcatcher-sv.vercel.app/)
+**Please note: This application is in development and is not indicative of final release.**
+
 ## Table of Contents
 - [General Info](#general-info)
 - [Technologies](#technologies)
