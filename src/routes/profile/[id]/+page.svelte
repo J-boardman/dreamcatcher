@@ -1,18 +1,23 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ProfileLayout from '$lib/components/profile/ProfileLayout.svelte';
 	import { headerImage, pageTitle } from '$lib/stores';
-	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
+	import { clerk } from 'clerk-sveltekit/client';
+	import { onMount } from 'svelte';
 
 	$: filterBy = $page.url.searchParams.get('filter');
 
-    export let data;
-    
-    pageTitle.set(`${data.username}'s profile`)
-    headerImage.set({ src: data.imageUrl, rounded: true})
+	export let data;
+
+	onMount(() => {
+		pageTitle.set(`${data.username}'s profile`);
+		headerImage.set({ src: data.imageUrl, rounded: true });
+	});
+
+	$: currentUserId = $clerk?.user?.id;
+	if (currentUserId == data.id) goto('/profile');
 </script>
 
-<SignedIn let:user>
-    {#if filterBy == "dreams" && user?.id != data.id}
-        <p>Forbidden</p>
-    {/if}
-</SignedIn>
+<ProfileLayout user={{ username: data.username, imageUrl: data.imageUrl }}>
+</ProfileLayout>

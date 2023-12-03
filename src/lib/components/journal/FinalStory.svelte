@@ -8,7 +8,13 @@
 	import SaveLogo from 'virtual:icons/bi/save';
 	import Title from '../Title.svelte';
 	import ImagePlaceholder from '../ImagePlaceholder.svelte';
-	import { generateImagePrompt, getChatContext, handleChatRequest, handleFetch, updateJournal } from '$lib';
+	import {
+		generateImagePrompt,
+		getChatContext,
+		handleChatRequest,
+		handleFetch,
+		updateJournal
+	} from '$lib';
 
 	const { messages, setMessages } = getChatContext();
 
@@ -17,18 +23,18 @@
 	$: isLoading = generatingTitle || generatingImage;
 
 	async function handleImageGeneration() {
-        const { mood, setting } = $journal.story
-        generatingImage = true;
-        const prompt = await generateImagePrompt($messages, mood, setting);
-        
-        if(!prompt) {
-            console.warn(prompt);
-            return;
-        }
+		const { mood, setting } = $journal.story;
+		generatingImage = true;
+		const prompt = await generateImagePrompt($messages, mood, setting);
+
+		if (!prompt) {
+			console.warn(prompt);
+			return;
+		}
 
 		const [data, error] = await handleFetch('/api/image', {
 			method: 'POST',
-			body: { prompt: imageSpecifications + " " + prompt }
+			body: { prompt: imageSpecifications + ' ' + prompt }
 		});
 
 		generatingImage = false;

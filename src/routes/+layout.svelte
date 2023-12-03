@@ -5,10 +5,6 @@
 	import Background from '$lib/components/ui/Background.svelte';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
-	import { onMount } from 'svelte';
-	import { pageTitle } from '$lib/stores';
-
-    onMount(() => pageTitle.set("Dreamcatcher"))
 
 	onNavigate((navigation) => {
 		// @ts-expect-error
@@ -27,8 +23,8 @@
 <Background />
 <section class="min-h-[100dvh] flex flex-col">
 	<Header />
-	<slot class="flex-1"/>
+		<slot />
+	<SignedIn>
+		<MobileNav />
+	</SignedIn>
 </section>
-<SignedIn>
-	<MobileNav />
-</SignedIn>

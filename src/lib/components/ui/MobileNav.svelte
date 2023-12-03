@@ -19,7 +19,7 @@
 	});
 </script>
 
-<div class="md:hidden h-12 w-12 rounded-full bg-base-200 fixed bottom-4 right-4">
+<div class="md:hidden h-12 w-12 rounded-xl bg-base-200 fixed bottom-4 right-4">
 	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<div class="dropdown dropdown-top dropdown-end w-full h-full">
@@ -29,7 +29,7 @@
 		<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 		<ul
 			tabindex="0"
-			class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box grid grid-cols-2 w-max text-xs"
+			class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box grid grid-cols-2 w-max text-xs mb-2"
 		>
 			<!-- <h2 class="m-1 flex gap-2 items-center col-span-3 text-xl justify-center">
 				<img src={logo} alt="logo" class="w-10 h-10" />

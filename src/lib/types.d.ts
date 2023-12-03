@@ -1,4 +1,5 @@
 import type { Message } from "ai";
+import type { UserResource } from "@clerk/typess"
 
 export type State =
     | 'INTERPRETING'
@@ -33,3 +34,5 @@ export type DreamJournal = {
     shared?: boolean
     finalImageUrl: string;
 };
+
+export type UserResource = UserResource

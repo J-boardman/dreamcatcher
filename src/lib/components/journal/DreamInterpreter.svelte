@@ -33,7 +33,7 @@
 </script>
 
 {#if $state == 'INTERPRETING' || $state == 'STORY_PUBLISHED'}
-	<form on:submit={handleSubmit} class="form-control md:flex-row gap-2 m-2 w-full mx-auto">
+	<form on:submit={handleSubmit} class="form-control md:flex-row gap-2 mt-2 w-full mx-auto">
 		<div class="w-full flex join">
 			<textarea
 				on:focus={handleInput}

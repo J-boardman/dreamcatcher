@@ -14,7 +14,6 @@
 	});
 </script>
 
-<div class="grid place-items-center">
-	<div class=" my-4 font-bold text-secondary text-2xl">{message}</div>
+<div class="flex-1 grid place-items-center">
 	<SignIn redirectUrl="/admin" />
 </div>

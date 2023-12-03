@@ -3,7 +3,7 @@
 	import SignUpButton from 'clerk-sveltekit/client/SignUpButton.svelte';
 </script>
 
-<div class="hero flex-1">
+<div>
 	<div class="hero-content text-center">
 		<div class="max-w-3xl">
 			<h1 class="text-5xl font-bold">
@@ -15,8 +15,9 @@
 				captivating insights and imaginative tales based on your dreams!
 			</p>
 			<div class="flex gap-4 justify-center">
-				<SignInButton class="btn" mode="modal" />
-				<SignUpButton class="btn btn-secondary" mode="modal" />
+                <SignInButton class="btn text-xl" mode="modal"/>
+				<SignUpButton class="btn btn-secondary text-xl" mode="modal" />
+
 			</div>
 		</div>
 	</div>
