@@ -1,4 +1,4 @@
-import { imagePromptMessage } from "$lib/prompts/prompts";
+import { imagePromptMessage } from "$lib/helpers/prompts";
 import type { Message } from "ai";
 import { handleChatRequest } from "./handleChatRequest";
 

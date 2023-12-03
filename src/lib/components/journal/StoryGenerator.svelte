@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getChatContext, systemMessage, updateJournal } from '$lib';
-	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/prompts/prompts';
+	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/helpers/prompts';
 	import { journal, state } from '$lib/stores';
 
 	const { append, messages, isLoading } = getChatContext();
@@ -34,12 +34,23 @@
 </script>
 
 {#if $state == 'CONVERSATION_OVER'}
-	<section class="grid grid-cols-4 gap-4 py-4 md:pb-1 h-min">
+	<section class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 pt-4 md:pb-1 h-min">
+        <select
+            bind:value={$journal.story.type}
+            class="select col-span-2 md:col-span-1"
+            name="type"
+            placeholder="Story Type"
+            disabled={$isLoading}
+        >
+            <option disabled selected>Story Type</option>
+            <option value="fullStory">Full story</option>
+            <option value="chapterStory">Choose your own adventure</option>
+        </select>
 		<input
 			type="text"
-			placeholder="Mood"
+			placeholder="Mood (Optional)"
 			list="moods"
-			class="input col-span-2 md:col-span-1"
+			class="input"
 			name="mood"
 			bind:value={$journal.story.mood}
 			disabled={$isLoading}
@@ -56,9 +67,9 @@
 		</datalist>
 		<input
 			type="text"
-			placeholder="Setting"
+			placeholder="Setting (Optional)"
 			list="settings"
-			class="input col-span-2 md:col-span-1"
+			class="input"
 			name="setting"
 			bind:value={$journal.story.setting}
 			disabled={$isLoading}
@@ -76,21 +87,10 @@
 			<option>Vast desert</option>
 			<option>Dense Jungle</option>
 		</datalist>
-		<select
-			bind:value={$journal.story.type}
-			class="select col-span-2 md:col-span-1"
-			name="type"
-			placeholder="Story Type"
-			disabled={$isLoading}
-		>
-			<option disabled selected>Story Type</option>
-			<option value="fullStory">Full story</option>
-			<option value="chapterStory">Choose your own adventure</option>
-		</select>
 		<button
 			disabled={$isLoading || !$journal.story.type}
 			on:click={handleStoryGeneration}
-			class="btn btn-secondary animate-none"
+			class="btn btn-secondary animate-none col-span-2 md:col-span-1 w-3/4 md:w-full"
 		>
 			Start!
 		</button>

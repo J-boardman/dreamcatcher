@@ -1,7 +1,7 @@
 <script>
 	import logo from '$lib/assets/logo.png';
 	import { pageTitle } from '$lib/stores';
-	import Title from './Title.svelte';
+	import Title from '../Title.svelte';
 	import HomeIcon from 'virtual:icons/line-md/home-md';
 	import BookIcon from 'virtual:icons/tdesign/book';
 	import GridIcon from 'virtual:icons/line-md/grid-3-filled';

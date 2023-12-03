@@ -7,8 +7,8 @@
 	import Title from '$lib/components/Title.svelte';
 	import UserCard from '$lib/components/UserCard.svelte';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
-	import CommentSection from '$lib/components/CommentSection.svelte';
-	import LikeButton from '$lib/components/LikeButton.svelte';
+	import CommentSection from '$lib/components/story/CommentSection.svelte';
+	import LikeButton from '$lib/components/story/LikeButton.svelte';
 
 	// Types
 	import type { DreamJournal, Story } from '$lib/types.js';
@@ -22,7 +22,7 @@
 	export let data;
 
 	// State
-	let showingComments = false;
+	let showingComments = true;
 	let liked = false;
 	let likes = 99;
     let journal: DreamJournal
@@ -39,15 +39,15 @@
 	});
 </script>
 
-<main class="grid sm:grid-cols-[1fr,_1fr] lg:grid-cols-[1fr,2.35fr] gap-2">
-	<figure class="aspect-4/7 sm:aspect-auto">
+<main class="grid sm:grid-cols-[1fr,_1fr] lg:grid-cols-[1fr,2.35fr] gap-2 flex-1">
+	<figure class="aspect-4/7 sm:aspect-auto h-full">
 		{#if journal?.finalImageUrl}
 			<a
 				href={window.innerWidth > 640 ? `/story/${data.id}/cover` : '#'}
 				class="sticky top-0"
 				style="view-transition-name: testing-{data.id};"
 			>
-				<CldImage src={journal?.finalImageUrl} height={1024} width={1792} style="height: 100%" />
+				<CldImage src={journal?.finalImageUrl} height={990} width={1732} class="h-full"/>
 			</a>
 		{:else}
 			<ImagePlaceholder />

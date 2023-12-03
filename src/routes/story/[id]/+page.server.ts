@@ -1,4 +1,4 @@
-import { clerk } from '$lib/helpers/clerk.js';
+import { clerk } from '$lib/services/clerk.js';
 import { wait } from '$lib/helpers/wait.js';
 import type { User } from '@clerk/backend';
 

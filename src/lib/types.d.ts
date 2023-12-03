@@ -24,6 +24,7 @@ export type JournalImage = {
 export type DreamJournal = {
     id: string;
     name?: string;
+    created?: Date
     lastUpdated: Date;
     lastState: State;
     messageList: Message[];

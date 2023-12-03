@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { finaliseInterpretationPrompt } from '$lib/prompts/prompts';
+	import { finaliseInterpretationPrompt } from '$lib/helpers/prompts';
 	import { journal, state } from '$lib/stores';
 	import { getChatContext, systemMessage, updateJournal } from '$lib';
-    
+	import SendIcon from 'virtual:icons/carbon/send';
 
 	const { handleSubmit, messages, isLoading, input, append } = getChatContext();
 
@@ -32,7 +32,6 @@
 			: '';
 </script>
 
-<!-- on:input={handleInput} -->
 {#if $state == 'INTERPRETING' || $state == 'STORY_PUBLISHED'}
 	<form on:submit={handleSubmit} class="form-control md:flex-row gap-2 m-2 w-full mx-auto">
 		<div class="w-full flex join">
@@ -42,21 +41,21 @@
 				on:input={handleInput}
 				bind:this={textInput}
 				bind:value={$input}
-				class="textarea textarea-xs md:textarea-sm flex-1 join-item resize-none leading-6 focus:h-max"
+				class="textarea textarea-xs border-none text-base flex-1 join-item resize-none h-full max-h-80"
 				placeholder={placeholderText}
 			/>
-			<button class="btn btn-secondary join-item h-full animate-none" disabled={$isLoading}
-				>Send</button
-			>
-		</div>
-		{#if $state != 'STORY_PUBLISHED'}
-			<button
-				disabled={$isLoading || credits == 0}
-				class="btn w-fit md:h-20 animate-none {$messages.length < 2 ? 'invisible' : 'visible'}"
-				on:click={finaliseInterpretation}
-			>
-				Start story (1 credit)
+			<button class="btn btn-secondary btn-xs join-item h-full animate-none" disabled={$isLoading}>
+                <SendIcon class="text-xl"/>
 			</button>
-		{/if}
+		</div>
+		<button
+			disabled={$isLoading || credits == 0 || $messages.length < 2}
+			class="btn w-fit md:h-20 animate-none {$state == 'STORY_PUBLISHED'
+				? 'btn-sm md:btn-md invisible md:hidden'
+				: 'visible'}"
+			on:click={finaliseInterpretation}
+		>
+			Start story (1 credit)
+		</button>
 	</form>
 {/if}

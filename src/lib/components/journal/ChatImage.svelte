@@ -2,10 +2,10 @@
 	import { journal } from '$lib/stores';
 
 	import type { Message } from 'ai';
-	import ImagePlaceholder from './ImagePlaceholder.svelte';
+	import ImagePlaceholder from '../ImagePlaceholder.svelte';
 	import { onMount } from 'svelte';
 	export let message: Message;
-	import Modal from './Modal.svelte';
+	import Modal from '../ui/Modal.svelte';
 	import InfoIcon from 'virtual:icons/material-symbols/info';
 	import { getChatContext, systemMessage, updateJournal } from '$lib';
 

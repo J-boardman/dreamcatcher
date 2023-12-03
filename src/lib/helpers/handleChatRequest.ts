@@ -1,5 +1,5 @@
 import type { Message } from "ai";
-import { systemMessage } from "./appendSystemMessage";
+import { systemMessage } from "./systemMessage";
 import type { ChatCompletion } from "openai/resources";
 
 type ChatRequest = Promise<[ChatCompletion | null, Error | null]>

@@ -2,7 +2,7 @@
 	import { journal } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
-	import ChatImage from '$lib/components/ChatImage.svelte';
+	import ChatImage from '$lib/components/journal/ChatImage.svelte';
 	import { getChatContext, updateJournal } from '$lib';
 
 	let element: HTMLElement;

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { imageSpecifications, imagePromptMessage } from '$lib/prompts/prompts';
+	import { imageSpecifications, imagePromptMessage } from '$lib/helpers/prompts';
 	import { journal, state } from '$lib/stores';
-	import Modal from '../Modal.svelte';
+	import Modal from '../ui/Modal.svelte';
 
 	import RefreshLogo from 'virtual:icons/charm/refresh';
 	import ImageLogo from 'virtual:icons/ph/image';

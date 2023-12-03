@@ -1,17 +1,9 @@
-import { wait } from "$lib";
-import { clerk } from "$lib/helpers/clerk";
+import { clerk } from "$lib/services/clerk";
 import type { User } from "@clerk/backend";
 
 export async function load() {
 
-    return {
-        streamed: {
-            userList: new Promise(async (resolve, reject) => {
-                resolve(getUserList())
-            }) as Promise<Partial<User>[]>
-
-        }
-    }
+    return {}
 }
 
 async function getUserList(): Promise<Partial<User>[]> {

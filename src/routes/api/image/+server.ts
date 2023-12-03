@@ -1,4 +1,4 @@
-import { openai } from '$lib/helpers/openai.js';
+import { openai } from '$lib/services/openai.js';
 
 export const config = {
     runtime: "edge"

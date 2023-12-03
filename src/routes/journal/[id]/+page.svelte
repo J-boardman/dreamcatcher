@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChatBox from '$lib/components/ChatBox.svelte';
+	import ChatBox from '$lib/components/journal/ChatBox.svelte';
 	import { journal, pageTitle, state } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
@@ -9,7 +9,7 @@
 	import type { Snapshot } from '@sveltejs/kit';
 	import { getChatContext, setJournal, updateJournal } from '$lib';
 
-	export let data;
+	// export let data;
 	const { input, messages, setMessages } = getChatContext();
 
 	export const snapshot: Snapshot<string> = {

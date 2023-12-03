@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Journal } from '$lib';
 	import { headerImage, journal, pageTitle, profileImage, profileTitle } from '$lib/stores';
 	import type { DreamJournal } from '$lib/types';
 	import { clerk } from 'clerk-sveltekit/client';

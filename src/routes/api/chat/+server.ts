@@ -1,14 +1,6 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai';
-
-import { env } from '$env/dynamic/private';
-// You may want to replace the above with a static private env variable
-// for dead-code elimination and build-time type-checking:
-// import { OPENAI_API_KEY } from '$env/static/private'
-
-import { openai } from '$lib/helpers/openai';
-import { dreamInterpretatorPrompt } from '$lib/prompts/prompts';
-import type { Stream } from 'openai/streaming';
-import type { ChatCompletionChunk } from 'openai/resources';
+import { openai } from '$lib/services/openai';
+import { dreamInterpretatorPrompt } from '$lib/helpers/prompts';
 import type { RequestHandler } from '@sveltejs/kit';
 
 
@@ -38,8 +30,8 @@ export const POST = (async ({ request }: { request: Request}) => {
 
     // Convert the response into a friendly text-stream
 
-    //@ts-ignore
+    //@ts-expect-error
     const stream = OpenAIStream(response);
-    // Respond with the stream
     return new StreamingTextResponse(stream);
+
 }) satisfies RequestHandler;

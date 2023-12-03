@@ -1,4 +1,4 @@
-import { cloudinaryUpload } from '$lib/cloudinary.js';
+import { cloudinaryUpload } from '$lib/services/cloudinary.js';
 
 export const POST = async ({ request }) => {
     const { url } = await request.json();

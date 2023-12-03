@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
-	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
-	import Title from '$lib/components/Title.svelte';
 	import type { DreamJournal } from '$lib/types';
-	import { CldImage } from 'svelte-cloudinary';
-	import { createJournal, removeJournal, updateJournal } from '$lib';
+	import { createJournal, removeJournal, wait } from '$lib';
+	import JournalCard from '$lib/components/journal/JournalCard.svelte';
 
 	let allJournals: DreamJournal[] = [];
 
@@ -23,7 +21,7 @@
 		newDreamName = '';
 	}
 
-	function handleDelete(id: string) {
+	async function handleDelete(id: string) {
 		removeJournal(id);
 		allJournals = allJournals.filter((item) => item.id != id);
 	}
@@ -40,108 +38,7 @@
 
 	<section class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 		{#each [...allJournals] as journal, i}
-			<div class="card card-compact card-side bg-secondary-content shadow-xl">
-                <div class="h-full card-body flex flex-col">
-                    <Title title={journal.story.title || journal.name || "No Title Yet"} fontSize="text-xl md:text-2xl" />
-					<div class="flex items-center gap-3 mt-auto">
-						<div class="avatar">
-							<div class="mask mask-squircle w-24 h-24">
-                                {#if journal.finalImageUrl}
-                                    <CldImage src={journal.finalImageUrl} width={400} height={600}/>
-								{:else if journal?.image?.url}
-									<img
-										src={journal?.image?.url}
-										alt="cover"
-										on:error={() => {
-                                            updateJournal({ image: {...journal.image, url: ""}})
-											journal.image.url = '';
-										}}
-									/>
-								{:else}
-									<ImagePlaceholder message="No image" />
-								{/if}
-							</div>
-						</div>
-						<div class="grid gap-3">
-							<div class="md:text-lg opacity-50">Last updated: {Intl.DateTimeFormat("en-au", { dateStyle: "long"}).format(new Date(journal?.lastUpdated))}</div>
-                            <div class="flex gap-3">
-                                <a href="/journal/{journal.id}" class="btn btn-secondary btn-sm">Continue</a>
-                                <button on:click={() => handleDelete(journal.id)} class="btn btn-error btn-outline btn-sm">
-                                    Delete
-                                </button>
-                            </div>
-						</div>
-					</div>
-					<div class="card-actions justify-end">
-					</div>
-				</div>
-			</div>
-			<!-- <section class="collapse collapse-plus bg-base-300 my-2 h-min">
-				<input type="radio" name="my-accordion-3" />
-				<article class="collapse-title text-xl font-medium flex gap-4 items-center">
-					{journal.name}
-				</article>
-				<article class="grid grid-cols-2 md:flex items-center gap-2 m-4">
-					<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
-					<button
-						on:click={() => handleDelete(journal.id)}
-						class="btn btn-sm btn-outline btn-error"
-					>
-						Delete
-					</button>
-					<div class="badge badge-lg badge-secondary badge-outline col-span-2 w-full md:w-fit">
-						Updated:
-						{Intl.DateTimeFormat('en-au', { dateStyle: 'medium' }).format(
-							new Date(journal.lastUpdated)
-						)}
-					</div>
-				</article>
-				<div class="collapse-content gap-4">
-					<Title title={journal.story.title} />
-					{#if journal.imageUrl}
-						<div class="divider divider-horizontal" />
-						<img
-							src={journal.imageUrl}
-							alt="cover"
-							class="rounded-xl my-2"
-							on:error={() => (journal.imageUrl = '')}
-						/>
-					{/if}
-				</div>
-			</section> -->
-			<!-- <div class="card card-compact bg-base-300 justify-between shadow-xl">
-				<figure class="flex-1">
-					{#if journal.imageUrl}
-						<img
-							src={journal.imageUrl}
-							alt="cover"
-							on:error={() => (journal.imageUrl = '')}
-							class="h-full"
-						/>
-					{:else}
-						<ImagePlaceholder />
-					{/if}
-				</figure>
-				<div class="card-body flex-grow-0">
-					<h2 class="card-title">
-						<Title title={journal.story.title || journal.name + ' Journal'} />
-					</h2>
-					<p class="">
-						Last Updated: {Intl.DateTimeFormat('en-au', { dateStyle: 'long' }).format(
-							new Date(journal.lastUpdated)
-						)}
-					</p>
-					<div class="card-actions justify-end">
-						<a href="/journal/{journal.id}" class="btn btn-sm btn-secondary">Continue</a>
-						<button
-							on:click={() => handleDelete(journal.id)}
-							class="btn btn-sm btn-outline btn-error"
-						>
-							Delete
-						</button>
-					</div>
-				</div>
-			</div> -->
+			<JournalCard {journal} {handleDelete}/>
 		{/each}
 	</section>
 </section>

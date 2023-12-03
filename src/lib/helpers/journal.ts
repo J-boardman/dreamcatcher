@@ -8,9 +8,10 @@ export function createJournal(name?: string, id?: string) {
     const newConversation: DreamJournal = {
         id: id || randomID(),
         lastState: 'INTERPRETING',
+        created: new Date(),
         lastUpdated: new Date(),
         messageList: [{ role: "system", name: "hidden message", id: "00", content: "" }],
-        name: name || "Dream Journal " + randomID(),
+        name: name || "Dream Journal",
         story: { title: "", story: "", mood: "", setting: "", type: "", chapterIndexStart: 0 },
         image: { url: "", created: "" },
         finalImageUrl: ""

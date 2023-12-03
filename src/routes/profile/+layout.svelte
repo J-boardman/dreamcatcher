@@ -24,11 +24,6 @@
 				<a class={filterBy == 'liked' ? 'text-secondary' : ''} href="{pathname}?filter=liked">
 					Liked Stories
 				</a>
-				{#if pathname == '/profile'}
-					<a class={filterBy == 'dreams' ? 'text-secondary' : ''} href="{pathname}?filter=dreams">
-						Dreams
-					</a>
-				{/if}
 			</nav>
 		</section>
         <div class="divider md:divider-horizontal" />

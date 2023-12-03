@@ -1,9 +1,9 @@
 <script>
 	import '../app.css';
-	import Header from '$lib/components/Header.svelte';
+	import Header from '$lib/components/ui/Header.svelte';
 	import { onNavigate } from '$app/navigation';
-	import Background from '$lib/components/Background.svelte';
-	import MobileNav from '$lib/components/MobileNav.svelte';
+	import Background from '$lib/components/ui/Background.svelte';
+	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
 	import { onMount } from 'svelte';
 	import { pageTitle } from '$lib/stores';
