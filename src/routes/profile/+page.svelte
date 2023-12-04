@@ -4,6 +4,7 @@
 	import { clerk } from 'clerk-sveltekit/client';
 	import ProfileLayout from '$lib/components/profile/ProfileLayout.svelte';
 	import type { UserResource } from '@clerk/types';
+    import ProfileBottomNavigation from "$lib/components/profile/ProfileBottomNavigation.svelte"
 
 	pageTitle.set(`${$clerk?.user?.username}'s profile`);
 	profileTitle.set(`${$clerk?.user?.username}`);
@@ -14,5 +15,5 @@
 </script>
 
 <ProfileLayout {user}>
-    
 </ProfileLayout>
+<ProfileBottomNavigation currentUserProfile />

@@ -4,7 +4,7 @@
 	import type { DreamJournal } from '$lib/types';
 	import { createJournal, removeJournal, wait } from '$lib';
 	import JournalCard from '$lib/components/journal/JournalCard.svelte';
-	import PageBanner from '$lib/components/ui/PageBanner.svelte';
+	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 	import CreateIcon from 'virtual:icons/system-uicons/create';
 
 	let allJournals: DreamJournal[] = [];
@@ -31,21 +31,25 @@
 	let newDreamName = '';
 </script>
 
-<section class="m-2 mx-4">
-	<PageBanner>
-		<article class="join flex items-center justify-center w-full h-full">
-			<input type="text" class="h-full input join-item flex-1 md:flex-none" bind:value={newDreamName} placeholder="New Journal Name"/>
-			<button on:click={handleNewConversation} class="btn join-item h-full">
-				<CreateIcon />
-                <span class="hidden md:flex">New Journal</span>
-			</button>
-		</article>
-	</PageBanner>
-	<div class="divider" />
-
-	<section class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-16 md:mb-0">
+<section class="m-2 md:mx-4">
+	<section
+		class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-16 md:mb-0"
+	>
 		{#each [...allJournals] as journal, i}
 			<JournalCard {journal} {handleDelete} />
 		{/each}
 	</section>
 </section>
+
+<BottomActions>
+	<input
+		type="text"
+		class="h-full input join-item flex-1 md:flex-none w-60 md:w-fit"
+		bind:value={newDreamName}
+		placeholder="New Journal Name"
+	/>
+	<button on:click={handleNewConversation} class="btn join-item h-full">
+		<CreateIcon />
+		<span class="hidden md:flex">New Journal</span>
+	</button>
+</BottomActions>

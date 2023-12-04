@@ -1,13 +1,7 @@
 <script lang="ts">
 	import type { UserResource } from '@clerk/types';
 	import Title from '../Title.svelte';
-	import { page } from '$app/stores';
-	import PageBanner from '$lib/components/ui/PageBanner.svelte';
-
 	export let user: Partial<UserResource> | null | undefined;
-
-	let pathname = $page.url.pathname;
-	$: filterBy = $page.url.searchParams.get('filter');
 </script>
 
 <section class="flex md:hidden mb-2 gap-4 items-center">
@@ -28,9 +22,4 @@
 	{/if}
 </section>
 
-<PageBanner>
-	<a class="btn join-item {filterBy == null ? 'btn-secondary' : ''}" href={pathname}>Stories</a>
-	<a class="btn join-item {filterBy == 'liked' ? 'btn-secondary' : ''}" href="{pathname}?filter=liked">
-		Liked Stories
-	</a>
-</PageBanner>
+

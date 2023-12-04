@@ -13,15 +13,15 @@
 </script>
 
 <button
-	class="flex gap-1 font-bold items-center duration-200 md:hover:text-primary {liked
+	class="flex gap-1 h-full join-item btn font-bold items-center duration-200 md:hover:text-primary {liked
 		? 'text-primary'
 		: 'text-white'}"
 	on:click={handleLike}
 >
-	{likes}
 	{#if liked}
-		<HeartIconFilled class="text-3xl " />
+		<HeartIconFilled class="text-2xl " />
 	{:else}
-		<HeartIconOutline class="text-3xl" />
+		<HeartIconOutline class="text-2xl" />
 	{/if}
+	{likes}
 </button>

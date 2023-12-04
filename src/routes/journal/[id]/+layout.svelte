@@ -30,8 +30,8 @@
 	});
 </script>
 
-<main class="m-2 mb-0 flex flex-col">
-	<div class="flex flex-col h-[calc(100dvh-2rem)] md:h-[calc(100dvh-5rem)] overflow-scroll md:pl-2">
+<main class="mt-2 mb-0 flex flex-col flex-1">
+	<div class="flex flex-col h-[calc(100dvh-1.5rem)] md:h-[calc(100dvh-5rem)] overflow-scroll pl-2">
 		<slot />
 	</div>
 </main>

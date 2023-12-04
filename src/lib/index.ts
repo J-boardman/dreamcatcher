@@ -1,5 +1,5 @@
 // place files you want to import through the `$lib` alias in this folder.
-import { createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal } from "./helpers/journal"
+import { createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal, handleNewStory } from "./helpers/journal"
 import { wait } from "./helpers/wait"
 import resetHeaderImage from "./helpers/resetHeaderImage"
 import { randomID } from "./helpers/randomID"
@@ -18,7 +18,8 @@ export {
     loadJournal,
     getCurrentJournal,
     setJournal,
-    
+    handleNewStory
+
 }
 
 export {

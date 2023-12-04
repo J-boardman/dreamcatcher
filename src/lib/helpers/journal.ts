@@ -3,6 +3,7 @@ import { journal } from "../stores";
 import type { DreamJournal, Story } from "../types";
 import { page } from "$app/stores";
 import { randomID } from "./randomID";
+import { goto } from "$app/navigation";
 
 export function createJournal(name?: string, id?: string) {
     const newConversation: DreamJournal = {
@@ -66,6 +67,12 @@ export function saveNewJournal(conversation: DreamJournal) {
     if (!localStorage) return;
     const newJournalList = journalList?.length ? [...journalList, conversation] : [conversation]
     localStorage.setItem("journals", JSON.stringify(newJournalList))
+}
+
+
+export function handleNewStory() {
+    const newStory = createJournal();
+    goto(`/journal/${newStory.id}?newStory=true`);
 }
 
 export function loadJournal(): DreamJournal[] | undefined {

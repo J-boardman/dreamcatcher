@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ProfileBottomNavigation from '$lib/components/profile/ProfileBottomNavigation.svelte';
 	import ProfileLayout from '$lib/components/profile/ProfileLayout.svelte';
 	import { headerImage, pageTitle } from '$lib/stores';
 	import { clerk } from 'clerk-sveltekit/client';
@@ -21,3 +22,4 @@
 
 <ProfileLayout user={{ username: data.username, imageUrl: data.imageUrl }}>
 </ProfileLayout>
+<ProfileBottomNavigation />

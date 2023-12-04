@@ -8,7 +8,6 @@
 	import UserCard from '$lib/components/UserCard.svelte';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
 	import CommentSection from '$lib/components/story/CommentSection.svelte';
-	import LikeButton from '$lib/components/story/LikeButton.svelte';
 
 	// Types
 	import type { DreamJournal, Story } from '$lib/types.js';
@@ -22,10 +21,8 @@
 	export let data;
 
 	// State
-	let showingComments = true;
-	let liked = false;
-	let likes = 99;
-    let journal: DreamJournal
+	let showingComments = false;
+	let journal: DreamJournal;
 	let story: Story;
 	let coverImage = '';
 	$: currentUser = $clerk?.user as UserResource;
@@ -35,60 +32,25 @@
 		const foundJournal = getCurrentJournal() as DreamJournal;
 		story = foundJournal.story;
 		coverImage = foundJournal?.image?.url;
-        journal = foundJournal
+		journal = foundJournal;
 	});
 </script>
 
-<main class="grid sm:grid-cols-[1fr,_1fr] lg:grid-cols-[1fr,2.35fr] gap-2 flex-1">
-	<figure class="aspect-4/7 sm:aspect-auto h-full">
-		{#if journal?.finalImageUrl}
-			<a
-				href={window.innerWidth > 640 ? `/story/${data.id}/cover` : '#'}
-				class="sticky top-0"
-				style="view-transition-name: testing-{data.id};"
-			>
-				<CldImage src={journal?.finalImageUrl} height={990} width={1732} class="h-full"/>
-			</a>
-		{:else}
-			<ImagePlaceholder />
-		{/if}
-	</figure>
-	<section class="m-2 flex flex-col gap-2">
-		<hgroup class="mx-4 text-center md:text-left">
+<main class="grid sm:grid-cols-[1fr,_1fr] lg:grid-cols-[2.35fr,1fr] gap-2 flex-1">
+	<section class="flex flex-col gap-2 order-2 md:order-1">
+		<section class="grid md:grid-cols-[1fr,min-content] gap-2 items-center justify-center md:mx-4">
 			<Title title={story?.title} />
-		</hgroup>
-		<div class="divider my-0" />
-		<section
-			class="grid grid-cols-[1fr,_max-content] md:grid-cols-[1fr,_max-content,_max-content] gap-4 mx-2 items-center"
-		>
-			<UserCard user={currentUser} />
-			<LikeButton {liked} {likes} />
-			<div class="join flex col-span-2 md:col-span-1">
-				<button
-					on:click={() => (showingComments = false)}
-					class=" flex-1 md:col-span-1 join-item btn {!showingComments ? 'btn-secondary' : ''}"
-				>
-					Story
-				</button>
-				{#await data.streamed.comments}
-					<button class=" flex-1 md:col-span-1 join-item btn w-max" disabled> Comments </button>
-				{:then}
-					<button
-						on:click={() => (showingComments = true)}
-						class=" flex-1 md:col-span-1 join-item btn {showingComments ? 'btn-secondary' : ''}"
-					>
-						Comments
-					</button>
-				{/await}
-			</div>
+			<div class="mx-auto">
+                <UserCard user={currentUser} />
+            </div>
+			<div class="divider my-0 md:col-span-2" />
 		</section>
-		<div class="divider my-0" />
 		{#if showingComments}
 			{#await data.streamed.comments then comments}
 				<CommentSection {comments} />
 			{/await}
 		{:else}
-			<article class="flex flex-col gap-6 m-4 leading-7">
+			<article class="flex flex-col gap-6 mx-2 my-4 leading-7 pb-20">
 				{#each story?.story.split('\n') || [] as paragraph}
 					<p>{paragraph}</p>
 				{/each}
@@ -117,4 +79,17 @@
 			</article>
 		{/if}
 	</section>
+	<figure class="aspect-4/7 sm:aspect-auto h-full order-1 md:order-2">
+		{#if journal?.finalImageUrl}
+			<a
+				href={window.innerWidth > 640 ? `/story/${data.id}/cover` : '#'}
+				class="sticky top-0"
+				style="view-transition-name: testing-{data.id};"
+			>
+				<CldImage src={journal?.finalImageUrl} height={990} width={1732} class="h-full" />
+			</a>
+		{:else}
+			<ImagePlaceholder />
+		{/if}
+	</figure>
 </main>

@@ -1,16 +1,14 @@
-<script>
-	import logo from '$lib/assets/logo.png';
-	import { pageTitle } from '$lib/stores';
-	import Title from '../Title.svelte';
+<script lang="ts">
 	import HomeIcon from 'virtual:icons/line-md/home-md';
 	import BookIcon from 'virtual:icons/tdesign/book';
 	import GridIcon from 'virtual:icons/line-md/grid-3-filled';
 	import UserIcon from 'virtual:icons/mdi/user-outline';
 	import BackIcon from 'virtual:icons/mingcute/back-2-fill';
 	import LogoutIcon from 'virtual:icons/line-md/log-out';
+
 	import { afterNavigate, goto } from '$app/navigation';
 	import SignOutButton from 'clerk-sveltekit/client/SignOutButton.svelte';
-    import NotificationIcon from "virtual:icons/material-symbols/mail-outline"
+	import NotificationIcon from 'virtual:icons/material-symbols/mail-outline';
 
 	let previousPage = '';
 
@@ -35,10 +33,16 @@
 				<img src={logo} alt="logo" class="w-10 h-10" />
 				Dreamcatcher
 			</h2> -->
-			<li><a class="flex flex-col" href="/"><HomeIcon class="text-xl" /><span> Home</span></a></li>
+			<li>
+				<a class="flex flex-col" href="/"><HomeIcon class="text-xl" /><span> Home</span></a>
+			</li>
 			<li><a class="flex flex-col" href="/profile"><UserIcon class="text-xl" />Profile</a></li>
 			<li><a class="flex flex-col" href="/journal"><BookIcon class="text-xl" />Journal</a></li>
-			<li><a class="flex flex-col" href="/profile"><NotificationIcon class="text-xl" />Notifications</a></li>
+			<li>
+				<a class="flex flex-col" href="/profile"
+					><NotificationIcon class="text-xl" />Notifications</a
+				>
+			</li>
 			<li>
 				<button class="flex flex-col" on:click={() => goto(previousPage, { replaceState: true })}>
 					<BackIcon class="text-xl" /><span> Back</span>

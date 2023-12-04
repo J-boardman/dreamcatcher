@@ -49,7 +49,7 @@
 			</button>
 		</div>
 		<button
-			disabled={$isLoading || credits == 0 || $messages.length < 2}
+			disabled={$isLoading || credits == 0}
 			class="btn w-fit md:h-20 animate-none {$state == 'STORY_PUBLISHED'
 				? 'btn-sm md:btn-md invisible md:hidden'
 				: 'visible'}"

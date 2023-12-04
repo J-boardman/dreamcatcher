@@ -5,7 +5,7 @@
 	export let hiddenTextOnMobile = false;
 </script>
 
-<a href={link} class="h-full btn join-item {!active ? 'btn-secondary' : 'btn-ghost'}">
-    <!-- <slot /> -->
+<a href={link} class="h-full btn join-item {active ? 'btn-secondary' : 'btn-ghost'}">
+	<!-- <slot /> -->
 	<span class={hiddenTextOnMobile ? 'hidden md:flex' : ''}>{text}</span>
 </a>
