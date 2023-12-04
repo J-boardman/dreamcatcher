@@ -20,11 +20,6 @@
 			<StoryCard {story} />
 		</a>
 	{/each}
-	{#each stories.filter((item) => item.shared) as story, i}
-		<a href="/story/{story?.id}">
-			<StoryCard {story} />
-		</a>
-	{/each}
 	<section class="flex flex-col justify-center items-center gap-2 text-lg">
 		<button
 			class="grid place-items-center duration-200 hover:text-secondary mb-16 py-8 bg-secondary-content/80 md:bg-transparent w-full rounded-xl"
