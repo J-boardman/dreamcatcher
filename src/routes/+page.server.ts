@@ -6,7 +6,7 @@ export async function load({ url }) {
     const followingFeed = url.searchParams.get("following");
 
     const users = await clerk.users.getUserList();
-    const stories = await getSharedStories();
+    const stories = (await getSharedStories()).reverse();
 
     const storiesWithAuthor: StoryWithAuthor[] = stories.map(story => {
         const author = users.find(item => item.id == story.authorId);
@@ -22,6 +22,6 @@ export async function load({ url }) {
     console.log(storiesWithAuthor)
 
     return {
-        stories: storiesWithAuthor
+        stories: storiesWithAuthor,
     }
 }
