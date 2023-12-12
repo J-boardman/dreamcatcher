@@ -25,6 +25,7 @@ _TDLR: It's a passion project to showcase my learning of web technologies with n
 
 Dreamcatcher is an idea I've had since I first started interacting with Chat-GPT when it was quite limited in features. With fulltime study and work in the way, I didn't have much time to implement it. As 2023 went on, Open AI continued to release feature after feature, my idea quickly became obselete and already covered by Open AI's offerings. But it still sparked **_joy_** thinking about creating it. So I decided to create it anyways as a portfolio piece to showcase my progress in web development!
 
+
 ## Technologies
 ### Front End
 ![Svelte](https://img.shields.io/badge/svelte-%23f1413d.svg?style=for-the-badge&logo=svelte&logoColor=white)
