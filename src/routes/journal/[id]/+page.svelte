@@ -8,6 +8,7 @@
 	import FinalStory from '$lib/components/journal/FinalStory.svelte';
 	import type { Snapshot } from '@sveltejs/kit';
 	import { getChatContext, setJournal, updateJournal } from '$lib';
+	import ChapterStoryGenerator from '$lib/components/journal/ChapterStoryGenerator.svelte';
 
 	// export let data;
 	const { input, messages, setMessages } = getChatContext();
@@ -42,5 +43,6 @@
 
 <ChatBox />
 <DreamInterpreter />
+<ChapterStoryGenerator />
 <StoryGenerator />
 <FinalStory />
