@@ -37,6 +37,7 @@
     "@clerk/themes": "^1.7.9",
     "@planetscale/database": "^1.11.0",
     "@unpic/svelte": "^0.0.41",
+    "@vercel/speed-insights": "^1.0.1",
     "ai": "^2.2.21",
     "clerk-sveltekit": "^0.2.0",
     "cloudinary": "^1.41.0",

@@ -3,6 +3,9 @@ import { openai } from '$lib/services/openai';
 import { dreamInterpretatorPrompt } from '$lib/helpers/prompts';
 import type { RequestHandler } from '@sveltejs/kit';
 
+export const config = {
+    runtime: "edge"
+}
 
 export const POST = (async ({ request }: { request: Request}) => {
     // Extract the `prompt` from the body of the request
