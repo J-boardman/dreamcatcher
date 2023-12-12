@@ -1,23 +1,34 @@
 <script lang="ts">
-	import { afterNavigate } from '$app/navigation';
-	import { page } from '$app/stores';
 	import LikeButton from '$lib/components/story/LikeButton.svelte';
-	import BottomActionLink from '$lib/components/ui/BottomActionLink.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
-
-	let pathName = $page.url.pathname;
-	$: showingComments = $page.url.searchParams.get('showComments') == 'true';
-	$: console.log(showingComments);
-
-	afterNavigate(() => {
-		showingComments = $page.url.searchParams.get('showComments') == 'true';
-	});
+	$: author = data.author;
+	export let data;
 </script>
 
 <slot />
 
 <BottomActions>
 	<LikeButton />
-	<BottomActionLink link={pathName} text="Story" active={!showingComments} />
-	<BottomActionLink link="{pathName}?showComments=true" text="Comments" active={showingComments} />
+	<a href="/profile/{author.id}" class="btn md:btn-lg h-full flex flex-1 items-center pr-12">
+		<div class="avatar">
+			{#if author}
+				<div class="mask mask-squircle w-9 h-9">
+					<img src={author?.imageUrl + '?enhanced'} alt="profile" />
+				</div>
+			{:else}
+				<div class="mask mask-squircle w-12 h-12 skeleton" />
+			{/if}
+		</div>
+		<div class="flex flex-col text-left gap-1">
+			{#if author}
+				<p class="opacity-50 font-normal">
+					Story shared by
+				</p>
+				<p>@{author?.username}</p>
+			{:else}
+				<div class="font-bold w-[20ch] h-6 skeleton" />
+				<div class="text-sm opacity-50 w-[20ch] h-4 skeleton" />
+			{/if}
+		</div>
+	</a>
 </BottomActions>

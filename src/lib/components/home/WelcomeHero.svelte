@@ -3,7 +3,7 @@
 	import SignUpButton from 'clerk-sveltekit/client/SignUpButton.svelte';
 </script>
 
-<div>
+<div class="flex items-center justify-center">
 	<div class="hero-content text-center">
 		<div class="max-w-3xl">
 			<h1 class="text-5xl font-bold">

@@ -10,7 +10,7 @@
     
 	function handleNewStory() {
         const newStory = createJournal();
-		goto(`/journal/${newStory.id}?newStory=true`);
+		goto(`/journal/${newStory.id}`);
 	}
 </script>
 

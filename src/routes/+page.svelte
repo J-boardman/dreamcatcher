@@ -35,7 +35,7 @@
 	});
 </script>
 
-<main class="m-2 md:mx-4 mb-16 md:mb-24">
+<main class="m-2 md:mx-4 mb-16 md:mb-24 flex-1 grid">
 	<SignedIn>
 		<Newsfeed stories={allJournals} />
 	</SignedIn>

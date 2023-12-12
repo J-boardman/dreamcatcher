@@ -51,7 +51,7 @@
 			<li>
 				<SignOutButton
 					signOutCallback={() => goto('/', { invalidateAll: true, replaceState: true })}
-					class="flex flex-col"><LogoutIcon class="text-xl" />Sign out</SignOutButton
+					class="flex flex-col"><LogoutIcon class="text-xl" /> Sign out </SignOutButton
 				>
 			</li>
 		</ul>

@@ -13,7 +13,7 @@
 </script>
 
 <button
-	class="flex gap-1 h-full join-item btn font-bold items-center duration-200 md:hover:text-primary {liked
+	class="flex gap-1 h-full join-item btn md:btn-lg font-bold items-center duration-200 md:hover:text-primary {liked
 		? 'text-primary'
 		: 'text-white'}"
 	on:click={handleLike}

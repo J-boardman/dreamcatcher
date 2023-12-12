@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
 	import type { DreamJournal } from '$lib/types';
-	import { createJournal, removeJournal, wait } from '$lib';
+	import { createJournal, removeJournal } from '$lib';
 	import JournalCard from '$lib/components/journal/JournalCard.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 	import CreateIcon from 'virtual:icons/system-uicons/create';
