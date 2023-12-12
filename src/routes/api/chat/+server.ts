@@ -23,7 +23,7 @@ export const POST = (async ({ request }: { request: Request}) => {
             },
             ...messageList
         ],
-        max_tokens: 50
+        // max_tokens: 50
     });
 
     if(!streaming) return Response.json(response);

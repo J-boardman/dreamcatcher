@@ -1,5 +1,6 @@
 import type { Message } from "ai";
 import type { UserResource } from "@clerk/typess"
+import type { Story } from "./db/schema/stories";
 
 export type State =
     | 'INTERPRETING'
@@ -8,7 +9,7 @@ export type State =
     | 'FINALISING_STORY'
     | 'STORY_PUBLISHED'
 
-export type Story = {
+export type JournalStory = {
     title: string;
     story: string;
     mood: string;
@@ -29,10 +30,14 @@ export type DreamJournal = {
     lastUpdated: Date;
     lastState: State;
     messageList: Message[];
-    story: Story;
+    story: JournalStory;
     image: JournalImage
     shared?: boolean
     finalImageUrl: string;
 };
+
+export interface StoryWithAuthor extends Partial<Story> {
+    author: Partial<User>
+}
 
 export type UserResource = UserResource

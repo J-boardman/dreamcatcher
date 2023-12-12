@@ -20,7 +20,6 @@
 	function handleNewConversation() {
 		const newConversation = createJournal(newDreamName);
 		goto(`/journal/${newConversation.id}`);
-		newDreamName = '';
 	}
 
 	async function handleDelete(id: string) {

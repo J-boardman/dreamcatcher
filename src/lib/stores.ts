@@ -1,7 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 import logo from "$lib/assets/logo.png?enhanced"
 import type { DreamJournal, State } from "./types";
-import type { SvelteComponent } from "svelte";
 
 
 export let pageTitle = writable("");

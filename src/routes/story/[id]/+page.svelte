@@ -1,42 +1,25 @@
 <script lang="ts">
-	// Imports
-	import { onMount } from 'svelte';
-	import { clerk } from 'clerk-sveltekit/client';
-
 	// Components
 	import Title from '$lib/components/Title.svelte';
 	import ImagePlaceholder from '$lib/components/ImagePlaceholder.svelte';
-	import CommentSection from '$lib/components/story/CommentSection.svelte';
-
-	// Types
-	import type { DreamJournal, Story } from '$lib/types.js';
-	import type { UserResource } from '@clerk/types';
+	import LikeButton from '$lib/components/story/LikeButton.svelte';
+	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 
 	// Helpers
 	import { CldImage } from 'svelte-cloudinary';
-	import { getCurrentJournal } from '$lib';
 	import { pageTitle } from '$lib/stores.js';
 	import { afterNavigate } from '$app/navigation';
 
 	// Props
 	export let data;
-
-	// State
-	let journal: DreamJournal;
-	let story: Story;
-	let coverImage = '';
-
-	// Hooks
-	onMount(() => {
-		const foundJournal = getCurrentJournal() as DreamJournal;
-		story = foundJournal.story;
-		coverImage = foundJournal?.image?.url;
-		journal = foundJournal;
-	});
-
+	let { story, author } = data;
+    
 	afterNavigate(() => {
 		pageTitle.set(story.title);
+		imageLink.href = window?.innerWidth > 640 ? `/story/${data.id}/cover` : '#';
 	});
+
+	let imageLink: HTMLAnchorElement;
 </script>
 
 <main class="grid sm:grid-cols-[1fr,_1fr] lg:grid-cols-[2.35fr,1fr] gap-2 flex-1 ml-4">
@@ -45,45 +28,48 @@
 			<Title title={story?.title} />
 		</div>
 		<div class="divider my-0 md:col-span-2" />
-		<article class="flex flex-col gap-6 mx-2 my-4 leading-7 pb-20">
+		<article class="flex flex-col gap-2 mx-2 my-6 leading-7 pb-20">
 			{#each story?.story.split('\n') || [] as paragraph}
 				<p>{paragraph}</p>
-			{/each}
-			{#each Array(4) as _}
-				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias optio dicta quia fugit
-					iure, temporibus dolore. Delectus alias modi debitis voluptate quam quae magni porro
-					maiores, enim, error sint, repellendus nobis aliquam. Laboriosam, molestias! Recusandae in
-					deleniti officiis inventore laboriosam nostrum commodi quisquam nulla rerum voluptatem
-					sapiente distinctio laborum ullam enim ducimus possimus, amet omnis tenetur, aut beatae
-					perspiciatis! Voluptate quibusdam odit nulla eius? Quam ullam accusantium dolores quia
-					nihil possimus illum. Aspernatur, voluptatibus officia natus laudantium delectus veniam ex
-					vero nobis, corrupti consequuntur labore odio accusamus dolorem, itaque animi neque
-					aliquam incidunt voluptas! Nesciunt, ea. Natus voluptates provident adipisci, molestias a
-					architecto id nemo reiciendis distinctio facilis magnam facere? Obcaecati ipsa eveniet
-					quam fugit in ratione exercitationem alias iure soluta cumque, consequatur sit dolore.
-					Quisquam dolor natus optio iure dolorem repellat nam, facilis incidunt veniam! Facilis
-					maiores ullam dignissimos. Mollitia laudantium non magni doloremque consequuntur esse
-					itaque culpa debitis hic soluta rem est eveniet labore, ut quod natus laboriosam iusto
-					veritatis perspiciatis doloribus quam consequatur et? Nostrum eos libero beatae iusto est,
-					vitae provident deserunt labore quia perspiciatis commodi nobis saepe dolor corrupti
-					asperiores velit harum recusandae accusamus, tempora consequuntur magni odio deleniti
-					dolorum. Vero, architecto earum? Dolorum, quia.
-				</p>
 			{/each}
 		</article>
 	</section>
 	<figure class="aspect-4/7 sm:aspect-auto h-full order-1 md:order-2">
-		{#if journal?.finalImageUrl}
+		{#if story.imageUrl}
 			<a
-				href={window.innerWidth > 640 ? `/story/${data.id}/cover` : '#'}
+				bind:this={imageLink}
+                href="#?"
 				class="sticky top-0"
 				style="view-transition-name: testing-{data.id};"
 			>
-				<CldImage src={journal?.finalImageUrl} height={990} width={1732} class="h-full" />
+				<CldImage src={story.imageUrl} height={990} width={1732} class="h-full" />
 			</a>
 		{:else}
 			<ImagePlaceholder />
 		{/if}
 	</figure>
 </main>
+
+<BottomActions>
+	<LikeButton storyID={story.id} liked={data.liked} likes={data.likes} />
+	<a href="/profile/{author.id}" class="btn h-full flex flex-1 items-center pr-12">
+		<div class="avatar">
+			{#if author}
+				<div class="mask mask-squircle w-9 h-9">
+					<img src={author?.imageUrl + '?enhanced'} alt="profile" />
+				</div>
+			{:else}
+				<div class="mask mask-squircle w-12 h-12 skeleton" />
+			{/if}
+		</div>
+		<div class="flex flex-col text-left gap-1">
+			{#if author}
+				<p class="opacity-50 font-normal">Story shared by</p>
+				<p>@{author?.username}</p>
+			{:else}
+				<div class="font-bold w-[20ch] h-6 skeleton" />
+				<div class="text-sm opacity-50 w-[20ch] h-4 skeleton" />
+			{/if}
+		</div>
+	</a>
+</BottomActions>

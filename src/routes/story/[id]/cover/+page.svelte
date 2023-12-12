@@ -1,22 +1,15 @@
 <script lang="ts">
 	import { afterNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { DreamJournal } from '$lib/types.js';
-	import { onMount } from 'svelte';
 
 	export let data;
-	let src = '';
 	let zoom = Boolean($page.url.searchParams.get('zoom'));
-
-	onMount(() => {
-		const journals = JSON.parse(localStorage.getItem('journals') || '[]') as DreamJournal[];
-		const journal = journals.find((item) => item.id == data.id);
-		src = journal?.finalImageUrl as string;
-	});
 
 	afterNavigate(() => {
 		zoom = Boolean($page.url.searchParams.get('zoom'));
 	});
+
+    $: src = data.imageUrl
 
 	function handleZoom() {
 		let newLink = `/story/${data.id}/cover${!zoom ? '?zoom=true' : ''}`;

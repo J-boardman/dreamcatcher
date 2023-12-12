@@ -1,4 +1,4 @@
-import { randomID } from "$lib/helpers/randomID"
+import { randomID } from "$lib"
 
 // Random ID thrown in at the end becuase Chat GPT is deterministic - will generate the same response given the same input.
 export const fullStoryPrompt = (mood?: string, setting?: string) => (

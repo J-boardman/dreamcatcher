@@ -13,4 +13,4 @@
 	</section>
 </section>
 <div class="divider md:divider-horizontal" />
-<AboutSection {user} />
+<AboutSection />

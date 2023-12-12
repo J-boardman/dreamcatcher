@@ -19,25 +19,23 @@
 	import GlobeIcon from 'virtual:icons/fluent-mdl2/world';
 	import UserIcon from 'virtual:icons/ph/user-bold';
 
-	let allJournals: DreamJournal[];
 	let followingFeed = false;
+
+    export let data;
 
 	onMount(() => {
 		pageTitle.set('Dreamcatcher');
 		resetHeaderImage();
-		allJournals = JSON.parse(localStorage.getItem('journals') || '[]');
-		console.log(allJournals);
 	});
 
 	afterNavigate(() => {
-		allJournals = JSON.parse(localStorage.getItem('journals') || '');
 		followingFeed = $page.url.searchParams.get('feed') == 'following';
 	});
 </script>
 
 <main class="m-2 md:mx-4 mb-16 md:mb-24 flex-1 grid">
 	<SignedIn>
-		<Newsfeed stories={allJournals} />
+		<Newsfeed stories={data.stories} />
 	</SignedIn>
 	<SignedOut>
 		<WelcomeHero />

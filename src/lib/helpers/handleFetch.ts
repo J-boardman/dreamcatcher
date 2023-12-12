@@ -5,7 +5,6 @@ type FetchOptions = {
 }
 
 export async function handleFetch(url: string, options: FetchOptions) {
-    console.log(JSON.stringify(options.body))
     try {
         const response = await fetch(url, {
             method: options.method,

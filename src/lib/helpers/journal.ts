@@ -1,8 +1,8 @@
 import { get } from "svelte/store";
 import { journal } from "../stores";
-import type { DreamJournal, Story } from "../types";
+import type { DreamJournal } from "../types";
 import { page } from "$app/stores";
-import { randomID } from "./randomID";
+import { randomID } from "$lib";
 import { goto } from "$app/navigation";
 
 export function createJournal(name?: string, id?: string) {

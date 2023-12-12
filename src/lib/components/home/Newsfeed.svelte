@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createJournal } from '$lib/helpers/journal';
-	import type { DreamJournal } from '$lib/types';
+	import type { StoryWithAuthor } from '$lib/types';
 	import StoryCard from '../ui/StoryCard.svelte';
 	import CreateIcon from 'virtual:icons/system-uicons/create';
 
-	export let stories: DreamJournal[] = [];
-
+	export let stories: StoryWithAuthor[] = [];
     
-	function handleNewStory() {
-        const newStory = createJournal();
+    function handleNewStory() {
+		const newStory = createJournal();
 		goto(`/journal/${newStory.id}`);
 	}
+
 </script>
 
 <section class="my-2 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-max">
-	{#each stories.filter((item) => item.shared) as story, i}
+	{#each stories as story}
 		<a href="/story/{story?.id}">
 			<StoryCard {story} />
 		</a>
@@ -31,4 +31,3 @@
 		</button>
 	</section>
 </section>
-

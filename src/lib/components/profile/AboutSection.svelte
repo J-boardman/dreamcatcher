@@ -1,8 +1,5 @@
 <script lang="ts">
-	import type { UserResource } from "$lib/types";
-
 	let credits = 5;
-    export let user: UserResource
 </script>
 
 <section class="grid gap-4">

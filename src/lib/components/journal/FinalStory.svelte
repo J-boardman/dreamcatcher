@@ -15,6 +15,8 @@
 		handleFetch,
 		updateJournal
 	} from '$lib';
+	import type { NewStory } from '$lib/db/schema/stories';
+	import { clerk } from 'clerk-sveltekit/client';
 
 	const { messages, setMessages } = getChatContext();
 
@@ -85,7 +87,6 @@
 
 	async function finaliseStory() {
 		saving = true;
-		updateJournal({ shared: sharing });
 		if (!$journal.image.url) return;
 		const [uploadedImage, error] = await handleFetch('/api/image/upload', {
 			method: 'POST',
@@ -96,12 +97,36 @@
 			console.log(error);
 			return;
 		}
-		//@ts-ignore
+		// @ts-ignore
 		console.log(uploadedImage.url);
 		// @ts-ignore
-		updateJournal({ finalImageUrl: uploadedImage.url, lastState: 'STORY_PUBLISHED' });
+
+		const story: NewStory = {
+			authorId: $clerk?.user?.id as string,
+			title: $journal.story.title,
+			story: $journal.story.story,
+			imageUrl: uploadedImage.url,
+			shared: sharing
+		};
+
 		console.log('done!');
 		saving = false;
+		const data = await fetch('/api/stories', {
+			method: 'POST',
+			body: JSON.stringify(story),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+
+		const storyID = await data.json();
+
+		updateJournal({
+			id: storyID,
+			finalImageUrl: uploadedImage.url,
+			lastState: 'STORY_PUBLISHED',
+			shared: sharing
+		});
 	}
 </script>
 

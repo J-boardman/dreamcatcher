@@ -1,13 +1,27 @@
-import { page } from "$app/stores";
-import { clerk } from "$lib/services/clerk";
-import type { User } from "@clerk/backend";
-import { get } from "svelte/store";
+import { getSharedStories } from '$lib/db/schema/stories.js';
+import { clerk } from '$lib/services/clerk.js';
+import type { StoryWithAuthor } from '$lib/types.js';
 
-export async function load() {
-    return {}
-}
+export async function load({ url }) {
+    const followingFeed = url.searchParams.get("following");
 
-async function getUserList(): Promise<Partial<User>[]> {
     const users = await clerk.users.getUserList();
-    return users?.map(user => ({ id: user.id, username: user.username, imageUrl: user.imageUrl }))
+    const stories = await getSharedStories();
+
+    const storiesWithAuthor: StoryWithAuthor[] = stories.map(story => {
+        const author = users.find(item => item.id == story.authorId);
+
+        return {
+            ...story,
+            author: {
+                username: author?.username,
+                imageUrl: author?.imageUrl
+            }
+        }
+    })
+    console.log(storiesWithAuthor)
+
+    return {
+        stories: storiesWithAuthor
+    }
 }

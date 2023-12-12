@@ -4,8 +4,6 @@
 	import SignIn from 'clerk-sveltekit/client/SignIn.svelte';
 	import { onMount } from 'svelte';
 
-	let message = '';
-
 	onMount(() => {
 		const redirected = $page.url.searchParams.get('redirectUrl');
 		if (redirected) {
