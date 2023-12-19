@@ -6,36 +6,38 @@
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 
-	import { pageTitle } from '$lib/stores';
-	import { handleNewStory, resetHeaderImage } from '$lib';
-	import type { DreamJournal } from '$lib/types';
+	import { newsFeedStories, pageTitle } from '$lib/stores';
+	import { resetHeaderImage } from '$lib';
 
 	import Newsfeed from '$lib/components/home/Newsfeed.svelte';
 	import WelcomeHero from '$lib/components/home/WelcomeHero.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 	import BottomActionLink from '$lib/components/ui/BottomActionLink.svelte';
+    import NewJournalButton from "$lib/components/NewJournalButton.svelte"
 
-	import CreateIcon from 'virtual:icons/system-uicons/create';
 	import GlobeIcon from 'virtual:icons/fluent-mdl2/world';
 	import UserIcon from 'virtual:icons/ph/user-bold';
 
-	let followingFeed = false;
+	$: followingFeed = false;
 
     export let data;
 
+
 	onMount(() => {
-		pageTitle.set('Dreamcatcher');
+        pageTitle.set('Dreamcatcher');
 		resetHeaderImage();
 	});
-
+    
 	afterNavigate(() => {
-		followingFeed = $page.url.searchParams.get('feed') == 'following';
+        followingFeed = $page.url.searchParams.get('feed') == 'following';
+        console.log($page.url.searchParams.get("feed"))
+        newsFeedStories.set(data.stories)
 	});
 </script>
 
 <main class="m-2 md:mx-4 mb-16 md:mb-24 flex-1 grid">
 	<SignedIn>
-		<Newsfeed stories={data.stories} />
+		<Newsfeed />
 	</SignedIn>
 	<SignedOut>
 		<WelcomeHero />
@@ -50,8 +52,6 @@
 		<BottomActionLink link="?feed=following" active={followingFeed} text="Following">
 			<UserIcon />
 		</BottomActionLink>
-		<button on:click={handleNewStory} class="btn btn-ghost join-item h-full">
-			<CreateIcon /> New Story
-		</button>
+	    <NewJournalButton />	
 	</BottomActions>
 </SignedIn>

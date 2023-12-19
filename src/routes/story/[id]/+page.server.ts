@@ -11,7 +11,6 @@ export async function load({ params, url, locals }) {
     const { id, username, imageUrl } = await clerk.users.getUser(story.authorId)
     const likes = await getLikeCount(story.id)
     const likedByUser = await checkIfLiked(story.id, userID)
-    console.log(likes)
 
     return {
         id: params.id,

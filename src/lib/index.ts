@@ -1,5 +1,5 @@
 // place files you want to import through the `$lib` alias in this folder.
-import { createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal, handleNewStory } from "./helpers/journal"
+import { createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal } from "./helpers/journal"
 import { systemMessage } from "./helpers/systemMessage"
 import { handleFetch } from "./helpers/handleFetch"
 import { handleChatRequest } from "./helpers/handleChatRequest"
@@ -18,7 +18,6 @@ export {
     loadJournal,
     getCurrentJournal,
     setJournal,
-    handleNewStory
 
 }
 

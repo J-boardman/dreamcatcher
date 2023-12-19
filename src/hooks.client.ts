@@ -4,8 +4,8 @@ import { PUBLIC_CLERK_PUBLISHABLE_KEY } from '$env/static/public'
 import { dark } from "@clerk/themes"
 
 initializeClerkClient(PUBLIC_CLERK_PUBLISHABLE_KEY, {
-	afterSignInUrl: '/profile/',
-	afterSignUpUrl: '/profile/',
+	afterSignInUrl: '/',
+	afterSignUpUrl: '/',
 	signInUrl: '/sign-in',
 	signUpUrl: '/sign-up',
     appearance: {baseTheme: dark, variables: {colorPrimary: "#9048f7"}}

@@ -6,11 +6,13 @@
 	export let user: Partial<UserResource>;
 </script>
 
-<section>
-	<ProfileHeader {user} />
-	<section class="m-2">
-		<slot />
+<section class="mb-20 md:mb-0">
+	<section>
+		<ProfileHeader {user} />
+		<section class="md:m-2">
+			<slot />
+		</section>
 	</section>
 </section>
-<div class="divider md:divider-horizontal" />
+<div class="hidden md:flex divider divider-horizontal divider-neutral h-full" />
 <AboutSection />

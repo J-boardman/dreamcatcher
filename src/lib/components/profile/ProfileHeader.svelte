@@ -4,7 +4,7 @@
 	export let user: Partial<UserResource> | null | undefined;
 </script>
 
-<section class="flex md:hidden mb-2 gap-4 items-center">
+<section class="flex md:hidden py-2 gap-4 items-center sticky top-0 bg-black z-20">
 	<div class="mask mask-squircle w-12 h-12">
 		{#if user?.imageUrl}
 			<img src={user?.imageUrl} alt="profile" class="h-full w-full" />

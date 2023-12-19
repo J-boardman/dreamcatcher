@@ -63,8 +63,7 @@
 					<svelte:fragment slot="logo">
 						<InfoIcon class="text-2xl text-primary" />
 					</svelte:fragment>
-					<h2 class="text-3xl">About Image Generation</h2>
-					<div class="divider divider-neutral" />
+					<h2 slot="title" class="text-3xl">About Image Generation</h2>
 					<p>Images are generated from Open AI's DALLE-3 image generation model.</p>
 				</Modal>
 			</div>

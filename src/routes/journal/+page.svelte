@@ -6,6 +6,7 @@
 	import JournalCard from '$lib/components/journal/JournalCard.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 	import CreateIcon from 'virtual:icons/system-uicons/create';
+	import NewJournalButton from '$lib/components/NewJournalButton.svelte';
 
 	let allJournals: DreamJournal[] = [];
 
@@ -16,11 +17,6 @@
 	afterNavigate(() => {
 		allJournals = JSON.parse(localStorage?.getItem('journals') || '[]');
 	});
-
-	function handleNewConversation() {
-		const newConversation = createJournal(newDreamName);
-		goto(`/journal/${newConversation.id}`);
-	}
 
 	async function handleDelete(id: string) {
 		removeJournal(id);
@@ -47,8 +43,5 @@
 		bind:value={newDreamName}
 		placeholder="New Journal Name"
 	/>
-	<button on:click={handleNewConversation} class="btn join-item h-full">
-		<CreateIcon />
-		<span class="hidden md:flex">New Journal</span>
-	</button>
+	<NewJournalButton hideTextOnMobile />
 </BottomActions>

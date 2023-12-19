@@ -4,9 +4,8 @@
 	import ImagePlaceholder from '../ImagePlaceholder.svelte';
 	import type { StoryWithAuthor } from '$lib/types';
 
-	export let editable = false;
 	export let story: StoryWithAuthor;
-	$: console.log(story);
+    export let hideAuthorCard = false;
 </script>
 
 <section class="card card-compact min-h-[450px] group">
@@ -15,10 +14,10 @@
 	>
 		<section class="w-full p-4 rounded-b-lg bg-secondary-content/80">
 			<div>
-				<div class="md:text-lg opacity-50">{editable ? 'Edit' : 'Read'} the story:</div>
+				<div class="md:text-lg opacity-50">Read the story:</div>
 				<Title title={story?.title} fontSize="text-xl md:text-2xl" />
 			</div>
-			<div class="hidden {editable ? '' : 'md:flex'} items-center gap-3 my-1">
+			<div class="hidden {hideAuthorCard ? '' : 'md:flex'} items-center gap-3 my-1">
 				<div class="avatar">
 					<a href="/profile/{story.authorId}" class="mask mask-squircle w-12 h-12">
 						<img src={story.author.imageUrl} alt="profile" />
@@ -39,8 +38,9 @@
 				src={story.imageUrl}
 				height={1024}
 				width={1792}
-				style="height: 100%; view-transition-name: testing-{story.id}; border-radius: 12px"
-			/>
+                class="h-full rounded-xl"
+				style="view-transition-name: testing-{story.id};"
+                />
 			<!-- on:error={() => (story.image.url = '')} -->
 		{:else}
 			<ImagePlaceholder />

@@ -3,26 +3,40 @@
 	import ProfileLayout from '$lib/components/profile/ProfileLayout.svelte';
 	import ProfileBottomNavigation from '$lib/components/profile/ProfileBottomNavigation.svelte';
 	import StoryCard from '$lib/components/ui/StoryCard.svelte';
-	import { clerk } from 'clerk-sveltekit/client';
+	import { page } from '$app/stores';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import UserCard from '$lib/components/UserCard.svelte';
+	import { afterNavigate } from '$app/navigation';
 
 	export let data;
 
-	$: pageTitle.set(`${data.user?.username}'s profile`);
-	$: profileTitle.set(`${data?.user?.username}`);
-	$: headerImage.set({ src: `${data.user?.imageUrl}`, rounded: true });
-
-	function isAuthorCurrentUser(id: string | undefined) {
-		return $clerk?.user?.id == id;
-	}
+	$: filter = $page.url.searchParams.get('filter');
+	$: followerString = `${data.followerCount} Follower${data.followerCount == 1 ? '' : 's'}`;
+	
+    afterNavigate(() => {
+		pageTitle.set(`${data.user?.username}'s profile`);
+		profileTitle.set(`${data?.user?.username}`);
+		headerImage.set({ src: `${data.user?.imageUrl}`, rounded: true });
+	});
 </script>
 
 <ProfileLayout user={data.user}>
-	<section class="grid grid-cols-4">
+	<section class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 		{#each data.stories as story}
-			<a href="/story/{story.id}{isAuthorCurrentUser(story.authorId) ? '/edit' : ''}">
-				<StoryCard {story} editable={isAuthorCurrentUser(story.authorId)} />
+			<a href="/story/{story.id}">
+				<StoryCard {story} hideAuthorCard={filter != 'liked'} />
 			</a>
 		{/each}
 	</section>
 </ProfileLayout>
-<ProfileBottomNavigation currentUserProfile />
+
+<ProfileBottomNavigation>
+	<Modal buttonText={followerString} classes="h-full rounded-l-none rounded-r-xl">
+		<h2 slot="title" class="text-2xl">{followerString}</h2>
+		<article class="grid gap-4">
+			{#each data.followers as follower}
+				<UserCard user={follower} />
+			{/each}
+		</article>
+	</Modal>
+</ProfileBottomNavigation>

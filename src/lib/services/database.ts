@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { connect } from "@planetscale/database";
 import { env } from '$env/dynamic/private';
+import { sql } from "drizzle-orm";
 
 // create the connection
 const connection = connect({
@@ -10,3 +11,7 @@ const connection = connect({
 });
 
 export const db = drizzle(connection);
+
+export function count(col: string){
+    return {count: sql`count(${col})`.mapWith(Number)}
+}

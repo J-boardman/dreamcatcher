@@ -1,12 +1,19 @@
-import { getSharedStories } from '$lib/db/schema/stories.js';
+import { getSharedStories, type Story } from '$lib/db/schema/stories.js';
+import { getFollowingFeed } from '$lib/db/schema/userFollowings.js';
 import { clerk } from '$lib/services/clerk.js';
 import type { StoryWithAuthor } from '$lib/types.js';
 
-export async function load({ url }) {
-    const followingFeed = url.searchParams.get("following");
-
+export async function load({ url, locals }) {
+    
+    const feed = url.searchParams.get("feed");
     const users = await clerk.users.getUserList();
-    const stories = (await getSharedStories()).reverse();
+    let stories: Partial<Story>[];
+    if(feed == "following"){
+        //@ts-ignore
+        stories = (await getFollowingFeed(locals.session.userId)).map(item => {
+            return item.stories
+        })
+    } else stories = await getSharedStories()
 
     const storiesWithAuthor: StoryWithAuthor[] = stories.map(story => {
         const author = users.find(item => item.id == story.authorId);
@@ -18,10 +25,7 @@ export async function load({ url }) {
                 imageUrl: author?.imageUrl
             }
         }
-    })
-    console.log(storiesWithAuthor)
+    }).reverse()
 
-    return {
-        stories: storiesWithAuthor,
-    }
+    return { stories: storiesWithAuthor }
 }

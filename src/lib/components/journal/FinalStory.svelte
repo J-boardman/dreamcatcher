@@ -17,6 +17,8 @@
 	} from '$lib';
 	import type { NewStory } from '$lib/db/schema/stories';
 	import { clerk } from 'clerk-sveltekit/client';
+	import { storyPublished } from '$lib/helpers/journal';
+	import { goto } from '$app/navigation';
 
 	const { messages, setMessages } = getChatContext();
 
@@ -97,19 +99,16 @@
 			console.log(error);
 			return;
 		}
-		// @ts-ignore
-		console.log(uploadedImage.url);
-		// @ts-ignore
 
 		const story: NewStory = {
 			authorId: $clerk?.user?.id as string,
 			title: $journal.story.title,
 			story: $journal.story.story,
 			imageUrl: uploadedImage.url,
+			// imageUrl: $journal.finalImageUrl,
 			shared: sharing
 		};
 
-		console.log('done!');
 		saving = false;
 		const data = await fetch('/api/stories', {
 			method: 'POST',
@@ -121,12 +120,15 @@
 
 		const storyID = await data.json();
 
+		storyPublished(storyID);
+
 		updateJournal({
-			id: storyID,
+			id: `${storyID}`,
 			finalImageUrl: uploadedImage.url,
 			lastState: 'STORY_PUBLISHED',
 			shared: sharing
 		});
+		goto(`/story/${storyID}`, { replaceState: true });
 	}
 </script>
 
@@ -157,27 +159,28 @@
 		<Modal buttonText={'Save story'} noAnimate busy={isLoading}>
 			<span slot="logo"><SaveLogo /></span>
 
-			<section class="gap-2 py-4 max-w-full">
-				<div class="flex items-center gap-3">
-					<div class="avatar">
-						<div class="mask mask-squircle w-24 h-24">
-							{#if $journal?.image?.url}
-								<img
-									src={$journal?.image?.url}
-									alt="cover"
-									on:error={() => updateJournal({ image: { ...$journal.image, url: '' } })}
-								/>
-							{:else}
-								<ImagePlaceholder message="" />
-							{/if}
-						</div>
-					</div>
-					<div>
-						<div class="text-lg opacity-50">Saving the story:</div>
-						<Title title={$journal.story.title} fontSize="text-2xl" fontColor="text-success" />
+			<div class="flex items-center gap-3" slot="title">
+				<div class="avatar">
+					<div class="mask mask-squircle w-24 h-24">
+						{#if $journal?.image?.url}
+							<img
+								src={$journal?.image?.url}
+								alt="cover"
+								on:error={() => updateJournal({ image: { ...$journal.image, url: '' } })}
+							/>
+						{:else}
+							<ImagePlaceholder message="" />
+						{/if}
 					</div>
 				</div>
-				<article class="my-2 max-h-80 overflow-scroll">
+				<div>
+					<div class="text-lg opacity-50">Saving the story:</div>
+					<Title title={$journal.story.title} fontSize="text-2xl" fontColor="text-success" />
+				</div>
+			</div>
+
+			<section class="gap-2 pb-4 max-w-full">
+				<article class="my-2 max-h-96 md:max-h-[32rem] overflow-scroll">
 					{#each $journal.story.story.split('\n') as paragraph, i}
 						<p class="py-1">{paragraph}</p>
 					{/each}

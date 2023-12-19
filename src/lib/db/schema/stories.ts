@@ -1,6 +1,6 @@
 import { db } from "$lib/services/database";
 import type { ExecutedQuery } from "@planetscale/database";
-import { eq } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import { boolean, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core";
 
 export const stories = mysqlTable('stories', {
@@ -14,17 +14,16 @@ export const stories = mysqlTable('stories', {
 
 export type Story = typeof stories.$inferSelect;
 export type NewStory = typeof stories.$inferInsert;
+
 // BASIC CRUD
 export async function insertStory(story: NewStory) {
     return (await db.insert(stories).values(story)).insertId
 }
 
-export async function getStories() {
-    return db.select().from(stories);
-}
+const getStories = () => db.select().from(stories);
 
 export async function getStoryById(id: number) {
-    return db.select().from(stories).where(eq(stories.id, id))
+    return getStories().where(eq(stories.id, id))
 }
 
 export async function updateStory(id: number, updatedItem: Partial<Story>) {
@@ -36,14 +35,28 @@ export async function deleteStory(id: number) {
 }
 
 // ADVANCED CRUD
-export async function getStoriesByAuthor(authorID: string){
-    return db.select().from(stories).where(eq(stories.authorId, authorID));
+export async function getStoriesByAuthor(authorID: string) {
+    return getStories().where(eq(stories.authorId, authorID));
 }
 
 export async function getStoryImage(id: number) {
     return db.select({ image: stories.imageUrl }).from(stories).where(eq(stories.id, id));
 }
 
-export async function getSharedStories() {
-    return db.select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId }).from(stories).where(eq(stories.shared, true))
+export async function getSharedStories(offset = 0, limit = 8) {
+    console.log(limit, offset)
+    return db
+        .select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId })
+        .from(stories)
+        .where(eq(stories.shared, true))
+        .limit(limit)
+        .offset(offset)
+}
+export async function getSharedStoryCount() {
+    const [query] = await db
+        .select({ count: count() })
+        .from(stories)
+        .where(eq(stories.shared, true));
+
+    return query.count
 }

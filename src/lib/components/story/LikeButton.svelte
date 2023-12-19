@@ -5,16 +5,16 @@
 	export let storyID = 0;
 	export let liked = false;
 	export let likes = 0;
-    $: API_URL = `/api/stories/${storyID}/likes`
+	$: API_URL = `/api/stories/${storyID}/likes`;
 
 	async function handleLike() {
 		await fetch(API_URL, {
 			method: liked ? 'DELETE' : 'POST',
 			headers: { 'Content-Type': 'application/json' }
 		});
-        
-        likes = await fetch(API_URL).then(r => r.json())
-        liked = !liked;
+
+		likes = await fetch(API_URL).then((r) => r.json());
+		liked = !liked;
 	}
 </script>
 

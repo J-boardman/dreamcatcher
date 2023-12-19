@@ -1,5 +1,5 @@
 import { db } from "$lib/services/database";
-import { and, eq, sql } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 import { mysqlTable, serial, varchar } from "drizzle-orm/mysql-core";
 import { stories } from "./stories";
 
@@ -30,7 +30,8 @@ export async function checkIfLiked(storyID: number, userID: string) {
 }
 
 export async function getLikeCount(storyID: number) {
-    return (await db.select().from(storyLikes).where(eq(storyLikes.storyID, storyID))).length
+    const [query] = await db.select({ count: count() }).from(storyLikes).where(eq(storyLikes.storyID, storyID))
+    return query.count
 }
 
 export async function getLikesByUser(userID: string) {

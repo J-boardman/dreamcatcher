@@ -69,12 +69,6 @@ export function saveNewJournal(conversation: DreamJournal) {
     localStorage.setItem("journals", JSON.stringify(newJournalList))
 }
 
-
-export function handleNewStory() {
-    const newStory = createJournal();
-    goto(`/journal/${newStory.id}?newStory=true`);
-}
-
 export function loadJournal(): DreamJournal[] | undefined {
     if (!localStorage) return;
     return JSON.parse(localStorage.getItem("journals") || "[]")
@@ -87,4 +81,12 @@ function removeRedundantMessages() {
         return true;
     });
     updateJournal({ messageList: filteredMessages })
+}
+
+
+export function storyPublished(id: string) {
+    const journalList = loadJournal()
+    if (!localStorage || !journalList) return;
+    const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? {...get(journal), id} : item)
+    localStorage.setItem('journals', JSON.stringify(updatedJournalList));
 }
