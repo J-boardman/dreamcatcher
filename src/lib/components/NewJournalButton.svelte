@@ -12,6 +12,8 @@
 </script>
 
 <button on:click={handleNewStory} class="btn btn-ghost join-item h-full">
-	<CreateIcon class="text-xl" />
-	<span class={hideTextOnMobile ? 'hidden md:flex' : ''}>New Journal</span>
+	<div class="flex flex-col items-center justify-center">
+		<CreateIcon class="text-xl" />
+		<span class="text-xs sm:text-sm {hideTextOnMobile ? 'hidden md:flex' : ''}">New Journal</span>
+	</div>
 </button>

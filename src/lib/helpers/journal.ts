@@ -90,3 +90,8 @@ export function storyPublished(id: string) {
     const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? {...get(journal), id} : item)
     localStorage.setItem('journals', JSON.stringify(updatedJournalList));
 }
+
+export function handleNewJournal() {
+    const newStory = createJournal();
+    goto(`/journal/${newStory.id}`);
+}

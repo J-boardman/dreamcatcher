@@ -13,7 +13,11 @@
 		getChatContext,
 		handleChatRequest,
 		handleFetch,
-		updateJournal
+		randomID,
+		updateJournal,
+
+		wait
+
 	} from '$lib';
 	import type { NewStory } from '$lib/db/schema/stories';
 	import { clerk } from 'clerk-sveltekit/client';
@@ -27,6 +31,17 @@
 	$: isLoading = generatingTitle || generatingImage;
 
 	async function handleImageGeneration() {
+		const messageID = randomID();
+        setMessages([
+            ...$messages,
+            {
+                id: messageID,
+                content: 'Generating Image',
+                name: 'image',
+                role: 'system'
+            }
+        ]);
+        // setMessages($messages.filter(item => item.id != messageID))
 		const { mood, setting } = $journal.story;
 		generatingImage = true;
 		const prompt = await generateImagePrompt($messages, mood, setting);
@@ -35,6 +50,8 @@
 			console.warn(prompt);
 			return;
 		}
+
+
 
 		const [data, error] = await handleFetch('/api/image', {
 			method: 'POST',
@@ -49,15 +66,9 @@
 			return;
 		}
 
-		setMessages([
-			...$messages,
-			{
-				id: data.created,
-				content: data.url,
-				name: 'image',
-				role: 'system'
-			}
-		]);
+		setMessages(
+			$messages.map((item) => (item.id == messageID ? { ...item, content: data.url, id: data.created } : item))
+		);
 		updateJournal({ image: { url: data.url, created: data.created } });
 	}
 
@@ -180,7 +191,7 @@
 			</div>
 
 			<section class="gap-2 pb-4 max-w-full">
-				<article class="my-2 max-h-96 md:max-h-[32rem] overflow-scroll">
+				<article class="my-2 max-h-80 overflow-scroll">
 					{#each $journal.story.story.split('\n') as paragraph, i}
 						<p class="py-1">{paragraph}</p>
 					{/each}

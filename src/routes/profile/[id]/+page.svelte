@@ -38,7 +38,7 @@
 </script>
 
 <ProfileLayout user={{ username: data.username, imageUrl: data.imageUrl }}>
-	<section class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+	<section class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 		{#each data.stories as story}
 			<a href="/story/{story.id}">
 				<StoryCard {story} hideAuthorCard={filter != 'liked'} />

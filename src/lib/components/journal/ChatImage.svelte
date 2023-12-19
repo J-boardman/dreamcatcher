@@ -45,19 +45,27 @@
 				? 'bg-secondary'
 				: 'bg-base-300'}"
 		>
-			<button on:click={handleImageClick}>
-				<img
-					src={message.content}
-					alt="cover"
-					class="w-96 rounded-t-xl"
-					on:error={() => {
-						updateJournal({ image: { url: '', created: '' } });
-						message.content = '';
-					}}
-				/>
-			</button>
+			{#if message.content == 'Generating Image'}
+				<div class="w-64 h-96 rounded-t-xl bg-base-200 skeleton" />
+			{:else}
+				<button on:click={handleImageClick}>
+					<img
+						src={message.content}
+						alt="cover"
+						class="w-96 rounded-t-xl"
+						on:error={() => {
+							updateJournal({ image: { url: '', created: '' } });
+							message.content = '';
+						}}
+					/>
+				</button>
+			{/if}
 			<div class="flex items-center justify-between p-2 bg-secondary-content rounded-b-xl -mt-2">
-				<p>{timeRemaining} until your image expires.</p>
+				{#if message.content == 'Generating Image'}
+					<p>Generating your image</p>
+				{:else}
+					<p>{timeRemaining} until your image expires.</p>
+				{/if}
 
 				<Modal buttonText="" classes="btn-ghost btn-sm btn-circle">
 					<svelte:fragment slot="logo">

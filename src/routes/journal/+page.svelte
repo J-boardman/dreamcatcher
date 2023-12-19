@@ -28,7 +28,7 @@
 
 <section class="m-2 md:mx-4">
 	<section
-		class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-16 md:mb-0"
+		class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3  gap-4 mb-16 md:mb-0"
 	>
 		{#each [...allJournals] as journal, i}
 			<JournalCard {journal} {handleDelete} />

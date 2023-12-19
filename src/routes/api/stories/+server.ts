@@ -14,15 +14,15 @@ export async function GET({ params, url, locals }) {
 
     const currentPage = Number(url.searchParams.get("skip")) || 0
     const feed = url.searchParams.get("feed")
+    //@ts-ignore
+    const userId = locals.session.userId
 
     let stories: Partial<Story>[];
     let totalStories = 0;
 
     if (feed == "following") {
-        //@ts-expect-error
-        stories = (await getFollowingFeed(locals.session.userId)).map(item => item.stories)
-        //@ts-expect-error
-        totalStories = await getFollowingFeedCount(locals.sessions.userId)
+        stories = (await getFollowingFeed(userId)).map(item => item.stories)
+        totalStories = await getFollowingFeedCount(userId)
     } else {
         stories = await getSharedStories(currentPage)
         totalStories = await getSharedStoryCount()

@@ -1,5 +1,5 @@
 // place files you want to import through the `$lib` alias in this folder.
-import { createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal } from "./helpers/journal"
+import { handleNewJournal, createJournal, setJournal, updateJournal, removeJournal, saveJournal, loadJournal, getCurrentJournal } from "./helpers/journal"
 import { systemMessage } from "./helpers/systemMessage"
 import { handleFetch } from "./helpers/handleFetch"
 import { handleChatRequest } from "./helpers/handleChatRequest"
@@ -18,7 +18,7 @@ export {
     loadJournal,
     getCurrentJournal,
     setJournal,
-
+    handleNewJournal
 }
 
 export {
@@ -34,4 +34,4 @@ export const randomID = () => Math.random().toString(36).substring(2, 9);
 
 export const resetHeaderImage = () => headerImage.set({ src: logo, rounded: false });
 
-export const wait = async(ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

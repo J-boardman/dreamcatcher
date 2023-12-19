@@ -14,4 +14,4 @@ export let profileImage = writable('');
 export let state: Writable<State> = writable()
 export const journal: Writable<DreamJournal> = writable();
 
-export let newsFeedStories: Writable<StoryWithAuthor[]> = writable();
+export let newsFeedStories: Writable<StoryWithAuthor[]> = writable([]);

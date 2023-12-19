@@ -7,30 +7,26 @@
 	import CreateIcon from 'virtual:icons/system-uicons/create';
 
 	let element: HTMLElement;
-    $: storyCount = 100;
-    $: currentPage = 0;
-    $: feed = $page.url.searchParams.get('feed');
-    $: nextPage = `/?skip=${$newsFeedStories.length}${feed == 'following' ? '&feed=following' : ''}`;
-    $: moreToLoad = $newsFeedStories.length < storyCount;
-	
-
+	$: storyCount = 100;
+	$: feed = $page.url.searchParams.get('feed');
+	$: nextPage = `/?skip=${$newsFeedStories.length}${feed == 'following' ? '&feed=following' : ''}`;
+	$: moreToLoad = $newsFeedStories.length < storyCount;
 
 	onMount(() => {
 		let observer = new IntersectionObserver(handleObservation, {
 			rootMargin: '1px',
-			threshold: 1
+			threshold: 0
 		});
-        if(element) observer.observe(element);
+		if (element) observer.observe(element);
 	});
 
-    afterUpdate(async() => {
-        const { totalStories } = await fetch(`/api/stories${nextPage}`).then(r => r.json())
-        storyCount = totalStories
-    })
+	afterUpdate(async () => {
+		const { totalStories } = await fetch(`/api/stories${nextPage}`).then((r) => r.json());
+		storyCount = totalStories;
+	});
 
 	async function handleObservation(entries: IntersectionObserverEntry[]) {
 		const observed = entries.some((item) => item.isIntersecting);
-
 
 		if (observed) {
 			if (!moreToLoad) return;
@@ -47,7 +43,10 @@
 </script>
 
 {#if moreToLoad}
-	<div bind:this={element} />
+    <div bind:this={element} class="w-full h-full bg-secondary-content/80 skeleton" />
+	{#each Array(3) as _}
+		<div class="h-full w-full bg-secondary-content/80 skeleton" />
+	{/each}
 {:else}
 	<section
 		class="flex justify-center items-center gap-2 text-lg bg-secondary-content/80 rounded-xl"

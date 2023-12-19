@@ -1,6 +1,6 @@
 import { db } from "$lib/services/database";
 import type { ExecutedQuery } from "@planetscale/database";
-import { count, eq, sql } from "drizzle-orm";
+import { asc, count, desc, eq, sql } from "drizzle-orm";
 import { boolean, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core";
 
 export const stories = mysqlTable('stories', {
@@ -20,7 +20,7 @@ export async function insertStory(story: NewStory) {
     return (await db.insert(stories).values(story)).insertId
 }
 
-const getStories = () => db.select().from(stories);
+const getStories = () => db.select().from(stories).orderBy(desc(stories.id));
 
 export async function getStoryById(id: number) {
     return getStories().where(eq(stories.id, id))
@@ -43,11 +43,12 @@ export async function getStoryImage(id: number) {
     return db.select({ image: stories.imageUrl }).from(stories).where(eq(stories.id, id));
 }
 
-export async function getSharedStories(offset = 0, limit = 8) {
+export async function getSharedStories(offset = 0, limit = 4) {
     console.log(limit, offset)
     return db
         .select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId })
         .from(stories)
+        .orderBy(desc(stories.id))
         .where(eq(stories.shared, true))
         .limit(limit)
         .offset(offset)

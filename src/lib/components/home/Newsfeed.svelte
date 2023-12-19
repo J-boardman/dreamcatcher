@@ -4,7 +4,7 @@
 	import { newsFeedStories } from '$lib/stores';
 </script>
 
-<section class="my-2 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-max">
+<section class="my-2 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-fr">
 	{#each $newsFeedStories as story}
 		<a href="/story/{story?.id}">
 			<StoryCard {story} />

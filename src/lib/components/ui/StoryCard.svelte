@@ -40,6 +40,7 @@
 				width={1792}
                 class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
+                
                 />
 			<!-- on:error={() => (story.image.url = '')} -->
 		{:else}
