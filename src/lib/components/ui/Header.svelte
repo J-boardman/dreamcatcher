@@ -3,7 +3,6 @@
 	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
 	import SignedOut from 'clerk-sveltekit/client/SignedOut.svelte';
 	import SignInButton from 'clerk-sveltekit/client/SignInButton.svelte';
-	import SignUpButton from 'clerk-sveltekit/client/SignUpButton.svelte';
 	import Title from '../Title.svelte';
 	import { pageTitle, headerImage } from '$lib/stores';
 	import logo from '$lib/assets/logo.png?enhanced';

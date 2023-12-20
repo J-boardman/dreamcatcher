@@ -57,7 +57,7 @@
 <BottomActions>
 	<LikeButton storyID={story.id} liked={data.liked} likes={data.likes} />
 	{#if author.id == currentUserID}
-		<AuthorControls storyId={story.id} isShared={story.shared} />
+		<AuthorControls {story} />
 	{:else}
 		<StoryAuthorCard {author} />
 	{/if}
