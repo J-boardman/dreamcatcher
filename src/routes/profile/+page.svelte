@@ -36,6 +36,7 @@
 </ProfileLayout>
 
 <ProfileBottomNavigation>
+    {#if data.followers.length}
 	<Modal buttonText={followerString} classes="h-full rounded-l-none rounded-r-xl">
 		<h2 slot="title" class="text-2xl">{followerString}</h2>
 		<article class="grid gap-4">
@@ -44,4 +45,5 @@
 			{/each}
 		</article>
 	</Modal>
+    {/if}
 </ProfileBottomNavigation>

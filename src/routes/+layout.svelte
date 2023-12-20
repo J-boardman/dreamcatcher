@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { onNavigate } from '$app/navigation';

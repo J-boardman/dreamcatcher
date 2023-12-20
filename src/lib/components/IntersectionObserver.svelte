@@ -1,38 +1,57 @@
 <script lang="ts">
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate, goto, onNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { newsFeedStories } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 	import { createJournal } from '$lib/helpers/journal';
 	import CreateIcon from 'virtual:icons/system-uicons/create';
+	import { isFollowingFeed } from '$lib';
 
+	let moreToLoad = true;
+    let observer: IntersectionObserver;
 	let element: HTMLElement;
-	$: storyCount = 100;
-	$: feed = $page.url.searchParams.get('feed');
-	$: nextPage = `/?skip=${$newsFeedStories.length}${feed == 'following' ? '&feed=following' : ''}`;
-	$: moreToLoad = $newsFeedStories.length < storyCount;
 
-	onMount(() => {
-		let observer = new IntersectionObserver(handleObservation, {
+	$: followingFeed = isFollowingFeed($page.url) ? '?filter=following&' : '?';
+	$: nextPage = followingFeed + `skip=${$newsFeedStories.length}`;
+	
+    onMount(async() => {
+        moreToLoad = await checkCount();
+
+		observer = new IntersectionObserver(handleObservation, {
 			rootMargin: '1px',
 			threshold: 0
 		});
+
 		if (element) observer.observe(element);
 	});
 
-	afterUpdate(async () => {
-		const { totalStories } = await fetch(`/api/stories${nextPage}`).then((r) => r.json());
-		storyCount = totalStories;
+	afterUpdate(() => {
+        if(element && observer) observer.observe(element)
 	});
+
+    afterNavigate(async() => {
+        moreToLoad = await checkCount();
+    })
+
+	async function checkCount() {
+		const data = await fetch('/api/stories/count/' + followingFeed);
+		const { storyCount } = await data.json();
+
+		return $newsFeedStories.length < storyCount;
+	}
 
 	async function handleObservation(entries: IntersectionObserverEntry[]) {
 		const observed = entries.some((item) => item.isIntersecting);
 
 		if (observed) {
+            console.log("ping")
 			if (!moreToLoad) return;
-			const newStories = await fetch(`/api/stories${nextPage}`).then((r) => r.json());
-			newsFeedStories.update((prev) => [...prev, ...newStories.stories]);
-			moreToLoad = $newsFeedStories.length < newStories.totalStories;
+
+			const data = await fetch(`/api/stories/${nextPage}`);
+			const { stories } = await data.json();
+
+			newsFeedStories.update((prev) => [...prev, ...stories]);
+			moreToLoad = await checkCount();
 		}
 	}
 
@@ -43,7 +62,7 @@
 </script>
 
 {#if moreToLoad}
-    <div bind:this={element} class="w-full h-full bg-secondary-content/80 skeleton" />
+	<div bind:this={element} class="w-full h-full bg-secondary-content/80 skeleton" />
 	{#each Array(3) as _}
 		<div class="h-full w-full bg-secondary-content/80 skeleton" />
 	{/each}

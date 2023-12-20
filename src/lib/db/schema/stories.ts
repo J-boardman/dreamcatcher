@@ -44,7 +44,6 @@ export async function getStoryImage(id: number) {
 }
 
 export async function getSharedStories(offset = 0, limit = 4) {
-    console.log(limit, offset)
     return db
         .select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId })
         .from(stories)

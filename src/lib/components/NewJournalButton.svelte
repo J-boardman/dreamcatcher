@@ -12,7 +12,7 @@
 </script>
 
 <button on:click={handleNewStory} class="btn btn-ghost join-item h-full">
-	<div class="flex flex-col items-center justify-center">
+	<div class="flex flex-col md:flex-row gap-1 items-center justify-center">
 		<CreateIcon class="text-xl" />
 		<span class="text-xs sm:text-sm {hideTextOnMobile ? 'hidden md:flex' : ''}">New Journal</span>
 	</div>

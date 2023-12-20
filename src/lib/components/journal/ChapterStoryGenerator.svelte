@@ -37,7 +37,7 @@
 </script>
 
 {#if $state == 'GENERATING_CHAPTER_STORY'}
-	<section class="mt-2 flex flex-col lg:flex-row gap-4">
+	<section class="py-2 flex flex-col lg:flex-row gap-2">
 		<div class="join flex">
 			{#each Array(3) as _, i}
 				<button
@@ -50,23 +50,23 @@
 				</button>
 			{/each}
 		</div>
-		<button
-			on:click={handleOptionClick}
-			value="Wrap it up"
-			disabled={$isLoading}
-			class="btn animate-none"
-		>
-			Wrap it up!
-		</button>
 		<form on:submit={handleCustomInstruction} class="join flex flex-1">
 			<input
-				bind:value={customInstruction}
-				type="text"
-				class="input join-item flex-1"
-				placeholder="Custom instruction"
-				disabled={$isLoading}
+            bind:value={customInstruction}
+            type="text"
+            class="input join-item flex-1"
+            placeholder="Custom instruction"
+            disabled={$isLoading}
 			/>
 			<button disabled={$isLoading} class="btn join-item animate-none">Send</button>
 		</form>
+        <button
+            on:click={handleOptionClick}
+            value="Wrap it up"
+            disabled={$isLoading}
+            class="btn animate-none w-10/12"
+        >
+            Wrap it up!
+        </button>
 	</section>
 {/if}

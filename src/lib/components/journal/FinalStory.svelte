@@ -144,7 +144,7 @@
 </script>
 
 {#if $state == 'FINALISING_STORY'}
-	<section class="grid md:grid-cols-5 gap-2 pt-4 sm:pb-1">
+	<section class="grid md:grid-cols-5 gap-2 py-2 md:py-0 md:pt-2">
 		<article class="join flex col-span-3">
 			<input
 				bind:value={$journal.story.title}

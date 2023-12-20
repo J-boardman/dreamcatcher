@@ -32,7 +32,7 @@
 			</div>
 		</section>
 	</section>
-	<figure class="-z-[1] aspect-4/7 w-full h-auto rounded-xl">
+	<figure class="-z-[1] aspect-4/7 w-full h-auto rounded-xl skeleton bg-secondary-content/80">
 		{#if story.imageUrl}
 			<CldImage
 				src={story.imageUrl}

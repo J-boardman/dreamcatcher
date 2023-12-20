@@ -10,23 +10,15 @@ export async function POST({ request }) {
     return json(insertedStory)
 }
 
-export async function GET({ params, url, locals }) {
-
-    const currentPage = Number(url.searchParams.get("skip")) || 0
-    const feed = url.searchParams.get("feed")
+export async function GET({ url, locals }) {
+    const offset = Number(url.searchParams.get("skip")) || 0
+    const filter = url.searchParams.get("filter")
     //@ts-ignore
     const userId = locals.session.userId
 
-    let stories: Partial<Story>[];
-    let totalStories = 0;
-
-    if (feed == "following") {
-        stories = (await getFollowingFeed(userId)).map(item => item.stories)
-        totalStories = await getFollowingFeedCount(userId)
-    } else {
-        stories = await getSharedStories(currentPage)
-        totalStories = await getSharedStoryCount()
-    }
+    let stories: Partial<Story>[] = filter == "following"
+        ? (await getFollowingFeed(userId)).map(item => item.stories)
+        : await getSharedStories(offset)
 
     const users = await clerk.users.getUserList()
     const storiesWithAuthor: StoryWithAuthor[] = stories.map(story => {
@@ -41,5 +33,8 @@ export async function GET({ params, url, locals }) {
         }
     }).reverse()
 
-    return json({ stories: storiesWithAuthor, totalStories })
+    console.log(storiesWithAuthor.length)
+
+
+    return json({ stories: storiesWithAuthor })
 }

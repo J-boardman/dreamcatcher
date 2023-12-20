@@ -34,29 +34,18 @@
 </script>
 
 {#if $state == 'CONVERSATION_OVER'}
-	<section class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 pt-4 md:pb-1 h-min">
-        <select
-            bind:value={$journal.story.type}
-            class="select col-span-2 md:col-span-1"
-            name="type"
-            placeholder="Story Type"
-            disabled={$isLoading}
-        >
-            <option disabled selected>Story Type</option>
-            <option value="fullStory">Full story</option>
-            <option value="chapterStory">Choose your own adventure</option>
-        </select>
-		<input
-			type="text"
-			placeholder="Mood (Optional)"
-			list="moods"
-			class="input"
-			name="mood"
-			bind:value={$journal.story.mood}
-			disabled={$isLoading}
+	<section class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 py-2 h-min">
+        <input
+        type="text"
+        placeholder="Mood (Optional)"
+        list="moods"
+        class="input"
+        name="mood"
+        bind:value={$journal.story.mood}
+        disabled={$isLoading}
 		/>
 		<datalist id="moods">
-			<option>Wholesome</option>
+            <option>Wholesome</option>
 			<option>Scary</option>
 			<option>Funny</option>
 			<option>Sad</option>
@@ -75,7 +64,7 @@
 			disabled={$isLoading}
 		/>
 		<datalist id="settings">
-			<option>Medieval</option>
+            <option>Medieval</option>
 			<option>Futuristic</option>
 			<option>Fantasy</option>
 			<option>Historical</option>
@@ -87,12 +76,23 @@
 			<option>Vast desert</option>
 			<option>Dense Jungle</option>
 		</datalist>
+        <select
+            bind:value={$journal.story.type}
+            class="select"
+            name="type"
+            placeholder="Story Type"
+            disabled={$isLoading}
+        >
+            <option value="Story Type" hidden disabled selected>Story Type</option>
+            <option value="fullStory">Full story</option>
+            <option value="chapterStory">Choose your own adventure</option>
+        </select>
 		<button
-			disabled={$isLoading || !$journal.story.type}
-			on:click={handleStoryGeneration}
-			class="btn btn-secondary animate-none col-span-2 md:col-span-1 w-3/4 md:w-full"
+        disabled={$isLoading || !$journal.story.type}
+        on:click={handleStoryGeneration}
+        class="btn btn-secondary animate-none w-2/4 md:w-full"
 		>
-			Start!
-		</button>
+        Start!
+    </button>
 	</section>
 {/if}

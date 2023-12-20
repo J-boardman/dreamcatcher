@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ChatBox from '$lib/components/journal/ChatBox.svelte';
+    import ChatBox from '$lib/components/journal/ChatBox.svelte';
 	import { journal, pageTitle, state } from '$lib/stores';
 	import { afterUpdate, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
@@ -25,7 +25,7 @@
 
 		messages.subscribe((val) => {
 			if (val.length >= $journal.messageList.length) {
-                updateJournal({ messageList: val})
+				updateJournal({ messageList: val });
 			}
 		});
 	});
@@ -43,6 +43,6 @@
 
 <ChatBox />
 <DreamInterpreter />
-<ChapterStoryGenerator />
 <StoryGenerator />
+<ChapterStoryGenerator />
 <FinalStory />

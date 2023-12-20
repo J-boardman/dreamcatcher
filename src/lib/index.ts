@@ -8,6 +8,8 @@ import type { UseChatHelpers } from "ai/svelte/dist";
 import { getContext } from "svelte";
 import { headerImage } from "./stores";
 import logo from "$lib/assets/logo.png?enhanced"
+import { page } from "$app/stores"
+import { get } from "svelte/store"
 
 // Journal exports
 export {
@@ -35,3 +37,5 @@ export const randomID = () => Math.random().toString(36).substring(2, 9);
 export const resetHeaderImage = () => headerImage.set({ src: logo, rounded: false });
 
 export const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const isFollowingFeed = (url: URL) => url.searchParams.get("filter") == "following"

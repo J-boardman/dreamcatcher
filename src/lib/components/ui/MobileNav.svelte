@@ -17,7 +17,7 @@
 	});
 </script>
 
-<div class="md:hidden h-12 w-12 rounded-xl bg-base-200 fixed bottom-4 right-4">
+<div class="md:hidden h-12 w-12 rounded-xl bg-base-200 fixed bottom-4 right-2">
 	<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<div class="dropdown dropdown-top dropdown-end w-full h-full">
