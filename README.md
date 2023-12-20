@@ -13,7 +13,7 @@
 > _"Relax as our AI dream interpreter and bedtime storyteller provides captivating insights and imaginative tales based on your dreams!"_
 
 ### What is Dreamcatcher?
-Dreamcatcher is an application that allows a user to interact with an Large Language Model to get insights about the themes and symbolism present in their dreams. Once they have conversed with the AI interpreter about their dreams, they can have the AI tell them a bedtime story of their chosen mood and setting, all based on the themes present within their dream. Currently there are two types of stories available:
+Dreamcatcher is an application that allows a user to interact with a Large Language Model to get insights about the themes and symbolism present in their dreams. Once they have conversed with the AI interpreter about their dreams, they can have the AI tell them a bedtime story of their chosen mood and setting, all based on the themes present within their dream. Currently there are two types of stories available:
 
 - Short story
 - Choose your own adventure
