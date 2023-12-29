@@ -1,71 +1,69 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { Story } from '$lib/db/schema/stories';
-	import ImagePlaceholder from './ImagePlaceholder.svelte';
-	import Title from './Title.svelte';
-	import Modal from './ui/Modal.svelte';
+	import { handleFetch } from '$lib/helpers/handleFetch';
+	import BottomAction from './ui/BottomAction.svelte';
+
+	import Icon from '@iconify/svelte';
 
 	export let story: Story;
-    let { id, shared, title, imageUrl} = story
+	let { id, shared } = story;
 	let deleting = false;
-	function handleShareClick() {
+	let confirmingDelete = false;
+
+	$: API_URL = `/api/stories/${id}`;
+
+	async function handleShareClick() {
+		const [result, error] = await handleFetch(API_URL, {
+			method: 'PATCH',
+			body: { shared: !shared }
+		});
+
+		if (error) {
+			console.warn(error);
+			return;
+		}
+
+		console.log(result);
 		shared = !shared;
 	}
 
 	async function handleDelete() {
 		deleting = true;
-		const data = await fetch(`/api/stories/${id}`, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json'
-			}
+		const [result, error] = await handleFetch(API_URL, {
+			method: 'DELETE'
 		});
-		const result = await data.json();
-		console.log(result);
-		deleting = false;
+		if (error || !result.success) {
+			console.warn('Unsuccessful:');
+			console.warn(error);
+			return;
+		}
+		goto('/profile');
 	}
+	const toggleDeleteConfirmation = () => (confirmingDelete = !confirmingDelete);
 </script>
 
-<a href="/story/{id}/edit" class="btn h-full join-item">Edit</a>
-<button on:click={handleShareClick} class="btn h-full join-item">
-	{shared ? 'Shared' : 'Share'}
-</button>
-<Modal classes="h-full rounded-l-none rounded-r-xl " buttonText="Delete">
-	<span slot="logo"></span>
-	<div class="flex items-center gap-3" slot="title">
-		<div class="avatar">
-			<div class="mask mask-squircle w-24 h-24">
-				{#if imageUrl}
-					<img
-						src={imageUrl}
-						alt="cover"
-					/>
-				{:else}
-					<ImagePlaceholder message="" />
-				{/if}
-			</div>
-		</div>
-		<div>
-			<div class="text-lg opacity-50">Saving the story:</div>
-			<Title title={title} fontSize="text-2xl" fontColor="text-success" />
-		</div>
-	</div>
-
-	<section class="gap-2 pb-4 max-w-full">
-		<article class="my-2 max-h-80 overflow-scroll">
-		</article>
-		<div class="divider divider-neutral mt-2" />
-		<p class="italic opacity-80">
-			<span class="font-bold text-success">Note:</span> Your conversation history with the dream interpreter
-			will remain stored on your device only.
-		</p>
-		<div class="flex items-end justify-between">
-			<label for="share" class="flex items-center gap-4 cursor-pointer label">
-				Share story
-			</label>
-			<form method="dialog">
-                <button disabled={deleting} on:click={handleDelete} class="btn btn-error">Delete</button>
-			</form>
-		</div>
-	</section>
-</Modal>
-<!-- <button class="btn h-full join-item">Delete</button> -->
+{#if deleting}
+	<button disabled class="btn join-item h-full">
+		<span class="loading loading-spinner" />
+		Deleting story
+	</button>
+{:else if confirmingDelete}
+	<BottomAction classes="btn-error" action={handleDelete}>
+		<Icon icon="gravity-ui:trash-bin" slot="icon"/>
+		<span slot="label">Confirm Delete</span>
+	</BottomAction>
+	<BottomAction action={toggleDeleteConfirmation}>
+		<span slot="label">Cancel</span>
+	</BottomAction>
+{:else}
+	<BottomAction link="/story/{id}/edit" icon="gravity-ui:pencil">
+		<span slot="label">Edit</span>
+	</BottomAction>
+	<BottomAction action={handleShareClick} icon={shared ? "gravity-ui:eye":"gravity-ui:eye-slash"}>
+		<span slot="label">{shared ? 'Public' : 'Private'}</span>
+	</BottomAction>
+	<BottomAction action={toggleDeleteConfirmation} icon="gravity-ui:trash-bin">
+		<span slot="label">Delete</span>
+	</BottomAction>
+{/if}

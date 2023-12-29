@@ -87,7 +87,7 @@ function removeRedundantMessages() {
 export function storyPublished(id: string) {
     const journalList = loadJournal()
     if (!localStorage || !journalList) return;
-    const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? {...get(journal), id} : item)
+    const updatedJournalList = journalList?.map(item => item.id == get(journal).id ? { ...get(journal), id } : item)
     localStorage.setItem('journals', JSON.stringify(updatedJournalList));
 }
 

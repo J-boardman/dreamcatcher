@@ -2,12 +2,15 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import MoonIcon from 'virtual:icons/line-md/moon-alt-loop';
+	import { resetHeader } from '$lib';
 
 	let previousPage = '';
 
 	afterNavigate(({ from }) => {
 		previousPage = from?.url.pathname || previousPage;
+        resetHeader()
 	});
+
 </script>
 
 <section class="grid place-items-center h-full flex-1">

@@ -1,23 +1,32 @@
 <script lang="ts">
+	import Icon from "@iconify/svelte";
+
+	type Action = () => any;
 	export let link: string = '';
 	export let active = false;
-	export let text = '';
 	export let hiddenTextOnMobile = false;
-	export let action: null | (() => any) = null;
+	export let action: Action = () => undefined;
+	export let classes = '';
+	export let disabled = false;
+    export let icon = ""
+
+	$: buttonClasses = 'h-full btn join-item ' + classes;
 </script>
 
 {#if link}
-	<a href={link} class="h-full btn join-item" class:btn-secondary={active}>
-		<div class="flex flex-col sm:flex-row sm:gap-1 items-center">
+	<a href={link} class={buttonClasses} class:btn-secondary={active}>
+		<div class="flex flex-col sm:flex-row gap-1 items-center">
+			<Icon {icon} class="text-lg"/>
+			<slot name="label" class="text-sm sm:text-sm {hiddenTextOnMobile ? 'hidden md:flex' : ''}" />
 			<slot />
-			<span class="text-xs sm:text-sm {hiddenTextOnMobile ? 'hidden md:flex' : ''}">{text}</span>
 		</div>
 	</a>
-{:else if action}
-	<button on:click={action} class="h-full btn join-item {active ? 'btn-secondary' : ''}">
-		<div class="flex flex-col sm:flex-row items-center">
+{:else}
+	<button {disabled} on:click={action} class={buttonClasses} class:btn-secondary={active}>
+		<div class="flex flex-col sm:flex-row sm:gap-1 items-center">
+			<Icon {icon} class="text-lg"/>
+			<slot name="label" class="text-sm sm:text-sm {hiddenTextOnMobile ? 'hidden md:flex' : ''}" />
 			<slot />
-			<span class="text-xs sm:text-sm {hiddenTextOnMobile ? 'hidden md:flex' : ''}">{text}</span>
 		</div>
 	</button>
 {/if}

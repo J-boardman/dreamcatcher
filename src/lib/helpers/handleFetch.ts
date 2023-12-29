@@ -4,7 +4,7 @@ type FetchOptions = {
     extras?: object
 }
 
-export async function handleFetch(url: string, options: FetchOptions) {
+export async function handleFetch(url: string, options: Partial<FetchOptions>) {
     try {
         const response = await fetch(url, {
             method: options.method,

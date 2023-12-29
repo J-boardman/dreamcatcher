@@ -37,3 +37,8 @@ export async function getLikeCount(storyID: number) {
 export async function getLikesByUser(userID: string) {
     return db.select().from(storyLikes).leftJoin(stories, eq(stories.id, storyLikes.storyID)).where(eq(storyLikes.userID, userID))
 }
+
+
+export async function removeStoryLikes(storyID: number | string) {
+    return db.delete(storyLikes).where(eq(storyLikes.storyID, Number(storyID)))
+}

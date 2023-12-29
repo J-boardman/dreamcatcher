@@ -1,11 +1,8 @@
 import { openai } from '$lib/services/openai.js';
 
-export const config = {
-    runtime: "edge"
-}
+export const config = { runtime: "edge" }
 
 export const POST = async ({ request }) => {
-
     const { prompt } = await request.json();
 
     const image = await openai.images.generate({

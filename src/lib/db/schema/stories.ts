@@ -21,28 +21,29 @@ export async function insertStory(story: NewStory) {
 }
 
 const getStories = () => db.select().from(stories).orderBy(desc(stories.id));
+const matchID = (id: string | number) => eq(stories.id, Number(id))
 
-export async function getStoryById(id: number) {
-    return getStories().where(eq(stories.id, id))
+export async function getStoryById(id: number | string) {
+    return getStories().where(matchID(id))
 }
 
-export async function updateStory(id: number, updatedItem: Partial<Story>) {
-    return db.update(stories).set(updatedItem).where(eq(stories.id, id))
+export async function updateStory(id: number | string, updatedItem: Partial<Story>) {
+    return db.update(stories).set(updatedItem).where(matchID(id))
 }
 
-export async function deleteStory(id: number) {
-    return db.delete(stories).where(eq(stories.id, id));
+export async function deleteStory(id: number | string) {
+    return db.delete(stories).where(matchID(id));
 }
 
-// ADVANCED CRUD
 export async function getStoriesByAuthor(authorID: string) {
     return getStories().where(eq(stories.authorId, authorID));
 }
 
-export async function getStoryImage(id: number) {
-    return db.select({ image: stories.imageUrl }).from(stories).where(eq(stories.id, id));
+export async function getStoryImage(id: number | string) {
+    return db.select({ image: stories.imageUrl }).from(stories).where(matchID(id));
 }
 
+// ADVANCED CRUD
 export async function getSharedStories(offset = 0, limit = 4) {
     return db
         .select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId })

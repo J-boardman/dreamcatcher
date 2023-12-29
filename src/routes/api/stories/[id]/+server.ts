@@ -1,17 +1,21 @@
-import { getStoryById, updateStory } from '$lib/db/schema/stories.js';
+import { deleteStory, getStoryById, updateStory } from '$lib/db/schema/stories.js';
+import { removeStoryLikes } from '$lib/db/schema/storyLikes.js';
 import { json } from '@sveltejs/kit';
 
 export async function PATCH({ params, locals, request }) {
-    const { updatedStory } = await request.json()
+    const data = await request.json()
 
-    const result = await updateStory(Number(params.id), { ...updatedStory })
-
-
+    const result = await updateStory(params.id, { ...data })
+    
     return json({ updated: result.rowsAffected })
 }
 
-export async function DELETE({ params, locals }) {
-    const story = await getStoryById(Number(params.id))
+export async function DELETE({ params }) {
+    const deletedStory = await deleteStory(params.id)
+    const removedLikes = await removeStoryLikes(params.id)
 
-    return json({ story })
+    return json({
+        success: deletedStory.rowsAffected > 0,
+        likesRemoved: removedLikes.rowsAffected > 0
+    })
 }

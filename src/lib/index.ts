@@ -6,7 +6,7 @@ import { handleChatRequest } from "./helpers/handleChatRequest"
 import { generateImagePrompt } from "./helpers/generateImagePrompt"
 import type { UseChatHelpers } from "ai/svelte/dist";
 import { getContext } from "svelte";
-import { headerImage } from "./stores";
+import { headerImage, pageTitle } from "./stores";
 import logo from "$lib/assets/logo.png?enhanced"
 import { page } from "$app/stores"
 import { get } from "svelte/store"
@@ -39,3 +39,8 @@ export const resetHeaderImage = () => headerImage.set({ src: logo, rounded: fals
 export const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const isFollowingFeed = (url: URL) => url.searchParams.get("filter") == "following"
+
+export function resetHeader(){
+    pageTitle.set("Dreamcatcher")
+    resetHeaderImage()
+}

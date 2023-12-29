@@ -12,3 +12,10 @@ export async function cloudinaryUpload(url: string) {
         return result
     });
 }
+
+export async function cloudinaryDelete(url: string){
+    return await cloudinary.uploader.destroy(url, {}, (error, result) => {
+        if(error) return error
+        return result
+    })
+}
