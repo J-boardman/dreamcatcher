@@ -36,8 +36,8 @@
 		{#if story.imageUrl}
 			<CldImage
 				src={story.imageUrl}
-				height={1024}
-				width={1792}
+				height={1792}
+				width={1024}
                 class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
                 

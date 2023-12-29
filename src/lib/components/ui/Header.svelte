@@ -8,7 +8,7 @@
 	import logo from '$lib/assets/logo.png?enhanced';
 </script>
 
-<header class="hidden md:flex h-16 justify-between items-center px-4 mb-2">
+<header class="hidden md:flex h-16 justify-between items-center px-4">
 	<div class="flex gap-2 items-center">
 		<a href="/">
 			{#if $headerImage?.src == logo}
