@@ -5,7 +5,7 @@
 	import type { StoryWithAuthor } from '$lib/types';
 
 	export let story: StoryWithAuthor;
-    export let hideAuthorCard = false;
+	export let hideAuthorCard = false;
 </script>
 
 <section class="card card-compact min-h-[450px] group">
@@ -35,13 +35,14 @@
 	<figure class="-z-[1] aspect-4/7 w-full h-auto rounded-xl skeleton bg-secondary-content/80">
 		{#if story.imageUrl}
 			<CldImage
+				height={896}
+				width={512}
 				src={story.imageUrl}
-				height={1792}
-				width={1024}
-                class="h-full rounded-xl"
+				class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
-                
-                />
+			/>
+			<!-- height={1792}
+				width={1024} -->
 			<!-- on:error={() => (story.image.url = '')} -->
 		{:else}
 			<ImagePlaceholder />
