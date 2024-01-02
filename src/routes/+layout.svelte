@@ -3,7 +3,9 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import { onNavigate } from '$app/navigation';
 	import Background from '$lib/components/ui/Background.svelte';
-
+	import MobileNav from '$lib/components/ui/MobileNav.svelte';
+	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
+    
 	onNavigate((navigation) => {
 		// @ts-expect-error
 		if (!document?.startViewTransition) return;
@@ -21,5 +23,8 @@
 <Background />
 <section class="min-h-[100dvh] flex flex-col">
 	<Header />
-	<slot />
+		<slot />
+	<SignedIn>
+		<MobileNav />
+	</SignedIn>
 </section>

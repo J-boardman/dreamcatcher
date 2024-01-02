@@ -6,7 +6,7 @@ export async function load({ params, locals }){
 
     //@ts-expect-error
     if(locals.session.userId != story.authorId){
-        error(403, "Forbidden");
+        throw error(403, "Forbidden")
     }
 
     return {}
