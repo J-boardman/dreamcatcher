@@ -1,6 +1,6 @@
 <script lang="ts">
     import { headerImage } from "$lib/stores";
-    import logo from "$lib/assets/logo.png?enhanced"
+    import logo from "$lib/assets/logo.png"
 </script>
 <a href="/">
 	{#if $headerImage?.src == logo}
