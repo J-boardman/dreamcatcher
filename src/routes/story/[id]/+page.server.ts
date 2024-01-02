@@ -6,7 +6,7 @@ import { error } from '@sveltejs/kit';
 export async function load({ params, url, locals }) {
     const story: Story = (await getStoryById(params.id))[0];
 
-    if(!story) throw error(404, "Story not found!")
+    if(!story) error(404, "Story not found!");
 
     // @ts-ignore
     const userID = locals?.session.userId
