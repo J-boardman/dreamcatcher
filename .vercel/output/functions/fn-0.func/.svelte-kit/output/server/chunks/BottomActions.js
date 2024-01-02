@@ -1,8 +1,28 @@
-import { c as create_ssr_component, s as spread, e as escape_object, v as validate_component, a as escape } from "./ssr.js";
+import { c as create_ssr_component, s as spread, e as escape_object, a as escape, v as validate_component } from "./ssr.js";
 import { a as afterNavigate, g as goto } from "./navigation.js";
 import { c as compute_rest_props, s as subscribe } from "./lifecycle.js";
 import { c as clerk } from "./index3.js";
 import { S as SignedIn } from "./Title.js";
+const Image_twotone = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  return `<svg${spread(
+    [
+      { viewBox: "0 0 24 24" },
+      { width: "1.2em" },
+      { height: "1.2em" },
+      escape_object($$props)
+    ],
+    {}
+  )}><!-- HTML_TAG_START -->${`<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path fill="none" stroke-dasharray="66" stroke-dashoffset="66" stroke-width="2" d="M3 14V5H21V19H3V14"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="66;0"/></path><path fill="currentColor" fill-opacity="0" stroke-dasharray="52" stroke-dashoffset="52" d="M3 16L7 13L10 15L16 10L21 14V19H3Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.8s" values="52;0"/><animate fill="freeze" attributeName="fill-opacity" begin="1s" dur="0.15s" values="0;0.3"/></path></g><circle cx="7.5" cy="9.5" r="1.5" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="1s" dur="0.4s" values="0;1"/></circle>`}<!-- HTML_TAG_END --></svg>`;
+});
+const ImagePlaceholder = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { loading = false } = $$props;
+  let { message = "No image yet" } = $$props;
+  if ($$props.loading === void 0 && $$bindings.loading && loading !== void 0)
+    $$bindings.loading(loading);
+  if ($$props.message === void 0 && $$bindings.message && message !== void 0)
+    $$bindings.message(message);
+  return `<div class="${"w-full h-full p-4 flex flex-col justify-center items-center rounded-xl " + escape(loading ? "skeleton" : "", true)}">${validate_component(Image_twotone, "ImageIcon").$$render($$result, { class: "text-5xl" }, {}, {})} <p>${escape(message)}</p></div>`;
+});
 const Home_md = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `<svg${spread(
     [
@@ -115,26 +135,6 @@ const MobileNav = create_ssr_component(($$result, $$props, $$bindings, slots) =>
       )}</li></ul></div></div>`;
     }
   })}`;
-});
-const Image_twotone = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `<svg${spread(
-    [
-      { viewBox: "0 0 24 24" },
-      { width: "1.2em" },
-      { height: "1.2em" },
-      escape_object($$props)
-    ],
-    {}
-  )}><!-- HTML_TAG_START -->${`<g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path fill="none" stroke-dasharray="66" stroke-dashoffset="66" stroke-width="2" d="M3 14V5H21V19H3V14"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="66;0"/></path><path fill="currentColor" fill-opacity="0" stroke-dasharray="52" stroke-dashoffset="52" d="M3 16L7 13L10 15L16 10L21 14V19H3Z"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.8s" values="52;0"/><animate fill="freeze" attributeName="fill-opacity" begin="1s" dur="0.15s" values="0;0.3"/></path></g><circle cx="7.5" cy="9.5" r="1.5" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="1s" dur="0.4s" values="0;1"/></circle>`}<!-- HTML_TAG_END --></svg>`;
-});
-const ImagePlaceholder = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { loading = false } = $$props;
-  let { message = "No image yet" } = $$props;
-  if ($$props.loading === void 0 && $$bindings.loading && loading !== void 0)
-    $$bindings.loading(loading);
-  if ($$props.message === void 0 && $$bindings.message && message !== void 0)
-    $$bindings.message(message);
-  return `<div class="${"w-full h-full p-4 flex flex-col justify-center items-center rounded-xl " + escape(loading ? "skeleton" : "", true)}">${validate_component(Image_twotone, "ImageIcon").$$render($$result, { class: "text-5xl" }, {}, {})} <p>${escape(message)}</p></div>`;
 });
 const BottomActions_svelte_svelte_type_style_lang = "";
 const css = {

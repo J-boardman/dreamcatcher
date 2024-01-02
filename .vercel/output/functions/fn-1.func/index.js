@@ -23000,7 +23000,6 @@ var init_layout_svelte = __esm({
     init_SignInButton();
     init_stores();
     init_navigation();
-    init_clerk();
     UserButton = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       let $$unsubscribe_clerk;
       $$unsubscribe_clerk = subscribe(clerk, (value) => value);
@@ -23076,7 +23075,7 @@ var init__ = __esm({
   ".svelte-kit/output/server/nodes/0.js"() {
     index = 0;
     component = async () => component_cache ?? (component_cache = (await Promise.resolve().then(() => (init_layout_svelte(), layout_svelte_exports))).default);
-    imports = ["_app/immutable/nodes/0.ba2c3e9b.js", "_app/immutable/chunks/scheduler.3b07f987.js", "_app/immutable/chunks/index.c72e2f07.js", "_app/immutable/chunks/index.b07aa697.js", "_app/immutable/chunks/index.76fa2d59.js", "_app/immutable/chunks/SignedOut.b4665ed0.js", "_app/immutable/chunks/SignedIn.0348b39f.js", "_app/immutable/chunks/SignInButton.2ae53d55.js", "_app/immutable/chunks/spread.8a54911c.js", "_app/immutable/chunks/Title.49fc599e.js", "_app/immutable/chunks/stores.b4316504.js", "_app/immutable/chunks/navigation.c51359bf.js", "_app/immutable/chunks/singletons.fa76c5dc.js"];
+    imports = ["_app/immutable/nodes/0.074e4f06.js", "_app/immutable/chunks/scheduler.24c66ff4.js", "_app/immutable/chunks/index.175ea22e.js", "_app/immutable/chunks/index.793d310b.js", "_app/immutable/chunks/index.9d0e48d0.js", "_app/immutable/chunks/SignedOut.3bbe5fe5.js", "_app/immutable/chunks/SignedIn.d2a3fd63.js", "_app/immutable/chunks/SignInButton.b086cb0a.js", "_app/immutable/chunks/spread.8a54911c.js", "_app/immutable/chunks/Title.2ff95952.js", "_app/immutable/chunks/stores.745d342d.js", "_app/immutable/chunks/navigation.ce6aac00.js", "_app/immutable/chunks/singletons.64e0d3a6.js", "_app/immutable/chunks/stores.18c5f3a7.js"];
     stylesheets = ["_app/immutable/assets/0.7156c219.css"];
     fonts = [];
   }
@@ -23177,7 +23176,7 @@ var init__2 = __esm({
   ".svelte-kit/output/server/nodes/1.js"() {
     index2 = 1;
     component2 = async () => component_cache2 ?? (component_cache2 = (await Promise.resolve().then(() => (init_error_svelte(), error_svelte_exports))).default);
-    imports2 = ["_app/immutable/nodes/1.1c72c89a.js", "_app/immutable/chunks/scheduler.3b07f987.js", "_app/immutable/chunks/index.c72e2f07.js", "_app/immutable/chunks/stores.2d407fbe.js", "_app/immutable/chunks/singletons.fa76c5dc.js", "_app/immutable/chunks/index.76fa2d59.js", "_app/immutable/chunks/navigation.c51359bf.js", "_app/immutable/chunks/spread.8a54911c.js", "_app/immutable/chunks/index.d3367806.js", "_app/immutable/chunks/stores.b4316504.js"];
+    imports2 = ["_app/immutable/nodes/1.927d4f5b.js", "_app/immutable/chunks/scheduler.24c66ff4.js", "_app/immutable/chunks/index.175ea22e.js", "_app/immutable/chunks/stores.18c5f3a7.js", "_app/immutable/chunks/singletons.64e0d3a6.js", "_app/immutable/chunks/index.9d0e48d0.js", "_app/immutable/chunks/navigation.ce6aac00.js", "_app/immutable/chunks/spread.8a54911c.js", "_app/immutable/chunks/index.6dac0e4f.js", "_app/immutable/chunks/stores.745d342d.js"];
     stylesheets2 = [];
     fonts2 = [];
   }
@@ -27361,7 +27360,7 @@ var options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "te57y7"
+  version_hash: "1n41ed5"
 };
 function get_hooks() {
   return Promise.resolve().then(() => (init_hooks_server(), hooks_server_exports));
@@ -30735,7 +30734,7 @@ var manifest = (() => {
     assets: /* @__PURE__ */ new Set(["favicon.png"]),
     mimeTypes: { ".png": "image/png" },
     _: {
-      client: { "start": "_app/immutable/entry/start.05bd6c99.js", "app": "_app/immutable/entry/app.c22275a2.js", "imports": ["_app/immutable/entry/start.05bd6c99.js", "_app/immutable/chunks/scheduler.3b07f987.js", "_app/immutable/chunks/singletons.fa76c5dc.js", "_app/immutable/chunks/index.76fa2d59.js", "_app/immutable/entry/app.c22275a2.js", "_app/immutable/chunks/index.b07aa697.js", "_app/immutable/chunks/index.76fa2d59.js", "_app/immutable/chunks/scheduler.3b07f987.js", "_app/immutable/chunks/_commonjsHelpers.668aeb87.js", "_app/immutable/chunks/index.c72e2f07.js"], "stylesheets": [], "fonts": [] },
+      client: { "start": "_app/immutable/entry/start.a0d23407.js", "app": "_app/immutable/entry/app.8501921b.js", "imports": ["_app/immutable/entry/start.a0d23407.js", "_app/immutable/chunks/scheduler.24c66ff4.js", "_app/immutable/chunks/singletons.64e0d3a6.js", "_app/immutable/chunks/index.9d0e48d0.js", "_app/immutable/entry/app.8501921b.js", "_app/immutable/chunks/index.793d310b.js", "_app/immutable/chunks/index.9d0e48d0.js", "_app/immutable/chunks/scheduler.24c66ff4.js", "_app/immutable/chunks/_commonjsHelpers.668aeb87.js", "_app/immutable/chunks/index.175ea22e.js"], "stylesheets": [], "fonts": [] },
       nodes: [
         __memo(() => Promise.resolve().then(() => (init__(), __exports))),
         __memo(() => Promise.resolve().then(() => (init__2(), __exports2)))

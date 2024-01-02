@@ -5,7 +5,6 @@ import { C as ClerkLoaded, T as Title, S as SignedIn } from "../../chunks/Title.
 import { S as SignInButton } from "../../chunks/SignInButton.js";
 import { h as headerImage, l as logo, p as pageTitle } from "../../chunks/stores.js";
 import { o as onNavigate } from "../../chunks/navigation.js";
-import "@clerk/clerk-js";
 const app = "";
 const UserButton = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$unsubscribe_clerk;
