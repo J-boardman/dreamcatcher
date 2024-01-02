@@ -41,9 +41,6 @@
 				class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
 			/>
-			<!-- height={1792}
-				width={1024} -->
-			<!-- on:error={() => (story.image.url = '')} -->
 		{:else}
 			<ImagePlaceholder />
 		{/if}

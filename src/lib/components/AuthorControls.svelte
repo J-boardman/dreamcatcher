@@ -50,7 +50,7 @@
 	</button>
 {:else if confirmingDelete}
 	<BottomAction classes="btn-error" action={handleDelete}>
-		<Icon icon="gravity-ui:trash-bin" slot="icon"/>
+		<Icon icon="gravity-ui:trash-bin"/>
 		<span slot="label">Confirm Delete</span>
 	</BottomAction>
 	<BottomAction action={toggleDeleteConfirmation}>
