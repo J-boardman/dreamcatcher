@@ -14,3 +14,5 @@ export const journal: Writable<DreamJournal> = writable();
 export let newsFeedStories: Writable<StoryWithAuthor[]> = writable([]);
 
 export let grids: Writable<number> = writable(3)
+
+export let fetching: Writable<boolean> = writable(false)

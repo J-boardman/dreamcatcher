@@ -1,49 +1,34 @@
 <script lang="ts">
-	import { imageSpecifications, imagePromptMessage } from '$lib/helpers/prompts';
-	import { journal, state } from '$lib/stores';
-	import Modal from '../ui/Modal.svelte';
-
-	import RefreshLogo from 'virtual:icons/charm/refresh';
-	import ImageLogo from 'virtual:icons/ph/image';
-	import SaveLogo from 'virtual:icons/bi/save';
-	import Title from '../Title.svelte';
-	import ImagePlaceholder from '../ImagePlaceholder.svelte';
+	import { imageSpecifications } from '$lib/helpers/prompts';
+	import { fetching, journal, state } from '$lib/stores';
+	import SaveStoryModal from '$lib/components/journal/SaveStoryModal.svelte';
+    
 	import {
 		generateImagePrompt,
 		getChatContext,
 		handleChatRequest,
 		handleFetch,
 		randomID,
-		updateJournal,
-
-		wait
-
+		updateJournal
 	} from '$lib';
-	import type { NewStory } from '$lib/db/schema/stories';
-	import { clerk } from 'clerk-sveltekit/client';
-	import { storyPublished } from '$lib/helpers/journal';
-	import { goto } from '$app/navigation';
+	import Icon from '@iconify/svelte';
 
 	const { messages, setMessages } = getChatContext();
 
-	let generatingImage = false;
-	let generatingTitle = false;
-	$: isLoading = generatingTitle || generatingImage;
-
 	async function handleImageGeneration() {
 		const messageID = randomID();
-        setMessages([
-            ...$messages,
-            {
-                id: messageID,
-                content: 'Generating Image',
-                name: 'image',
-                role: 'system'
-            }
-        ]);
-        // setMessages($messages.filter(item => item.id != messageID))
+		setMessages([
+			...$messages,
+			{
+				id: messageID,
+				content: 'Generating Image',
+				name: 'image',
+				role: 'system'
+			}
+		]);
+  
 		const { mood, setting } = $journal.story;
-		generatingImage = true;
+		fetching.set(true);
 		const prompt = await generateImagePrompt($messages, mood, setting);
 
 		if (!prompt) {
@@ -51,14 +36,12 @@
 			return;
 		}
 
-
-
 		const [data, error] = await handleFetch('/api/image', {
 			method: 'POST',
 			body: { prompt: imageSpecifications + ' ' + prompt }
 		});
 
-		generatingImage = false;
+		fetching.set(false);
 
 		if (error || !data.url) {
 			console.warn(error);
@@ -67,13 +50,15 @@
 		}
 
 		setMessages(
-			$messages.map((item) => (item.id == messageID ? { ...item, content: data.url, id: data.created } : item))
+			$messages.map((item) =>
+				item.id == messageID ? { ...item, content: data.url, id: data.created } : item
+			)
 		);
 		updateJournal({ image: { url: data.url, created: data.created } });
 	}
 
 	async function handleTitleGeneration() {
-		generatingTitle = true;
+		fetching.set(true);
 		const [data, error] = await handleChatRequest(
 			'Generate a short 3-5 word title for the story.',
 			$messages
@@ -87,138 +72,39 @@
 		const title = data?.choices[0].message.content?.replaceAll('"', '');
 
 		updateJournal({ story: { ...$journal.story, title: title as string } });
-		generatingTitle = false;
+		fetching.set(false);
 	}
 
 	function handleTitleChange(e: Event) {
 		const target = e.target as HTMLInputElement;
 		updateJournal({ story: { ...$journal.story, title: target.value } });
 	}
-
-	$: sharing = $journal?.shared;
-	let saving = false;
-
-	async function finaliseStory() {
-		saving = true;
-		if (!$journal.image.url) return;
-		const [uploadedImage, error] = await handleFetch('/api/image/upload', {
-			method: 'POST',
-			body: { url: $journal.image.url }
-		});
-
-		if (error) {
-			console.log(error);
-			return;
-		}
-
-		const story: NewStory = {
-			authorId: $clerk?.user?.id as string,
-			title: $journal.story.title,
-			story: $journal.story.story,
-			imageUrl: uploadedImage.url,
-			// imageUrl: $journal.finalImageUrl,
-			shared: sharing
-		};
-
-		saving = false;
-		const data = await fetch('/api/stories', {
-			method: 'POST',
-			body: JSON.stringify(story),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-
-		const storyID = await data.json();
-
-		storyPublished(storyID);
-
-		updateJournal({
-			id: `${storyID}`,
-			finalImageUrl: uploadedImage.url,
-			lastState: 'STORY_PUBLISHED',
-			shared: sharing
-		});
-		goto(`/story/${storyID}`, { replaceState: true });
-	}
 </script>
 
 {#if $state == 'FINALISING_STORY'}
-	<section class="grid md:grid-cols-5 gap-2 py-2 md:py-0 md:pt-2">
-		<article class="join flex col-span-3">
-			<input
+	<section class="flex gap-2">
+		<article class="flex rounded-xl">
+		<input
 				bind:value={$journal.story.title}
 				on:change={handleTitleChange}
 				type="text"
-				class="join-item input flex-1"
-				disabled={generatingTitle}
+				class="join-item input flex-1 max-w-36 md:max-w-full"
+                placeholder="Title"
+				disabled={$fetching}
 			/>
 			<button
-				disabled={generatingTitle}
+				disabled={$fetching}
 				on:click={handleTitleGeneration}
-				class="btn join-item animate-none"
+				class="btn animate-none rounded-l-none"
 			>
-				<RefreshLogo />
+                <Icon icon="charm:refresh" class="text-lg" />
 				<span class="hidden md:flex">Generate Title</span>
 			</button>
 		</article>
-		<button disabled={generatingImage} on:click={handleImageGeneration} class="btn animate-none">
-			<ImageLogo class="text-lg" />
-			<span class="">New Image</span>
+		<button disabled={$fetching} on:click={handleImageGeneration} class="btn animate-none">
+            <Icon icon="ph:image" class="text-lg"/>
+			<span class="hidden md:flex">New Image</span>
 		</button>
-
-		<Modal buttonText={'Save story'} noAnimate busy={isLoading}>
-			<span slot="logo"><SaveLogo /></span>
-
-			<div class="flex items-center gap-3" slot="title">
-				<div class="avatar">
-					<div class="mask mask-squircle w-24 h-24">
-						{#if $journal?.image?.url}
-							<img
-								src={$journal?.image?.url}
-								alt="cover"
-								on:error={() => updateJournal({ image: { ...$journal.image, url: '' } })}
-							/>
-						{:else}
-							<ImagePlaceholder message="" />
-						{/if}
-					</div>
-				</div>
-				<div>
-					<div class="text-lg opacity-50">Saving the story:</div>
-					<Title title={$journal.story.title} fontSize="text-2xl" fontColor="text-success" />
-				</div>
-			</div>
-
-			<section class="gap-2 pb-4 max-w-full">
-				<article class="my-2 max-h-80 overflow-scroll">
-					{#each $journal.story.story.split('\n') as paragraph, i}
-						<p class="py-1">{paragraph}</p>
-					{/each}
-				</article>
-				<div class="divider divider-neutral mt-2" />
-				<p class="italic opacity-80">
-					<span class="font-bold text-success">Note:</span> Your conversation history with the dream
-					interpreter will remain stored on your device only.
-				</p>
-				<div class="flex items-end justify-between">
-					<label for="share" class="flex items-center gap-4 cursor-pointer label">
-						<input
-							type="checkbox"
-							name="share"
-							id="share"
-							class="toggle toggle-success"
-							checked={sharing}
-							on:click={() => (sharing = !sharing)}
-							disabled={!$journal.story.title || !$journal?.image?.url}
-						/>
-						Share story
-					</label>
-					<form method="dialog">
-						<button disabled={saving} on:click={finaliseStory} class="btn btn-success">Save</button>
-					</form>
-				</div>
-			</section>
-		</Modal>
+		<SaveStoryModal />
 	</section>
 {/if}

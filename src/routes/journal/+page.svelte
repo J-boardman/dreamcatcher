@@ -27,9 +27,7 @@
 </script>
 
 <section class="m-2 md:mx-4">
-	<section
-		class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3  gap-4 mb-16 md:mb-0"
-	>
+	<section class="grid auto-rows-max sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16 md:mb-0">
 		{#each [...allJournals] as journal, i}
 			<JournalCard {journal} {handleDelete} />
 		{/each}
@@ -37,11 +35,13 @@
 </section>
 
 <BottomActions>
-	<input
-		type="text"
-		class="h-full input join-item flex-1 md:flex-none w-60 md:w-fit"
-		bind:value={newDreamName}
-		placeholder="New Journal Name"
-	/>
-	<NewJournalButton hideTextOnMobile />
+	<div class="bg-base-200 flex">
+		<input
+			type="text"
+			class="input join-item flex-1 md:flex-none w-60 md:w-fit"
+			bind:value={newDreamName}
+			placeholder="New Journal Name"
+		/>
+		<NewJournalButton hideTextOnMobile />
+	</div>
 </BottomActions>

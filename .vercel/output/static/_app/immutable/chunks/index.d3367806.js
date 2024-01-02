@@ -1,0 +1,1 @@
+import{Z as t}from"./scheduler.3b07f987.js";import{h as a,l as s,p as o}from"./stores.b4316504.js";import"./singletons.fa76c5dc.js";const m=()=>t("chat"),c=()=>Math.random().toString(36).substring(2,9),r=()=>a.set({src:s,rounded:!1}),l=e=>e.searchParams.get("filter")=="following";function d(){o.set("Dreamcatcher"),r()}export{r as a,c as b,m as g,l as i,d as r};

@@ -14,6 +14,7 @@
 	on:click={() => dialogElement?.showModal()}
 >
 	<slot name="logo" />
+    <slot name="button-text" />
 	{buttonText}
 </button>
 <dialog bind:this={dialogElement} class="modal grid modal-bottom md:place-items-center" {open}>

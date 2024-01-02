@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getChatContext, systemMessage, updateJournal } from '$lib';
 	import { chapterStoryPrompt, fullStoryPrompt } from '$lib/helpers/prompts';
-	import { journal, state } from '$lib/stores';
 
-	const { append, messages, isLoading } = getChatContext();
+	import { journal, state } from '$lib/stores';
+	const { messages, isLoading, append } = getChatContext();
 
 	function handleStoryGeneration() {
 		if ($journal?.story?.type == 'fullStory') generateFullStory();
@@ -19,80 +19,50 @@
 	}
 
 	async function generateFullStory() {
-		const prompt = fullStoryPrompt($journal.story?.mood, $journal.story?.setting);
+        const prompt = fullStoryPrompt($journal.story?.mood, $journal.story?.setting);
 		await append(systemMessage(prompt, 'Your story'));
 		const response = $messages.at(-1);
-
+        
 		if (!response) return;
 
-        updateJournal({
-            story: {...$journal.story, story: response.content},
-            lastState: "FINALISING_STORY"
-        })
-		state.set('FINALISING_STORY');
+		updateJournal({
+			story: { ...$journal.story, story: response.content },
+			lastState: 'FINALISING_STORY'
+		});
+        
+        state.set('FINALISING_STORY');
+	}
+
+	function changeStoryType(e: MouseEvent) {
+		const target = e.target as HTMLButtonElement;
+		updateJournal({ story: { ...$journal.story, type: target.value } });
 	}
 </script>
 
-{#if $state == 'CONVERSATION_OVER'}
-	<section class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 py-2 h-min">
-        <input
-        type="text"
-        placeholder="Mood (Optional)"
-        list="moods"
-        class="input"
-        name="mood"
-        bind:value={$journal.story.mood}
-        disabled={$isLoading}
-		/>
-		<datalist id="moods">
-            <option>Wholesome</option>
-			<option>Scary</option>
-			<option>Funny</option>
-			<option>Sad</option>
-			<option>Mysterious</option>
-			<option>Fantastical</option>
-			<option>Romantic</option>
-			<option>Gloomy</option>
-		</datalist>
-		<input
-			type="text"
-			placeholder="Setting (Optional)"
-			list="settings"
-			class="input"
-			name="setting"
-			bind:value={$journal.story.setting}
-			disabled={$isLoading}
-		/>
-		<datalist id="settings">
-            <option>Medieval</option>
-			<option>Futuristic</option>
-			<option>Fantasy</option>
-			<option>Historical</option>
-			<option>Post Apocalypse</option>
-			<option>Magical Realm</option>
-			<option>Mysterious Location</option>
-			<option>Outer Space</option>
-			<option>Secluded Island</option>
-			<option>Vast desert</option>
-			<option>Dense Jungle</option>
-		</datalist>
-        <select
-            bind:value={$journal.story.type}
-            class="select"
-            name="type"
-            placeholder="Story Type"
-            disabled={$isLoading}
-        >
-            <option value="Story Type" hidden disabled selected>Story Type</option>
-            <option value="fullStory">Full story</option>
-            <option value="chapterStory">Choose your own adventure</option>
-        </select>
-		<button
-        disabled={$isLoading || !$journal.story.type}
-        on:click={handleStoryGeneration}
-        class="btn btn-secondary animate-none w-2/4 md:w-full"
-		>
-        Start!
-    </button>
-	</section>
-{/if}
+<section class="flex flex-1 gap-2">
+	<button
+		class:btn-secondary={$journal.story.type == 'fullStory'}
+		on:click={changeStoryType}
+		value="fullStory"
+		class="btn flex-1 no-animation"
+		disabled={$isLoading}
+	>
+		Full Story
+	</button>
+	<button
+		class:btn-secondary={$journal.story.type == 'chapterStory'}
+		on:click={changeStoryType}
+		value="chapterStory"
+		class="btn flex-1 no-animation"
+		disabled={$isLoading}
+	>
+		Choose your own adventure
+	</button>
+	<button
+		disabled={!$journal.story.type || $isLoading}
+		class="btn flex-1 no-animation"
+		on:click={handleStoryGeneration}
+	>
+		Start!
+	</button>
+</section>

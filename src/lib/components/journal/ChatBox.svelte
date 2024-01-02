@@ -6,7 +6,6 @@
 	import { getChatContext, updateJournal } from '$lib';
 	import { clerk } from 'clerk-sveltekit/client';
 	import MoonIcon from 'virtual:icons/line-md/moon-loop';
-	import type { Message } from 'ai';
 
 	let element: HTMLElement;
 	let messageListLength = 0;
@@ -39,7 +38,7 @@
 </script>
 
 <section
-	class="border-2 rounded-lg border-base-100 flex min-h-[220px] flex-col justify-end text-sm md:text-base flex-1 join-item"
+	class="border-2 rounded-lg border-base-100 flex min-h-[220px] flex-1 flex-col justify-end text-sm md:text-base join-item"
 >
 	<section bind:this={element} class="overflow-scroll">
 		{#each $messages as message, i}

@@ -5,7 +5,7 @@
 	import Background from '$lib/components/ui/Background.svelte';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
-    
+
 	onNavigate((navigation) => {
 		// @ts-expect-error
 		if (!document?.startViewTransition) return;
@@ -21,10 +21,7 @@
 </script>
 
 <Background />
-<section class="min-h-[100dvh] flex flex-col">
+<section class="min-h-dvh flex flex-col">
 	<Header />
-		<slot />
-	<SignedIn>
-		<MobileNav />
-	</SignedIn>
+	<slot />
 </section>

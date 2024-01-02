@@ -1,12 +1,28 @@
 <script>
-	export let fullWidth = false;
-    export let height = "h-12 md:h-14"
+	import MobileNav from './MobileNav.svelte';
+	let innerWidth = 0;
+    export let journalPage = false;
+
 </script>
 
+<svelte:window bind:innerWidth />
+
 <section
-	class="bg-base-200 flex items-center {height} max-w-3/4 fixed z-30 bottom-4 md:bottom-2 text-xl left-2 join rounded-xl"
-	class:md:w-full={fullWidth}
-	class:md:max-w-[99%]={fullWidth}
+	class="flex items-center h-12 md:h-14 z-30 text-xl left-2 rounded-xl sticky bottom-0 gap-2"
+    class:bottom-padding={!journalPage}
 >
-	<slot />
+	<section class=">:bg-base-200 join flex-1">
+		<slot />
+	</section>
+	{#if innerWidth < 768}
+		<MobileNav />
+	{/if}
 </section>
+
+
+<style>
+    .bottom-padding {
+        bottom: 0.5rem;
+        margin: 0 1rem;
+    }
+</style>

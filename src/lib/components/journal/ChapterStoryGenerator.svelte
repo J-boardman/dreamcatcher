@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getChatContext, systemMessage, updateJournal } from '$lib'
+	import { getChatContext, systemMessage, updateJournal } from '$lib';
 	import { journal, state } from '$lib/stores';
 
 	const { isLoading, messages, append } = getChatContext();
@@ -30,43 +30,34 @@
 		if (value == 'Wrap it up') finaliseChapterStory();
 	}
 
-	async function handleCustomInstruction(e: SubmitEvent) {
-		await append(systemMessage(customInstruction, 'hidden message'));
-		customInstruction = '';
-	}
+	let innerWidth = 0;
 </script>
 
+<svelte:window bind:innerWidth />
+
 {#if $state == 'GENERATING_CHAPTER_STORY'}
-	<section class="py-2 flex flex-col lg:flex-row gap-2">
-		<div class="join flex">
-			{#each Array(3) as _, i}
-				<button
-					on:click={handleOptionClick}
-					value="option {i + 1}"
-					disabled={$isLoading}
-					class="btn join-item flex-1 animate-none"
-				>
-					Option {i + 1}
-				</button>
-			{/each}
-		</div>
-		<form on:submit={handleCustomInstruction} class="join flex flex-1">
-			<input
-            bind:value={customInstruction}
-            type="text"
-            class="input join-item flex-1"
-            placeholder="Custom instruction"
-            disabled={$isLoading}
-			/>
-			<button disabled={$isLoading} class="btn join-item animate-none">Send</button>
-		</form>
-        <button
-            on:click={handleOptionClick}
-            value="Wrap it up"
-            disabled={$isLoading}
-            class="btn animate-none w-10/12"
-        >
-            Wrap it up!
-        </button>
+	<section class="flex gap-2">
+		{#each Array(3) as _, i}
+			<button
+				on:click={handleOptionClick}
+				value="option {i + 1}"
+				disabled={$isLoading}
+				class="btn animate-none"
+			>
+				{#if innerWidth >= 768}
+					Option
+				{/if}
+				{i + 1}
+			</button>
+		{/each}
+
+		<button
+			on:click={handleOptionClick}
+			value="Wrap it up"
+			disabled={$isLoading}
+			class="btn animate-none"
+		>
+			Wrap it up!
+		</button>
 	</section>
 {/if}

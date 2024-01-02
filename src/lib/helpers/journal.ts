@@ -13,7 +13,7 @@ export function createJournal(name?: string, id?: string) {
         lastUpdated: new Date(),
         messageList: [{ role: "system", name: "hidden message", id: "00", content: "" }],
         name: name || "Dream Journal",
-        story: { title: "", story: "", mood: "", setting: "", type: "", chapterIndexStart: 0 },
+        story: { title: "", story: "Story Type", mood: "", setting: "", type: "", chapterIndexStart: 0 },
         image: { url: "", created: "" },
         finalImageUrl: ""
 

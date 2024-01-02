@@ -14,8 +14,8 @@
 	});
 </script>
 
-<main class="mt-2 ml-2 flex flex-col flex-1">
-	<div class="flex flex-col h-[calc(100dvh-1rem)] md:h-[calc(100svh-5rem)] overflow-scroll">
+<main class="mt-2 ml-2 flex flex-col flex-1 gap-2">
+	<div class="flex-1 flex flex-col max-h-[calc(100dvh-1rem)]  md:max-h-[calc(100dvh-4.5rem)] overflow-scroll gap-2">
 		<slot />
 	</div>
 </main>

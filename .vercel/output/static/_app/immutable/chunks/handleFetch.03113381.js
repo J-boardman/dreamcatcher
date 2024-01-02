@@ -1,0 +1,1 @@
+async function r(n,e){try{return[await(await fetch(n,{method:e.method,headers:{"Content-Type":"application/json"},body:JSON.stringify(e.body),...e.extras})).json(),null]}catch(t){return[null,t]}}export{r as h};
