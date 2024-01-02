@@ -3,9 +3,9 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import { onNavigate } from '$app/navigation';
 	import Background from '$lib/components/ui/Background.svelte';
-	import MobileNav from '$lib/components/ui/MobileNav.svelte';
-	import SignedIn from 'clerk-sveltekit/client/SignedIn.svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
+	injectSpeedInsights();
 	onNavigate((navigation) => {
 		// @ts-expect-error
 		if (!document?.startViewTransition) return;
