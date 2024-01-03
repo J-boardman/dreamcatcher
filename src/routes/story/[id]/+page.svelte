@@ -37,7 +37,7 @@
 				class="sticky top-0 skeleton bg-secondary-content/80"
 				style="view-transition-name: testing-{data.id};"
 			>
-				<CldImage src={story.imageUrl} height={1433} width={819} />
+				<CldImage src={story.imageUrl} height={1433} width={819} loading="eager"/>
 			</a>
 		{:else}
 			<ImagePlaceholder />

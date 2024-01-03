@@ -6,6 +6,7 @@
 
 	export let story: StoryWithAuthor;
 	export let hideAuthorCard = false;
+    export let lazyLoad = false;
 </script>
 
 <section class="card card-compact min-h-[450px] group">
@@ -40,6 +41,7 @@
 				src={story.imageUrl}
 				class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
+                loading={lazyLoad ? "lazy" : "eager"}
 			/>
 		{:else}
 			<ImagePlaceholder />
