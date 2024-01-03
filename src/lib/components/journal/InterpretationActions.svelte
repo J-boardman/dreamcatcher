@@ -1,8 +1,10 @@
 <script>
 	import { journal, state } from '$lib/stores';
 	import Icon from '@iconify/svelte';
-	import { getChatContext, systemMessage, updateJournal } from '$lib';
+	import { getChatContext } from '$lib';
 	import { finaliseInterpretationPrompt } from '$lib/helpers/prompts';
+	import { systemMessage } from '$lib/helpers/systemMessage';
+	import { updateJournal } from '$lib/helpers/journal';
 
 	const { append, isLoading, handleSubmit } = getChatContext();
 	async function finaliseInterpretation() {

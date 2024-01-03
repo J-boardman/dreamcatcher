@@ -6,17 +6,20 @@ import type { StoryWithAuthor } from '$lib/types.js';
 
 export async function load({ url, locals }) {
     const users = await clerk.users.getUserList();
-    let stories: Partial<Story>[];
     
+    //@ts-expect-error
+    const { userId } = locals.session
+
+    let stories: Partial<Story>[];
     if (isFollowingFeed(url)) {
-        //@ts-ignore
-        stories = (await getFollowingFeed(locals.session.userId)).map(item => {
-            return item.stories
-        })
-    } else stories = await getSharedStories()
+        const followingFeed = await getFollowingFeed(userId)
+        stories = followingFeed.map(item => item.stories)
+    } else {
+        stories = await getSharedStories()
+    }
 
     const storiesWithAuthor: StoryWithAuthor[] = stories.map(story => {
-        const author = users.find(item => item.id == story.authorId);
+        const author = users.find(user => user.id == story.authorId);
 
         return {
             ...story,

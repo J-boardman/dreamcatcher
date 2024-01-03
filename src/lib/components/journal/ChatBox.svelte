@@ -3,9 +3,10 @@
 	import { afterUpdate, onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import ChatImage from '$lib/components/journal/ChatImage.svelte';
-	import { getChatContext, updateJournal } from '$lib';
+	import { getChatContext } from '$lib';
 	import { clerk } from 'clerk-sveltekit/client';
 	import MoonIcon from 'virtual:icons/line-md/moon-loop';
+	import { updateJournal } from '$lib/helpers/journal';
 
 	let element: HTMLElement;
 	let messageListLength = 0;

@@ -1,31 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { afterNavigate, goto } from '$app/navigation';
-	import MoonIcon from 'virtual:icons/line-md/moon-alt-loop';
 	import { resetHeader } from '$lib';
+	import Icon from '@iconify/svelte';
 
-	let previousPage = '';
-
-	afterNavigate(({ from }) => {
-		previousPage = from?.url.pathname || previousPage;
-        resetHeader()
-	});
-
+    resetHeader()
 </script>
 
-<section class="grid place-items-center h-full flex-1">
-	<div class="flex gap-4 flex-col items-center text-center">
-		<MoonIcon class="text-[10rem]" />
-	</div>
-	<p class="text-3xl font-bold text-center">
-		{#if $page.status && $page.error?.message}
-            {$page.status}: {$page.error?.message}
-        {:else}
-			Sorry, we ran into a problem...
-		{/if}
-	</p>
-	<div class="flex flex-col gap-4 md:flex-row">
-		<!-- <a href={previousPage} class="btn btn-primary btn-lg btn-outline">It's time to go back</a> -->
-		<a href="/" class="btn btn-secondary btn-lg btn-outline">Back to home</a>
-	</div>
+<section class="grid flex-1 place-content-center *:mx-auto gap-4">
+    <Icon icon="line-md:moon-alt-loop" class="text-[10rem]"/>
+	<p class="text-3xl font-bold">Sorry, we ran into a problem</p>
+    <p class="text-xl">{$page.error?.message} ({$page.status})</p>
+	<a href="/" class="btn btn-secondary btn-lg btn-outline">Back to home</a>
 </section>

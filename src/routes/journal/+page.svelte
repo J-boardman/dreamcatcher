@@ -2,10 +2,10 @@
 	import { onMount } from 'svelte';
 	import { afterNavigate} from '$app/navigation';
 	import type { DreamJournal } from '$lib/types';
-	import { removeJournal } from '$lib';
 	import JournalCard from '$lib/components/journal/JournalCard.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 	import NewJournalButton from '$lib/components/NewJournalButton.svelte';
+	import { removeJournal } from '$lib/helpers/journal';
 
 	let allJournals: DreamJournal[] = [];
 

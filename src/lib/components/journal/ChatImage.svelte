@@ -7,7 +7,9 @@
 	export let message: Message;
 	import Modal from '../ui/Modal.svelte';
 	import InfoIcon from 'virtual:icons/material-symbols/info';
-	import { getChatContext, systemMessage, updateJournal } from '$lib';
+	import { getChatContext } from '$lib';
+	import { updateJournal } from '$lib/helpers/journal';
+	import { systemMessage } from '$lib/helpers/systemMessage';
 
 	const { setMessages, messages } = getChatContext();
 

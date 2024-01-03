@@ -44,7 +44,7 @@ export async function getStoryImage(id: number | string) {
 }
 
 // ADVANCED CRUD
-export async function getSharedStories(offset = 0, limit = 4) {
+export async function getSharedStories(offset = 0, limit = 8) {
     return db
         .select({ id: stories.id, title: stories.title, imageUrl: stories.imageUrl, authorId: stories.authorId })
         .from(stories)

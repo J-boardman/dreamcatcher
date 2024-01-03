@@ -9,6 +9,5 @@ export async function GET({ url, locals }) {
         ? await getFollowingFeedCount(locals.session.userId)
         : await getSharedStoryCount()
 
-    console.log(storyCount)
     return json({ storyCount })
 }

@@ -2,16 +2,12 @@
 	import { imageSpecifications } from '$lib/helpers/prompts';
 	import { fetching, journal, state } from '$lib/stores';
 	import SaveStoryModal from '$lib/components/journal/SaveStoryModal.svelte';
-    
-	import {
-		generateImagePrompt,
-		getChatContext,
-		handleChatRequest,
-		handleFetch,
-		randomID,
-		updateJournal
-	} from '$lib';
 	import Icon from '@iconify/svelte';
+	import { handleFetch } from '$lib/helpers/handleFetch';
+	import { getChatContext, randomID } from '$lib';
+	import { updateJournal } from '$lib/helpers/journal';
+	import { handleChatRequest } from '$lib/helpers/handleChatRequest';
+	import { generateImagePrompt } from '$lib/helpers/generateImagePrompt';
 
 	const { messages, setMessages } = getChatContext();
 
@@ -45,7 +41,6 @@
 
 		if (error || !data.url) {
 			console.warn(error);
-			console.log('error triggered !!!!!!!!!!!!');
 			return;
 		}
 

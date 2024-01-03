@@ -62,7 +62,7 @@
 
 {#if moreToLoad}
 	<div bind:this={element} class="w-full h-full bg-secondary-content/80 skeleton" />
-	{#each Array(3) as _}
+	{#each Array(7) as _}
 		<div class="h-full w-full bg-secondary-content/80 skeleton" />
 	{/each}
 {:else}

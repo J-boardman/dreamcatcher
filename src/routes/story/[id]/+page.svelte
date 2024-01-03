@@ -47,7 +47,7 @@
 		<Title title={story?.title} />
 		<div class="divider mx-2 my-0" />
 	</div>
-	<article class="flex flex-col gap-2 mx-2 md:text-lg leading-7 pb-20">
+	<article class="flex flex-col gap-2 mx-2 md:text-lg leading-7">
 		{#each story?.story.split('\n') || [] as paragraph}
 			<p>{paragraph}</p>
 		{/each}

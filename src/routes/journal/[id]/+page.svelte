@@ -7,7 +7,7 @@
 	import StoryGenerator from '$lib/components/journal/StoryTypeSettings.svelte';
 	import FinalStory from '$lib/components/journal/FinalStory.svelte';
 	import type { Snapshot } from '@sveltejs/kit';
-	import { getChatContext, setJournal, updateJournal } from '$lib';
+	import { getChatContext } from '$lib';
 	import ChapterStoryGenerator from '$lib/components/journal/ChapterStoryGenerator.svelte';
 	import BottomActions from '$lib/components/ui/BottomActions.svelte';
 
@@ -44,6 +44,7 @@
 
     import nice from "$lib/components/journal/InterpretationActions.svelte"
 	import StoryGeneratorActions from '$lib/components/journal/StoryGenerator.svelte';
+	import { setJournal, updateJournal } from '$lib/helpers/journal';
     $: {
         switch($state){
             case "INTERPRETING": component = nice; break;

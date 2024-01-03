@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { getChatContext, systemMessage, updateJournal } from '$lib';
+	import { getChatContext } from '$lib';
+	import { updateJournal } from '$lib/helpers/journal';
+	import { systemMessage } from '$lib/helpers/systemMessage';
 	import { journal, state } from '$lib/stores';
 
 	const { isLoading, messages, append } = getChatContext();

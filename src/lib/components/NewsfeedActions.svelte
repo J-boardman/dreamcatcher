@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { handleNewJournal, isFollowingFeed } from '$lib';
+	import { isFollowingFeed } from '$lib';
+	import { handleNewJournal } from '$lib/helpers/journal';
 	import BottomAction from './ui/BottomAction.svelte';
 	import BottomActions from './ui/BottomActions.svelte';
 	$: followingFeed = isFollowingFeed($page.url);

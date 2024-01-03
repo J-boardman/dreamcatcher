@@ -33,8 +33,5 @@ export async function GET({ url, locals }) {
         }
     }).reverse()
 
-    console.log(storiesWithAuthor.length)
-
-
     return json({ stories: storiesWithAuthor })
 }
