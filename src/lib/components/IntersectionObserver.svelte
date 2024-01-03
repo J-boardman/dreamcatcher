@@ -44,7 +44,6 @@
 		const observed = entries.some((item) => item.isIntersecting);
 
 		if (observed) {
-            console.log("ping")
 			if (!moreToLoad) return;
 
 			const data = await fetch(`/api/stories/${nextPage}`);
