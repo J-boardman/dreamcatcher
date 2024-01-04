@@ -61,10 +61,10 @@
 </script>
 
 {#if moreToLoad}
-	<div bind:this={element} class="w-full h-full bg-secondary-content/80 skeleton" />
-	{#each Array(7) as _}
+	<div bind:this={element} class="w-full h-full" />
+	<!-- {#each Array(7) as _}
 		<div class="h-full w-full bg-secondary-content/80 skeleton" />
-	{/each}
+	{/each} -->
 {:else}
 	<section
 		class="flex justify-center items-center gap-2 text-lg bg-secondary-content/80 rounded-xl"
