@@ -42,6 +42,7 @@
 				class="h-full rounded-xl"
 				style="view-transition-name: testing-{story.id};"
                 loading={lazyLoad ? "lazy" : "eager"}
+                alt="Story cover"
 			/>
 		{:else}
 			<ImagePlaceholder />

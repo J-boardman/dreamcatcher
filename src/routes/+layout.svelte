@@ -20,6 +20,14 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Dreamcatcher</title>
+	<meta
+		name="description"
+		content="Dream interpretation and storytelling service. AI dream interpreter and bedtime storyteller providing captivating insights and imaginative tales based on your dreams!"
+	/>
+</svelte:head>
+
 <Background />
 <section class="min-h-dvh flex flex-col">
 	<Header />

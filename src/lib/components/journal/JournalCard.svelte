@@ -24,7 +24,7 @@
 			<div class="avatar">
 				<div class="mask mask-squircle w-24 h-24">
 					{#if journal.finalImageUrl}
-						<CldImage src={journal.finalImageUrl} width={400} height={600} />
+						<CldImage src={journal.finalImageUrl} width={400} height={600} alt="Story cover"/>
 					{:else if journal?.image?.url}
 						<img
 							src={journal?.image?.url}
