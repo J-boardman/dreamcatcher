@@ -1,6 +1,6 @@
 import type { Message } from "ai";
 import { systemMessage } from "./systemMessage";
-import type { ChatCompletion } from "openai/resources/index.mjs";
+import type { ChatCompletion } from "openai/resources/";
 type ChatRequest = Promise<[ChatCompletion | null, Error | null]>
 
 export async function handleChatRequest(newMessage: string, messages: Message[]): ChatRequest {
@@ -20,3 +20,4 @@ export async function handleChatRequest(newMessage: string, messages: Message[])
         return [null, error as Error]
     }
 }
+

@@ -3,11 +3,12 @@
 	export let author: Partial<User>;
 </script>
 
-<a href="/profile/{author.id}" class="btn h-full flex flex-1 items-center pr-4">
+<div class="bg-base-200">
+<a href="/profile/{author.id}" class="btn h-full flex items-center pr-5">
 	<div class="avatar">
 		{#if author}
 			<div class="mask mask-squircle w-9 h-9">
-				<img src={author?.imageUrl + '?enhanced'} alt="profile" />
+				<img src={author?.imageUrl} alt="profile" />
 			</div>
 		{:else}
 			<div class="mask mask-squircle w-12 h-12 skeleton" />
@@ -23,3 +24,4 @@
 		{/if}
 	</div>
 </a>
+</div>
