@@ -15,7 +15,7 @@
 	</div>
 	<nav class="flex gap-4 items-center">
 		<SignedIn>
-			<a href="/">Newsfeed</a>
+			<a href="/feed">Newsfeed</a>
 			<a href="/journal">Dream Journal</a>
 			<a href="/profile">Profile</a>
 			<UserButton afterSignOutUrl="/" />
